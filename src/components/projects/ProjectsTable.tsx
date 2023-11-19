@@ -49,7 +49,7 @@ export function ProjectsTable({ projectList }: Props) {
 								<th
 									colSpan={5}
 									scope="colgroup"
-									className="text-xl font-semibold p-4 text-center"
+									className="text-xl font-semibold p-2 text-center"
 								>
 									{owner.name}
 								</th>
@@ -107,7 +107,7 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 					'bg-table-primary-row hover:bg-table-hover',
 				)}
 			>
-				<td className="whitespace-nowrap py-4 pl-4 pr-3 font-medium sm:pl-3">
+				<td className="whitespace-nowrap py-2 pl-4 pr-3 font-medium sm:pl-3">
 					{project}
 				</td>
 				<td></td>
@@ -121,11 +121,11 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 						'bg-table-secondary-row hover:bg-table-hover',
 					)}
 				>
-					<td className="whitespace-nowrap py-4 pl-8 pr-3 font-medium">
+					<td className="whitespace-nowrap py-2 pl-8 pr-3 font-medium">
 						↳ {releaseChannel}
 					</td>
 
-					<td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right font-medium sm:pr-3">
+					<td className="relative whitespace-nowrap py-2 pl-3 pr-4 text-right font-medium sm:pr-3">
 						{/* <DownloadButton latest={true} downloadLink={Pages.downloadLatestBuild.toUrl({
 							projectName: project,
 							releaseChannel,

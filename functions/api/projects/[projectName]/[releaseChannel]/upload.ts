@@ -37,7 +37,7 @@ export const handleUpload: BlobFunction = async ({ request, env, params, data })
 
 	// Validation
 	if (file === null) {
-		return badRequest(ErrorCode.MISSING_FIELD, 'Missing "field" in form data!');
+		return badRequest(ErrorCode.MISSING_FIELD, 'Missing "file" in form data!');
 	}
 	if (metadataEntry === null) {
 		return badRequest(ErrorCode.MISSING_FIELD, 'Missing "metadata" in form data!');
