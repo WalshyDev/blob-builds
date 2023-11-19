@@ -1,0 +1,12 @@
+compatibility_date = "2023-06-16"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "blob-builds"
+database_id = "10f80f6e-c0de-4a67-be02-492636f316a8"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "blob-builds"
+preview_bucket_name = "blob-builds"
