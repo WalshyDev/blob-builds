@@ -15,8 +15,10 @@ async function main() {
 	const sha256 = createHash('sha256').update(file).digest('hex');
 
 	// Upload the file
+	const formFile = new File([new Blob([file])], filePath, { type: 'application/java-archive' });
+
 	const formData = new FormData();
-	formData.append('file', new Blob([file]));
+	formData.append('file', formFile);
 	formData.append('metadata', JSON.stringify({ checksum: sha256, release_notes: releaseNotes }));
 
 	const res = await fetch(`https://blob.build/api/projects/${project}/${releaseChannel}/upload`, {

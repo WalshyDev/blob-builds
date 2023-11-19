@@ -5030,7 +5030,7 @@ var require_file = __commonJS({
     var { parseMIMEType, serializeAMimeType } = require_dataURL();
     var { kEnumerableProperty } = require_util();
     var encoder = new TextEncoder();
-    var File = class extends Blob2 {
+    var File2 = class extends Blob2 {
       constructor(fileBits, fileName, options = {}) {
         webidl.argumentLengthCheck(arguments, 2, { header: "File constructor" });
         fileBits = webidl.converters["sequence<BlobPart>"](fileBits);
@@ -5058,15 +5058,15 @@ var require_file = __commonJS({
         };
       }
       get name() {
-        webidl.brandCheck(this, File);
+        webidl.brandCheck(this, File2);
         return this[kState].name;
       }
       get lastModified() {
-        webidl.brandCheck(this, File);
+        webidl.brandCheck(this, File2);
         return this[kState].lastModified;
       }
       get type() {
-        webidl.brandCheck(this, File);
+        webidl.brandCheck(this, File2);
         return this[kState].type;
       }
     };
@@ -5118,7 +5118,7 @@ var require_file = __commonJS({
         return "File";
       }
     };
-    Object.defineProperties(File.prototype, {
+    Object.defineProperties(File2.prototype, {
       [Symbol.toStringTag]: {
         value: "File",
         configurable: true
@@ -5198,9 +5198,9 @@ var require_file = __commonJS({
       return s.replace(/\r?\n/g, nativeLineEnding);
     }
     function isFileLike(object) {
-      return NativeFile && object instanceof NativeFile || object instanceof File || object && (typeof object.stream === "function" || typeof object.arrayBuffer === "function") && object[Symbol.toStringTag] === "File";
+      return NativeFile && object instanceof NativeFile || object instanceof File2 || object && (typeof object.stream === "function" || typeof object.arrayBuffer === "function") && object[Symbol.toStringTag] === "File";
     }
-    module2.exports = { File, FileLike, isFileLike };
+    module2.exports = { File: File2, FileLike, isFileLike };
   }
 });
 
@@ -5213,7 +5213,7 @@ var require_formdata = __commonJS({
     var { File: UndiciFile, FileLike, isFileLike } = require_file();
     var { webidl } = require_webidl();
     var { Blob: Blob2, File: NativeFile } = require("buffer");
-    var File = NativeFile ?? UndiciFile;
+    var File2 = NativeFile ?? UndiciFile;
     var FormData2 = class {
       constructor(form) {
         if (form !== void 0) {
@@ -5344,14 +5344,14 @@ var require_formdata = __commonJS({
         value = Buffer.from(value).toString("utf8");
       } else {
         if (!isFileLike(value)) {
-          value = value instanceof Blob2 ? new File([value], "blob", { type: value.type }) : new FileLike(value, "blob", { type: value.type });
+          value = value instanceof Blob2 ? new File2([value], "blob", { type: value.type }) : new FileLike(value, "blob", { type: value.type });
         }
         if (filename !== void 0) {
           const options = {
             type: value.type,
             lastModified: value.lastModified
           };
-          value = NativeFile && value instanceof NativeFile || value instanceof UndiciFile ? new File([value], filename, options) : new FileLike(value, filename, options);
+          value = NativeFile && value instanceof NativeFile || value instanceof UndiciFile ? new File2([value], filename, options) : new FileLike(value, filename, options);
         }
       }
       return { name, value };
@@ -5386,7 +5386,7 @@ var require_body = __commonJS({
     var { File: UndiciFile } = require_file();
     var { parseMIMEType, serializeAMimeType } = require_dataURL();
     var ReadableStream = globalThis.ReadableStream;
-    var File = NativeFile ?? UndiciFile;
+    var File2 = NativeFile ?? UndiciFile;
     var textEncoder = new TextEncoder();
     var textDecoder = new TextDecoder();
     function extractBody(object, keepalive = false) {
@@ -5622,14 +5622,14 @@ Content-Type: ${value.type || "application/octet-stream"}\r
                 });
                 value.on("end", () => {
                   chunks.push(Buffer.from(base64chunk, "base64"));
-                  responseFormData.append(name, new File(chunks, filename, { type: mimeType }));
+                  responseFormData.append(name, new File2(chunks, filename, { type: mimeType }));
                 });
               } else {
                 value.on("data", (chunk) => {
                   chunks.push(chunk);
                 });
                 value.on("end", () => {
-                  responseFormData.append(name, new File(chunks, filename, { type: mimeType }));
+                  responseFormData.append(name, new File2(chunks, filename, { type: mimeType }));
                 });
               }
             });
@@ -18496,8 +18496,9 @@ async function main() {
   const releaseNotes = (0, import_core.getInput)("releaseNotes", { required: false });
   const file = await (0, import_promises.readFile)(filePath);
   const sha256 = (0, import_node_crypto.createHash)("sha256").update(file).digest("hex");
+  const formFile = new File([new Blob([file])], filePath, { type: "application/java-archive" });
   const formData = new FormData();
-  formData.append("file", new Blob([file]));
+  formData.append("file", formFile);
   formData.append("metadata", JSON.stringify({ checksum: sha256, release_notes: releaseNotes }));
   const res = await fetch(`https://blob.build/api/projects/${project}/${releaseChannel}/upload`, {
     method: "POST",
