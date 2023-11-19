@@ -1,0 +1,24 @@
+name: 'Blob Builds'
+author: 'WalshyDev'
+description: 'Builds blobs'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+
+inputs:
+  project:
+    description: 'The project to upload to'
+    required: true
+  releaseChannel:
+    description: 'The release channel to upload to'
+    required: false
+    default: 'Dev'
+  apiToken:
+    description: 'The API token to use'
+    required: true
+  file:
+    description: 'The file to upload'
+    required: true
+  releaseNotes:
+    description: 'The release notes for this build'
+    required: false

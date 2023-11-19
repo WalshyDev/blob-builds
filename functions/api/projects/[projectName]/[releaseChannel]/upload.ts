@@ -12,7 +12,7 @@ import Constants from '~/utils/constants';
 
 const metadataSchema = z.object({
 	checksum: z.string().length(64),
-	release_notes: z.string().min(30).max(2000).optional(),
+	release_notes: z.string().min(6).max(2000).optional(),
 });
 
 export const handleUpload: BlobFunction = async ({ request, env, params, data }) => {
