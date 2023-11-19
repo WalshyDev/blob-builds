@@ -55,7 +55,6 @@ export async function getProjectListByUser(DB: D1Database): Promise<ProjectList 
 				AS release_channels
 		FROM projects
 		LEFT JOIN users ON users.user_id = projects.user_id
-		GROUP BY users.user_id
 	`);
 
 	if (res.success) {
