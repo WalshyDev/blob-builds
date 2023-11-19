@@ -25,8 +25,8 @@ export const onRequestGet: BlobFunction = async ({ env, params, waitUntil }) => 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	const cache = caches.default;
-	const cacheKey = `${projectName}/${releaseChannel}/${build.file_hash}`;
-	const cachedFile = cache.match(cacheKey);
+	const cacheKey = `https://blob.build/download/${projectName}/${releaseChannel}/${build.file_hash}`;
+	const cachedFile = await cache.match(cacheKey);
 	if (cachedFile) {
 		return cachedFile;
 	}
