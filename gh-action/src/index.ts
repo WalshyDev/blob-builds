@@ -7,7 +7,15 @@ async function main() {
 	const releaseChannel = getInput('releaseChannel', { required: false });
 	const apiToken = getInput('apiToken', { required: true });
 	const filePath = getInput('file', { required: true });
-	const releaseNotes = getInput('releaseNotes', { required: false });
+	let releaseNotes = getInput('releaseNotes', { required: false });
+
+	if (releaseNotes === '') {
+		console.log('No release notes provided, skipping release notes upload');
+	}
+	if (releaseNotes.length < 6) {
+		console.log('Release notes too short, skipping release notes upload');
+		releaseNotes = '';
+	}
 
 	const file = await readFile(filePath);
 
@@ -19,7 +27,10 @@ async function main() {
 
 	const formData = new FormData();
 	formData.append('file', formFile);
-	formData.append('metadata', JSON.stringify({ checksum: sha256, release_notes: releaseNotes }));
+	formData.append('metadata', JSON.stringify({
+		checksum: sha256,
+		release_notes: releaseNotes === '' ? undefined : releaseNotes,
+	}));
 
 	const res = await fetch(`https://blob.build/api/projects/${project}/${releaseChannel}/upload`, {
 		method: 'POST',

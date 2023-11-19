@@ -18493,13 +18493,23 @@ async function main() {
   const releaseChannel = (0, import_core.getInput)("releaseChannel", { required: false });
   const apiToken = (0, import_core.getInput)("apiToken", { required: true });
   const filePath = (0, import_core.getInput)("file", { required: true });
-  const releaseNotes = (0, import_core.getInput)("releaseNotes", { required: false });
+  let releaseNotes = (0, import_core.getInput)("releaseNotes", { required: false });
+  if (releaseNotes === "") {
+    console.log("No release notes provided, skipping release notes upload");
+  }
+  if (releaseNotes.length < 6) {
+    console.log("Release notes too short, skipping release notes upload");
+    releaseNotes = "";
+  }
   const file = await (0, import_promises.readFile)(filePath);
   const sha256 = (0, import_node_crypto.createHash)("sha256").update(file).digest("hex");
   const formFile = new File([new Blob([file])], filePath, { type: "application/java-archive" });
   const formData = new FormData();
   formData.append("file", formFile);
-  formData.append("metadata", JSON.stringify({ checksum: sha256, release_notes: releaseNotes }));
+  formData.append("metadata", JSON.stringify({
+    checksum: sha256,
+    release_notes: releaseNotes === "" ? void 0 : releaseNotes
+  }));
   const res = await fetch(`https://blob.build/api/projects/${project}/${releaseChannel}/upload`, {
     method: "POST",
     headers: {
