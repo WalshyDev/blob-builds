@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { getInput } from '@actions/core';
+import { getInput, setFailed, setOutput } from '@actions/core';
 
 async function main() {
 	const project = getInput('project', { required: true });
@@ -28,6 +28,7 @@ async function main() {
 	});
 
 	if (!res.ok) {
+		setFailed(`Failed to upload file: ${res.status} ${res.statusText}`);
 		throw new Error(await res.json());
 	}
 
