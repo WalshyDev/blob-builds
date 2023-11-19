@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "author": "WalshyDev",
   "license": "MIT",
+	"type": "module",
   "scripts": {
     "build": "esbuild --bundle --format=esm --platform=node --outfile=dist/index.js src/index.ts"
   },
