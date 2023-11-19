@@ -1,4 +1,4 @@
-export const onRequest: PagesFunction<Env> = async ({ next, params }) => {
+export const onRequest: PagesFunction<Env> = async ({ next }) => {
 	try {
 		return await next();
 	} catch(e) {

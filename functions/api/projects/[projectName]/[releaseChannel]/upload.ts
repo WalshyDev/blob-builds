@@ -67,7 +67,7 @@ export const handleUpload: BlobFunction = async ({ request, env, params, data })
 	}
 
 	// Upload to R2
-	console.log(`${projectName}/${releaseChannel}/${fileHash}`);
+	console.log(`Uploading: ${projectName}/${releaseChannel}/${fileHash}`);
 	await env.R2.put(`${projectName}/${releaseChannel}/${fileHash}`, file.stream(), {
 		httpMetadata: {
 			// TODO: Support more file types in the future

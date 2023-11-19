@@ -3,7 +3,7 @@ const Constants = Object.freeze({
 
 	ONE_YEAR_CACHE: 'public, max-age=31536000',
 
-	DOMAIN: 'https://blobbuilds.com',
+	DOMAIN: 'https://blob.build',
 });
 
 export default Constants;

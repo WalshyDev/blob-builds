@@ -37,6 +37,7 @@ interface Props {
 
 export function ProjectsTable({ projectList }: Props) {
 	const projectsByOwner = projectListToProjectsByOwner(projectList);
+	console.log(projectsByOwner);
 
 	return (
 		<div className="mt-8 overflow-x-auto inline-block min-w-full align-middle">

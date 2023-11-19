@@ -41,11 +41,12 @@ export const onRequestGet: BlobFunction = async ({ env, params, waitUntil }) => 
 		.replace('$releaseChannel', channel.name)
 		.replace('$buildId', String(build.build_id));
 
-	const res = new Response(file.body, {
-		headers: {
-			'Content-Disposition': `attachment; filename="${fileName}"`,
-		},
-	});
+	const headers = new Headers();
+	file.writeHttpMetadata(headers);
+
+	headers.append('Content-Disposition', `attachment; filename="${fileName}"`);
+
+	const res = new Response(file.body, { headers });
 
 	// Put into cache
 	waitUntil(cache.put(cacheKey, res.clone()));
