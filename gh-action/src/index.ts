@@ -12,7 +12,7 @@ async function main() {
 	if (releaseNotes === '') {
 		console.log('No release notes provided, skipping release notes upload');
 	}
-	if (releaseNotes.length < 6) {
+	if (releaseNotes.length < 30) {
 		console.log('Release notes too short, skipping release notes upload');
 		releaseNotes = '';
 	}
