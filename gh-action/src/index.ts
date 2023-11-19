@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { getInput, setFailed, setOutput } from '@actions/core';
+import { getInput, setFailed } from '@actions/core';
 
 async function main() {
 	const project = getInput('project', { required: true });
