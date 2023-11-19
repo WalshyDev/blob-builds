@@ -10,3 +10,14 @@ database_id = "10f80f6e-c0de-4a67-be02-492636f316a8"
 binding = "R2"
 bucket_name = "blob-builds"
 preview_bucket_name = "blob-builds"
+
+[env.preview]
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "blob-builds-preview"
+database_id = "69961fb8-bab5-401d-85eb-62866b47184b"
+
+[[env.preview.r2_buckets]]
+binding = "R2"
+bucket_name = "blob-builds"
+preview_bucket_name = "blob-builds"
