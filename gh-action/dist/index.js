@@ -18508,7 +18508,7 @@ async function main() {
   });
   if (!res.ok) {
     (0, import_core.setFailed)(`Failed to upload file: ${res.status} ${res.statusText}`);
-    throw new Error(await res.json());
+    throw new Error(await res.text());
   }
   const json = await res.json();
   console.log(json);
