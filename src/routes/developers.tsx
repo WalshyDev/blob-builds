@@ -1,5 +1,9 @@
 import Code from '~/components/Code';
 import { H1, H2, H3 } from '~/components/html/Headings';
+import Link from '~/components/Link';
+
+const EXAMPLE_ACTION =
+	'https://github.com/Slimefun-Addon-Community/HeadLimiter/blob/master/.github/workflows/publish.yml';
 
 export default function Developers() {
 	return (
@@ -11,6 +15,11 @@ export default function Developers() {
 			</p>
 
 			<p className='font-bold'>Note: This page is still WIP</p>
+
+			<H2>Submitting builds through GitHub</H2>
+			<p>
+				Here is an example GitHub Action for publishing new builds: <Link href={EXAMPLE_ACTION}>{EXAMPLE_ACTION}</Link>
+			</p>
 
 			<H2>API reference</H2>
 
