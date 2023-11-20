@@ -28,6 +28,24 @@ export async function getProjectByName(DB: D1Database, projectName: string): Pro
 	}
 }
 
+export async function getProjectByNameAndUser(
+	DB: D1Database,
+	projectName: string,
+	userId: number,
+): Promise<Project | null> {
+	const res = await queryRow<Project>(DB,
+		'SELECT * FROM projects WHERE name = ? AND user_id = ?',
+		projectName, userId,
+	);
+
+	if (res.success) {
+		return res.data;
+	} else {
+		console.error(`getProjectByName: Failed to get project! Error: ${res.internalError}`);
+		return null;
+	}
+}
+
 export async function getProjects(DB: D1Database): Promise<Project[] | null> {
 	const res = await queryRows<Project>(DB, 'SELECT * FROM projects');
 
@@ -65,6 +83,22 @@ export async function getProjectListByUser(DB: D1Database): Promise<ProjectList 
 		return res.data;
 	} else {
 		console.error(`getProjectListByUser: Failed to get projects! Error: ${res.internalError}`);
+		return null;
+	}
+}
+
+// Be sure to also make release channels!
+export async function newProject(DB: D1Database, userId: number, name: string, description: string) {
+	const res = await queryRow<Project>(DB,
+		`INSERT INTO projects (user_id, name, description) VALUES (?, ?, ?)
+		RETURNING *`,
+		userId, name, description,
+	);
+
+	if (res.success) {
+		return res.data;
+	} else {
+		console.error(`newProject: Failed to create project! Error: ${res.internalError}`);
 		return null;
 	}
 }

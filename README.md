@@ -10,7 +10,7 @@ Once you have cloned the repo, you can setup local development with the followin
 ```
 $ npm install
 
-$ npx wrangler d1 create blob-builds --experimental-backend
+$ npx wrangler d1 create blob-builds
 # Then update the `wrangler.toml` with the new `database_id` provided
 
 # Apply DB migrations

@@ -51,3 +51,24 @@ export async function run<T>(DB: D1Database, query: string, ...args: unknown[]):
 		return { success: false, internalError: e.message + ' - ' + e.cause };
 	}
 }
+
+export async function batch<T = unknown>(
+	DB: D1Database,
+	query: string,
+	...args: unknown[][]
+): Promise<DbResult<D1Result<T>[]>> {
+	try {
+		const statements = [];
+		for (const queryArgs of args) {
+			const ps = DB.prepare(query).bind(...queryArgs);
+			statements.push(ps);
+		}
+
+		const result = await DB.batch<T>(statements);
+		return { success: true, data: result };
+	} catch(e) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		return { success: false, internalError: e.message + ' - ' + e.cause };
+	}
+}

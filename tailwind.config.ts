@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 export default {
-	content: ["./src/**/*.{js,jsx,ts,tsx}"],
+	content: ['./src/**/*.{js,jsx,ts,tsx}'],
 	theme: {
 		extend: {
 			colors: {
@@ -14,9 +14,8 @@ export default {
 				'table-secondary-row': '#6b6b6b',
 				'table-border': '#9f9f9f',
 				'table-hover': '#737373',
-			}
+			},
 		},
 	},
 	plugins: [],
-} satisfies Config
-
+} satisfies Config;

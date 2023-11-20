@@ -1,4 +1,6 @@
 export const ErrorCode = Object.freeze({
+	INTERNAL_ERROR: 0,
+
 	// Input errors
 	MISSING_FIELD: 1000,
 	INVALID_TYPE: 1001,
@@ -13,6 +15,7 @@ export const ErrorCode = Object.freeze({
 
 	// Project errors
 	PROJECT_NOT_FOUND: 4000,
+	PROJECT_ALREADY_EXISTS: 4001,
 
 	// Release channel errors
 	RELEASE_CHANNEL_NOT_FOUND: 5000,

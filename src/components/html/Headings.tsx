@@ -1,20 +1,24 @@
-import type { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
+import { classNames } from '~/utils/utils';
 
-const baseStyles = 'font-bold text-slate-50 my-4';
-
-export function H1({ children }: PropsWithChildren) {
-	return <h1 className={`text-3xl ${baseStyles}`}>{children}</h1>;
+interface HeaderProps extends PropsWithChildren {
+	className?: string;
 }
 
-export function H2({ children }: PropsWithChildren) {
-	return <h1 className={`text-2xl ${baseStyles}`}>{children}</h1>;
+const sharedStyles = 'my-4 text-stone-600 dark:text-slate-200';
+
+export function H1({ className, children }: HeaderProps) {
+	return <h1 className={classNames('text-4xl', sharedStyles, className)}>{children}</h1>;
 }
 
-export function H3({ children }: PropsWithChildren) {
-	return <h1 className={`text-xl ${baseStyles}`}>{children}</h1>;
+export function H2({ className, children }: HeaderProps) {
+	return <h2 className={classNames('text-3xl', sharedStyles, className)}>{children}</h2>;
 }
 
-export function H4({ children }: PropsWithChildren) {
-	return <h1 className={`text-l ${baseStyles}`}>{children}</h1>;
+export function H3({ className, children }: HeaderProps) {
+	return <h3 className={classNames('text-2xl', sharedStyles, className)}>{children}</h3>;
 }
 
+export function H4({ className, children }: HeaderProps) {
+	return <h4 className={classNames('text-xl', sharedStyles, className)}>{children}</h4>;
+}

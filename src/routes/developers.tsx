@@ -1,4 +1,5 @@
-import { H1, H2 } from '~/components/html/Headings';
+import Code from '~/components/Code';
+import { H1, H2, H3 } from '~/components/html/Headings';
 
 export default function Developers() {
 	return (
@@ -11,13 +12,120 @@ export default function Developers() {
 
 			<p className='font-bold'>Note: This page is still WIP</p>
 
-			<H2>Uploading a new file</H2>
-			<p>
+			<H2>API reference</H2>
 
+			<H3>New project</H3>
+			<p>
+				To upload a new project, you need to send a <code>POST</code> to <code>/api/projects/new</code>.
+				<br />
+				Here is an example:
+			</p>
+			<Code language='bash'>
+				{
+					`
+$ curl https://blob.build/api/projects/new -s \\
+	-X POST \\
+	-H 'Authorization: Bearer <API_TOKEN>' \\
+	-H 'Content-Type: application/json' \\
+	-d '{"name": "NewProject", "description": "This project does some really cool stuff"}'
+					`
+				}
+			</Code>
+			<Code language='json'>
+				{
+					`
+{
+	"success": true,
+	"message": "Project created!",
+	"data": {
+		"project": {
+			"project_id": 1,
+			"user_id": 1,
+			"name": "NewProject",
+			"description": "This project does some really cool stuff"
+		},
+		"releaseChannels": [
+			{
+				"project_id": 1,
+				"name": "Dev",
+				"supported_versions": "Unknown",
+				"dependencies": [],
+				"file_naming": "$project.jar"
+			}
+		]
+	}
+}
+					`
+				}
+			</Code>
+
+			<p>
+				If you want to create a project with a specific release channel, you can do so by adding the{' '}
+				<code>release_channels</code> object, like so:
 			</p>
 
-			<H2>API reference</H2>
-			<p>TODO</p>
+			<Code language='bash'>
+				{
+					`
+$ curl https://blob.build/api/projects/new -s \\
+	-X POST \\
+	-H 'Authorization: Bearer <API_TOKEN>' \\
+	-H 'Content-Type: application/json' \\
+	-d '{
+		"name": "NewProject",
+		"description": "This project does some really cool stuff",
+		"release_channels": [
+			{
+				"name": "Dev",
+				"supported_versions": "1.20+",
+				"dependencies": [],
+				"file_naming": "$project.jar"
+			},
+			{
+				"name": "Release",
+				"supported_versions": "1.20+",
+				"dependencies": [],
+				"file_naming": "$project-$releaseChannel.jar"
+			}
+		]
+	}'
+					`
+				}
+			</Code>
+			<Code language='json'>
+				{
+					`
+{
+	"success": true,
+	"message": "Project created!",
+	"data": {
+		"project": {
+			"project_id": 1,
+			"user_id": 1,
+			"name": "NewProject",
+			"description": "This project does some really cool stuff"
+		},
+		"release_channels": [
+			{
+				"project_id": 1,
+				"name": "Dev",
+				"supported_versions": "1.20+",
+				"dependencies": [],
+				"file_naming": "$project.jar"
+			},
+			{
+				"project_id": 1,
+				"name": "Release",
+				"supported_versions": "1.20+",
+				"dependencies": [],
+				"file_naming": "$project-$releaseChannel.jar"
+			}
+		]
+	}
+}
+					`
+				}
+			</Code>
 		</>
 	);
 }
