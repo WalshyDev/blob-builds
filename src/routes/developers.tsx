@@ -2,7 +2,9 @@ import Code from '~/components/Code';
 import { H1, H2, H3 } from '~/components/html/Headings';
 import Link from '~/components/Link';
 
-const EXAMPLE_ACTION =
+const ACTION =
+	'https://github.com/WalshyDev/blob-builds/tree/main/gh-action';
+const EXAMPLE_WORKFLOW =
 	'https://github.com/Slimefun-Addon-Community/HeadLimiter/blob/master/.github/workflows/publish.yml';
 
 export default function Developers() {
@@ -18,7 +20,13 @@ export default function Developers() {
 
 			<H2>Submitting builds through GitHub</H2>
 			<p>
-				Here is an example GitHub Action for publishing new builds: <Link href={EXAMPLE_ACTION}>{EXAMPLE_ACTION}</Link>
+				There is a GitHub Action available that allows you to easily publish new builds to Blob Builds automatically.
+				You can find that here (available as <code>WalshyDev/blob-builds/gh-action</code>):{' '}
+				<Link href={ACTION}>{ACTION}</Link>
+				<br />
+
+				Here is an example GitHub Workflow using that action:{' '}
+				<Link href={EXAMPLE_WORKFLOW}>{EXAMPLE_WORKFLOW}</Link>
 			</p>
 
 			<H2>API reference</H2>
