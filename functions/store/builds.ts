@@ -13,6 +13,7 @@ export async function getLatestBuild(
 			LEFT JOIN projects ON projects.project_id = builds.project_id
 			LEFT JOIN release_channels ON release_channels.release_channel_id = builds.release_channel_id
 			WHERE projects.name = $1 AND release_channels.name = $2
+			ORDER BY builds.build_id DESC
 		`,
 		projectName, releaseChannel,
 	);
@@ -42,6 +43,7 @@ export async function getLatestBuilds(
 			LEFT JOIN projects ON projects.project_id = builds.project_id
 			LEFT JOIN release_channels ON release_channels.release_channel_id = builds.release_channel_id
 			WHERE projects.name = $1
+			ORDER BY builds.build_id DESC
 		`,
 		projectName,
 	);
