@@ -1,0 +1,37 @@
+name = "blob-builds"
+main = "src/index.ts"
+compatibility_date = "2023-11-21"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+routes = [
+	{ pattern = "blob.build/api/*", zone_name = "blob.build" },
+	{ pattern = "blob.build/builds/*", zone_name = "blob.build" }
+]
+
+[[env.production.vars]]
+ENVIRONMENT = "production"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "blob-builds"
+database_id = "10f80f6e-c0de-4a67-be02-492636f316a8"
+
+[[env.production.r2_buckets]]
+binding = "R2"
+bucket_name = "blob-builds"
+preview_bucket_name = "blob-builds"
+
+[env.dev]
+[[env.dev.vars]]
+ENVIRONMENT = "dev"
+
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "blob-builds-preview"
+database_id = "69961fb8-bab5-401d-85eb-62866b47184b"
+
+[[env.dev.r2_buckets]]
+binding = "R2"
+bucket_name = "blob-builds-dev"
+preview_bucket_name = "blob-builds-dev"

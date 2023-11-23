@@ -3,7 +3,7 @@ import { DownloadButton } from '~/components/DownloadButton';
 import Constants from '~/utils/constants';
 import { Pages } from '~/utils/routes';
 import { classNames } from '~/utils/utils';
-import type { ProjectList } from '~/functions/store/projects';
+import type { ProjectList } from 'worker/src/store/projects';
 
 interface ProjectsByOwner {
 	name: string;
