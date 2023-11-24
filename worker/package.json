@@ -5,6 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+		"deploy:dev": "wrangler deploy --env dev",
+		"deploy:prod": "wrangler deploy --env production",
     "dev": "wrangler dev --env dev",
 		"migrate:local": "wrangler d1 migrations apply DB --env dev --local",
 		"migrate:seed-local": "wrangler d1 execute DB --env dev --local --file migrations/seed/seed.sql",
