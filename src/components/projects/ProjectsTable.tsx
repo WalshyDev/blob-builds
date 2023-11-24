@@ -42,9 +42,9 @@ export function ProjectsTable({ projectList }: Props) {
 	return (
 		<div className="mt-8 overflow-x-auto inline-block min-w-full align-middle">
 			<table className="min-w-full">
-				<tbody>
-					{projectsByOwner.map((owner) => (
-						<Fragment key={owner.name}>
+				{projectsByOwner.map((owner) => (
+					<Fragment key={`owner-${owner.name}`}>
+						<thead>
 							<tr className="bg-table-heading">
 								<th
 									colSpan={5}
@@ -54,16 +54,16 @@ export function ProjectsTable({ projectList }: Props) {
 									{owner.name}
 								</th>
 							</tr>
-							{owner.projects.map((project) =>
-								<ProjectRow
-									key={`project-${project.name}`}
-									project={project.name}
-									releaseChannels={project.releaseChannels ?? [Constants.DEFAULT_RELEASE_CHANNEL]}
-								/>,
-							)}
-						</Fragment>
-					))}
-				</tbody>
+						</thead>
+						<tbody>
+							{owner.projects.map((project) => <ProjectRow
+								key={`project-${project.name}`}
+								project={project.name}
+								releaseChannels={project.releaseChannels ?? [Constants.DEFAULT_RELEASE_CHANNEL]}
+							/> )}
+						</tbody>
+					</Fragment>
+				))}
 			</table>
 		</div>
 	);
