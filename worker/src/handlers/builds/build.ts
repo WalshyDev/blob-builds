@@ -17,7 +17,7 @@ import {
 import { getProjectByNameAndUser } from '~/store/projects';
 import { getReleaseChannel } from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
-import { getFilePath } from '~/utils/build';
+import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 
@@ -81,14 +81,8 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 	const releaseChannel = ctx.req.param('releaseChannel');
 	const version = ctx.req.param('version');
 
-	let buildId;
-	try {
-		buildId = parseInt(version);
-
-		if (Number.isNaN(buildId) || buildId < 1) {
-			return errors.InvalidBuildId.toResponse(ctx);
-		}
-	} catch(_) {
+	const buildId = getBuildId(version);
+	if (buildId === null) {
 		return errors.InvalidBuildId.toResponse(ctx);
 	}
 
@@ -97,7 +91,7 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	return success('Success', toBuildResponse(build, projectName, releaseChannel, true));
+	return success('Success', toBuildResponse(build, projectName, releaseChannel));
 }
 
 // POST /api/builds/:projectName/:releaseChannel/upload

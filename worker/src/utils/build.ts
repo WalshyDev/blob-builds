@@ -13,3 +13,18 @@ export function getFileName(project: Project, releaseChannel: ReleaseChannel, bu
 export function getLegacyFilePath(projectName: string, releaseChannel: string, fileHash: string) {
 	return `${projectName}/${releaseChannel}/${fileHash}`;
 }
+
+export function getBuildId(version: string): number | null {
+	let buildId: number;
+	try {
+		buildId = parseInt(version);
+
+		if (Number.isNaN(buildId) || buildId < 1) {
+			return null;
+		}
+
+		return buildId;
+	} catch(_) {
+		return null;
+	}
+}

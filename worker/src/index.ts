@@ -90,6 +90,7 @@ app.get(
 );
 app.get(
 	'/dl/:projectName/:releaseChannel/:version',
+	getDownloadBuild,
 );
 
 app.onError((err, ctx) => errors.InternalError.withError(err).toResponse(ctx as Ctx));

@@ -1,13 +1,14 @@
 import * as errors from '~/api/errors';
-import { getLatestBuild } from '~/store/builds';
+import { getLatestBuild, getProjectBuild } from '~/store/builds';
 import { getProjectByName } from '~/store/projects';
 import { getReleaseChannel } from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
-import { getFileName, getFilePath, getLegacyFilePath } from '~/utils/build';
+import { getBuildId, getFileName, getFilePath, getLegacyFilePath } from '~/utils/build';
 
 export async function getDownloadBuild(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 	const releaseChannelName = ctx.req.param('releaseChannel');
+	const version = ctx.req.param('version');
 
 	const project = await getProjectByName(ctx.env.DB, projectName);
 	if (project === null) {
@@ -19,9 +20,22 @@ export async function getDownloadBuild(ctx: Ctx) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
 
-	const build = await getLatestBuild(ctx.env.DB, projectName, releaseChannelName);
-	if (build === null) {
-		return errors.BuildNotFound.toResponse(ctx);
+	let build: Build;
+	if (version !== '') {
+		const buildId = getBuildId(version);
+		if (buildId === null) {
+			return errors.InvalidBuildId.toResponse(ctx);
+		}
+
+		build = await getProjectBuild(ctx.env.DB, projectName, releaseChannelName, buildId);
+		if (build === null) {
+			return errors.BuildNotFound.toResponse(ctx);
+		}
+	} else {
+		build = await getLatestBuild(ctx.env.DB, projectName, releaseChannelName);
+		if (build === null) {
+			return errors.BuildNotFound.toResponse(ctx);
+		}
 	}
 
 	const filePath = getFilePath(projectName, releaseChannelName, build.file_hash);
