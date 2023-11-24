@@ -43,3 +43,21 @@ interface Build {
 	dependencies: string[];
 	release_notes: string;
 }
+
+type BuildWithReleaseChannel = Build & { release_channel: string };
+
+// Responses
+interface BuildResponse {
+	project_name: string;
+	release_channel: string;
+	build_id: number;
+	file_hash: string;
+	file_download_url: string;
+	supported_versions: string;
+  dependencies: string[];
+  release_notes: string;
+}
+
+interface BuildList {
+	[releaseChannel: string]: BuildResponse[];
+}

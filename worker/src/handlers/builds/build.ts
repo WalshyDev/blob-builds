@@ -5,27 +5,48 @@ import { parse, stringify } from 'yaml';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import Constants from '~/shared/utils/constants';
-import { getLastBuildId, getLatestBuild, getLatestBuildsPerReleaseChannel, insertNewBuild } from '~/store/builds';
+import { Pages } from '~/shared/utils/routes';
+import {
+	getLastBuildId,
+	getLatestBuild,
+	getLatestBuildsPerReleaseChannel,
+	insertNewBuild,
+	getProjectBuilds,
+	getProjectBuild,
+} from '~/store/builds';
 import { getProjectByNameAndUser } from '~/store/projects';
 import { getReleaseChannel } from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
-import { getFilePath } from '~/utils/build';
+import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 
-interface LatestBuildResponse {
-	project_name: string;
-	release_channel: string;
-	build_id: number;
-	file_hash: string;
-	file_download_url: string;
-	supported_versions: string;
-  dependencies: string[];
-  release_notes: string;
+// GET /api/builds/:projectName
+export async function getAllProjectBuilds(ctx: Ctx) {
+	const projectName = ctx.req.param('projectName');
+
+	const builds = await getProjectBuilds(ctx.env.DB, projectName);
+	if (builds === null || builds.length === 0) {
+		return errors.BuildNotFound.toResponse(ctx);
+	}
+
+	const res: { [releaseChannel: string]: BuildResponse[] } = {};
+	for (const build of builds) {
+		let arr = res[build.release_channel];
+		if (arr === undefined) {
+			res[build.release_channel] = [];
+			arr = res[build.release_channel];
+		}
+
+		arr.push(toBuildResponse(build, projectName, build.release_channel));
+	}
+	console.log(res);
+
+	return success('Success', res);
 }
 
 // GET /api/builds/:projectName/latest
-export async function getProjectsLatestBuild(ctx: Context) {
+export async function getProjectLatestBuild(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
 	const builds = await getLatestBuildsPerReleaseChannel(ctx.env.DB, projectName);
@@ -33,18 +54,9 @@ export async function getProjectsLatestBuild(ctx: Context) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	const res: { [releaseChannel: string]: LatestBuildResponse } = {};
+	const res: { [releaseChannel: string]: BuildResponse } = {};
 	for (const build of builds) {
-		res[build.release_channel] = {
-			project_name: projectName,
-			release_channel: build.release_channel,
-			build_id: build.build_id,
-			file_hash: build.file_hash,
-			file_download_url: `${Constants.DOMAIN}/builds/${projectName}/${build.release_channel}/latest`,
-			supported_versions: build.supported_versions,
-			dependencies: build.dependencies,
-			release_notes: build.release_notes,
-		};
+		res[build.release_channel] = toBuildResponse(build, projectName, build.release_channel, true);
 	}
 
 	return success('Success', res);
@@ -60,20 +72,29 @@ export async function getLatestBuildForReleaseChannel(ctx: Context) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	const res: LatestBuildResponse = {
-		project_name: projectName,
-		release_channel: releaseChannel,
-		build_id: build.build_id,
-		file_hash: build.file_hash,
-		file_download_url: `${Constants.DOMAIN}/builds/${projectName}/${releaseChannel}/latest`,
-		supported_versions: build.supported_versions,
-		dependencies: build.dependencies,
-		release_notes: build.release_notes,
-	};
-
-	return success('Success', res);
+	return success('Success', toBuildResponse(build, projectName, releaseChannel, true));
 }
 
+// GET /api/builds/:projectName/:releaseChannel/:version
+export async function getProjectBuildVersion(ctx: Ctx) {
+	const projectName = ctx.req.param('projectName');
+	const releaseChannel = ctx.req.param('releaseChannel');
+	const version = ctx.req.param('version');
+
+	const buildId = getBuildId(version);
+	if (buildId === null) {
+		return errors.InvalidBuildId.toResponse(ctx);
+	}
+
+	const build = await getProjectBuild(ctx.env.DB, projectName, releaseChannel, buildId);
+	if (build === null) {
+		return errors.BuildNotFound.toResponse(ctx);
+	}
+
+	return success('Success', toBuildResponse(build, projectName, releaseChannel));
+}
+
+// POST /api/builds/:projectName/:releaseChannel/upload
 export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMetadata) {
 	// Validation
 	if (file.name.endsWith('.jar') === false) {
@@ -159,4 +180,25 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	}, project.project_id, releaseChannel.release_channel_id);
 
 	return success('Success');
+}
+
+function toBuildResponse(
+	build: Build,
+	projectName: string,
+	releaseChannel: string,
+	latest: boolean = false,
+): BuildResponse {
+	const version = latest ? 'latest' : String(build.build_id);
+	const downloadPath = Pages.downloadSpecificBuild.toUrl({ projectName, releaseChannel, version });
+
+	return {
+		project_name: projectName,
+		release_channel: releaseChannel,
+		build_id: build.build_id,
+		file_hash: build.file_hash,
+		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
+		supported_versions: build.supported_versions,
+		dependencies: build.dependencies,
+		release_notes: build.release_notes,
+	};
 }
