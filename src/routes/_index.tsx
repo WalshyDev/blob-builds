@@ -1,17 +1,29 @@
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
+import { getProjects } from '~/api/api';
 import { ProjectsTable } from '~/components/projects/ProjectsTable';
-import { getProjectListByUser } from '~/functions/store/projects';
-import type { ProjectList} from '~/functions/store/projects';
+import type { ProjectList} from 'worker/src/store/projects';
 
-export const loader: LoaderFunction<ProjectList> = async ({ context }) => {
-	const projects = await getProjectListByUser(context.DB);
+export const loader: LoaderFunction<ProjectList | { error: string }> = async ({ context }) => {
+	const projects = await getProjects(context);
+	if (projects.success) {
+		return json(projects.data);
+	}
 
-	return json(projects);
+	return json({ error: projects.error });
 };
 
 export default function Index() {
 	const projects = useLoaderData<ProjectList>();
+
+	// TODO: Temp, remove and properly handle errors
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	if (projects.error !== undefined) {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		return <p>Error: {projects.error}</p>;
+	}
 
 	return <ProjectsTable projectList={projects} />;
 }

@@ -1,3 +1,7 @@
+interface Env {
+	API: Fetcher;
+}
+
 interface DataFunctionArgs {
 	request: Request;
 	context: Env;
