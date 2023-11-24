@@ -2,13 +2,9 @@ name = "blob-builds-api"
 main = "src/index.ts"
 compatibility_date = "2023-11-21"
 compatibility_flags = ["nodejs_compat"]
+logpush = true
 
 [env.production]
-routes = [
-	{ pattern = "blob.build/api/*", zone_name = "blob.build" },
-	{ pattern = "blob.build/builds/*", zone_name = "blob.build" }
-]
-
 [env.production.vars]
 ENVIRONMENT = "production"
 
