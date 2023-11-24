@@ -25,8 +25,10 @@ export async function getDownloadBuild(ctx: Ctx) {
 	}
 
 	const filePath = getFilePath(projectName, releaseChannelName, build.file_hash);
+	console.log(`Downloading: ${filePath}`);
 	let object = await ctx.env.R2.get(filePath);
 	if (object === null) {
+		console.log(`New path failed... trying legacy: ${filePath}`);
 		// TODO: Remove
 		const legacyFilePath = getLegacyFilePath(projectName, releaseChannelName, build.file_hash);
 		object = await ctx.env.R2.get(legacyFilePath);
@@ -40,6 +42,8 @@ export async function getDownloadBuild(ctx: Ctx) {
 
 	headers.append('Content-Disposition', `attachment; filename="${getFileName(project, releaseChannel, build)}"`);
 	headers.append('x-build', String(build.build_id));
+
+	console.log(Object.fromEntries(headers.entries()));
 
 	return new Response(object.body, {
 		headers,

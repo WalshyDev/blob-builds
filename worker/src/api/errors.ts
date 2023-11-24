@@ -75,3 +75,9 @@ export const BuildNotFound = new ApiError({
 	errorMessage: 'Build not found',
 	statusCode: StatusCode.NOT_FOUND,
 });
+
+export const InvalidBuildId = new ApiError({
+	code: 6001,
+	errorMessage: 'Invalid build ID',
+	statusCode: StatusCode.BAD_REQUEST,
+});

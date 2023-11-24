@@ -1,6 +1,12 @@
 import { Hono } from 'hono';
 import * as errors from '~/api/errors';
-import { getProjectsLatestBuild, getLatestBuildForReleaseChannel, postUploadBuild } from '~/handlers/builds/build';
+import {
+	getProjectLatestBuild,
+	getLatestBuildForReleaseChannel,
+	postUploadBuild,
+	getAllProjectBuilds,
+	getProjectBuildVersion,
+} from '~/handlers/builds/build';
 import { getDownloadBuild } from '~/handlers/builds/download';
 import {
 	getProject,
@@ -30,7 +36,7 @@ app.get(
 // Deprecated, use `/api/builds/:projectName/latest` instead
 app.get(
 	'/api/projects/:projectName/latest',
-	getProjectsLatestBuild,
+	getProjectLatestBuild,
 );
 // Deprecated, use `/api/builds/:projectName/:releaseChannel/latest` instead
 app.get(
@@ -51,15 +57,20 @@ app.post(
 
 // Builds
 app.get(
+	'/api/builds/:projectName',
+	getAllProjectBuilds,
+);
+app.get(
 	'/api/builds/:projectName/latest',
-	getProjectsLatestBuild,
+	getProjectLatestBuild,
 );
 app.get(
 	'/api/builds/:projectName/:releaseChannel/latest',
 	getLatestBuildForReleaseChannel,
 );
 app.get(
-	'/api/builds/:projectName/:releaseChannel/:version', // TODO
+	'/api/builds/:projectName/:releaseChannel/:version',
+	getProjectBuildVersion,
 );
 app.post(
 	'/api/builds/:projectName/:releaseChannel/upload',

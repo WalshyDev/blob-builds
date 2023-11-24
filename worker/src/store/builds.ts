@@ -1,5 +1,66 @@
 import { queryRow, queryRows, run } from '~/store/_db';
 
+export async function getProjectBuilds(DB: D1Database, projectName: string) {
+	const res = await queryRows<BuildWithReleaseChannel>(
+		DB,
+		`
+			SELECT builds.*, release_channels.name AS release_channel
+			FROM builds
+			LEFT JOIN projects ON projects.project_id = builds.project_id
+			LEFT JOIN release_channels ON release_channels.release_channel_id = builds.release_channel_id
+			WHERE projects.name = $1
+			ORDER BY builds.build_id DESC
+		`,
+		projectName,
+	);
+
+	if (res.success === true) {
+		// TODO: Hack
+		if (res.data) {
+			for (const build of res.data) {
+				build.dependencies = JSON.parse(build.dependencies as unknown as string);
+			}
+		}
+
+		return res.data;
+	} else {
+		console.error(`getProjectBuilds: Failed to get project builds! Error: ${res.internalError}`);
+		return null;
+	}
+}
+
+export async function getProjectBuild(
+	DB: D1Database,
+	projectName: string,
+	releaseChannel: string,
+	buildId: number,
+) {
+	const res = await queryRow<Build>(
+		DB,
+		`
+			SELECT builds.*
+			FROM builds
+			LEFT JOIN projects ON projects.project_id = builds.project_id
+			LEFT JOIN release_channels ON release_channels.release_channel_id = builds.release_channel_id
+			WHERE projects.name = $1 AND release_channels.name = $2 AND builds.build_id = $3
+			ORDER BY builds.build_id DESC
+		`,
+		projectName, releaseChannel, buildId,
+	);
+
+	if (res.success === true) {
+		// TODO: Hack
+		if (res.data) {
+			res.data.dependencies = JSON.parse(res.data.dependencies as unknown as string);
+		}
+
+		return res.data;
+	} else {
+		console.error(`getProjectBuild: Failed to get specific project build! Error: ${res.internalError}`);
+		return null;
+	}
+}
+
 export async function getLatestBuild(
 	DB: D1Database,
 	projectName: string,
@@ -35,7 +96,7 @@ export async function getLatestBuildsPerReleaseChannel(
 	DB: D1Database,
 	projectName: string,
 ) {
-	const res = await queryRows<Build & { release_channel: string }>(
+	const res = await queryRows<BuildWithReleaseChannel>(
 		DB,
 		`
 			SELECT builds.*, release_channels.name AS release_channel
