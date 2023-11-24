@@ -3,7 +3,7 @@ import { Toucan } from 'toucan-js';
 
 import type { ZodError } from 'zod';
 
-export type Environment = 'test' | 'development' | 'staging' | 'production';
+export type Environment = 'test' | 'dev' | 'staging' | 'production';
 
 export type Env = {
 	ENVIRONMENT: Environment;

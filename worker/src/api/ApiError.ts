@@ -3,6 +3,8 @@
 
 import StatusCode from '~/api/StatusCode';
 import { Ctx } from '~/types/hono';
+import { getStore } from '~/utils/storage';
+import { isDevTest } from '~/utils/utils';
 
 export class ApiError {
 
@@ -34,25 +36,25 @@ export class ApiError {
 	toResponse(ctx: Ctx): Response {
 		const json = this.getJson();
 
-		// if (isDevTest(ctx)) {
-		// 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// 	// @ts-ignore
-		// 	json.stack = this.#jsError?.stack?.split('\n');
-		// 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// 	// @ts-ignore
-		// 	json.extra = this.#extra;
-		// }
+		if (isDevTest(ctx)) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			json.stack = this.#jsError?.stack?.split('\n');
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			json.extra = this.#extra;
+		}
 
 		// Log to Sentry
 		if (this.#jsError) {
 			console.error(this.#jsError);
-			// if (!isDevTest(ctx)) {
-			// 	try {
-			// 		this.sendSentryEvent();
-			// 	} catch(e) {
-			// 		console.error('Failed to send to Sentry: ', e);
-			// 	}
-			// }
+			if (!isDevTest(ctx)) {
+				try {
+					this.sendSentryEvent();
+				} catch(e) {
+					console.error('Failed to send to Sentry: ', e);
+				}
+			}
 		}
 
 		return ctx.json(json, this.#statusCode);
@@ -89,13 +91,13 @@ export class ApiError {
 	}
 
 	sendSentryEvent() {
-		// const store = getStore();
+		const store = getStore();
 
-		// store.sentry.setExtras(this.#extra ?? {});
-		// if (this.#jsError) {
-		// 	store.sentry.captureException(this.#jsError);
-		// } else {
-		// 	store.sentry.captureMessage(this.#errorMessage);
-		// }
+		store.sentry.setExtras(this.#extra ?? {});
+		if (this.#jsError) {
+			store.sentry.captureException(this.#jsError);
+		} else {
+			store.sentry.captureMessage(this.#errorMessage);
+		}
 	}
 }
