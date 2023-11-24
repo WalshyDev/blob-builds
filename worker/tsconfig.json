@@ -7,6 +7,7 @@
     "types": ["@cloudflare/workers-types/experimental", "@types/node", "../src/entity.d.ts"],
 		"baseUrl": "./",
 		"outDir": "./dist",
+		"allowSyntheticDefaultImports": true,
 		"paths": {
 			"~/*": ["./src/*"],
 			"~/shared/*": ["../src/*"]

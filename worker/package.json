@@ -5,19 +5,21 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-		"deploy:dev": "wrangler deploy --env dev",
-		"deploy:prod": "wrangler deploy --env production",
+    "deploy:dev": "wrangler deploy --env dev",
+    "deploy:prod": "wrangler deploy --env production",
     "dev": "wrangler dev --env dev",
-		"migrate:local": "wrangler d1 migrations apply DB --env dev --local",
-		"migrate:seed-local": "wrangler d1 execute DB --env dev --local --file migrations/seed/seed.sql",
-		"migrate:dev": "wrangler d1 migrations apply DB --env dev",
-		"migrate:production": "wrangler d1 migrations apply DB --env production"
+    "migrate:local": "wrangler d1 migrations apply DB --env dev --local",
+    "migrate:seed-local": "wrangler d1 execute DB --env dev --local --file migrations/seed/seed.sql",
+    "migrate:dev": "wrangler d1 migrations apply DB --env dev",
+    "migrate:production": "wrangler d1 migrations apply DB --env production"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "hono": "3.10.2",
-    "toucan-js": "3.3.1"
+    "jszip": "3.10.1",
+    "toucan-js": "3.3.1",
+    "yaml": "2.3.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "1.20231121.0",

@@ -85,3 +85,14 @@ export async function insertNewBuild(
 		return null;
 	}
 }
+
+export async function getLastBuildId(DB: D1Database): Promise<number> {
+	const res = await queryRow<{ seq: number }>(DB, 'select seq from sqlite_sequence WHERE name = "builds"');
+
+	if (res.success === true) {
+		return res.data.seq;
+	} else {
+		console.error(`getLastBuildId: Failed to get last build ID! Error: ${res.internalError}`);
+		return null;
+	}
+}
