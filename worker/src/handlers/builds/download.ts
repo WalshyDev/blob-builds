@@ -39,6 +39,7 @@ export async function getDownloadBuild(ctx: Ctx) {
 	object.writeHttpMetadata(headers);
 
 	headers.append('Content-Disposition', `attachment; filename="${getFileName(project, releaseChannel, build)}"`);
+	headers.append('x-build', String(build.build_id));
 
 	return new Response(object.body, {
 		headers,
