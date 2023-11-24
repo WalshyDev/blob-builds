@@ -4,14 +4,10 @@
 	"scripts": {
 		"build": "remix build",
 		"dev:remix": "remix watch",
-		"dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public --compatibility-flags=nodejs_compat",
+		"dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public --service API=blob-builds-api-dev",
 		"dev": "npm-run-all build --parallel \"dev:*\"",
-		"lint": "eslint src/",
-		"lint:fix": "eslint --fix src/",
-		"#comment": "-- LOCAL --",
-		"migrate:local": "CI=true wrangler d1 migrations apply DB --local",
-		"seed": "wrangler d1 execute DB --local --file migrations/seed/seed.sql",
-		"clean-run": "rm -rf .wrangler && npm run migrate:local && npm run seed"
+		"lint": "eslint src/ worker/src/",
+		"lint:fix": "eslint --fix src/ worker/src/"
 	},
 	"dependencies": {
 		"@remix-run/cloudflare": "2.3.0",

@@ -1,4 +1,4 @@
-name = "blob-builds"
+name = "blob-builds-api"
 main = "src/index.ts"
 compatibility_date = "2023-11-21"
 compatibility_flags = ["nodejs_compat"]
@@ -9,7 +9,7 @@ routes = [
 	{ pattern = "blob.build/builds/*", zone_name = "blob.build" }
 ]
 
-[[env.production.vars]]
+[env.production.vars]
 ENVIRONMENT = "production"
 
 [[env.production.d1_databases]]
@@ -23,7 +23,7 @@ bucket_name = "blob-builds"
 preview_bucket_name = "blob-builds"
 
 [env.dev]
-[[env.dev.vars]]
+[env.dev.vars]
 ENVIRONMENT = "dev"
 
 [[env.dev.d1_databases]]

@@ -2,9 +2,16 @@ import { Context } from 'hono';
 import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
-import { getProjectByName, newProject } from '~/store/projects';
+import { getProjectByName, getProjectListByUser, newProject } from '~/store/projects';
 import { createReleaseChannels } from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
+
+// GET /api/projects
+export async function getProjects(ctx: Context) {
+	const projects = await getProjectListByUser(ctx.env.DB);
+
+	return success('Success', projects);
+}
 
 // GET /api/projects/:projectName
 export async function getProject(ctx: Context) {

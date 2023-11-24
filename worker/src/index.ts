@@ -4,6 +4,7 @@ import { getProjectsLatestBuild, getLatestBuildForReleaseChannel, postUploadBuil
 import { getDownloadBuild } from '~/handlers/builds/download';
 import {
 	getProject,
+	getProjects,
 	newProjectSchema,
 	postNewProject,
 } from '~/handlers/projects/project';
@@ -18,6 +19,10 @@ const app = new Hono();
 app.use('*', setup);
 
 // Projects
+app.get(
+	'/api/projects',
+	getProjects,
+);
 app.get(
 	'/api/projects/:projectName',
 	getProject,
