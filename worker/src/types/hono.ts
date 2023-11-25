@@ -11,6 +11,7 @@ export type Env = {
 
 	DB: D1Database;
 	R2: R2Bucket;
+	AE: AnalyticsEngineDataset;
 }
 
 export type Variables = {
@@ -18,6 +19,7 @@ export type Variables = {
 	user: User;
 	userId: number;
 	sentry: Toucan;
+	requestStartTime: number;
 }
 
 export type Ctx = Context<{ Bindings: Env, Variables: Variables }>;

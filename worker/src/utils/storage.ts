@@ -1,12 +1,14 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { Toucan } from 'toucan-js';
+import { Analytics } from '~/analytics/analytics';
 
 import { Env } from '~/types/hono';
 
 export interface Store {
 	env: Env;
 	sentry: Toucan;
+	analytics: Analytics;
 }
 
 export const storage = new AsyncLocalStorage<Store>();
