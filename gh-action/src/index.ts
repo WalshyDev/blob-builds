@@ -32,7 +32,7 @@ async function main() {
 		release_notes: releaseNotes === '' ? undefined : releaseNotes,
 	}));
 
-	const res = await fetch(`https://blob.build/api/projects/${project}/${releaseChannel}/upload`, {
+	const res = await fetch(`https://blob.build/api/builds/${project}/${releaseChannel}/upload`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${apiToken}`,
