@@ -18,6 +18,10 @@ binding = "R2"
 bucket_name = "blob-builds"
 preview_bucket_name = "blob-builds"
 
+[[env.production.analytics_engine_datasets]]
+binding = "AE"
+dataset = "blob_builds_production"
+
 [env.dev]
 [env.dev.vars]
 ENVIRONMENT = "dev"
@@ -31,3 +35,7 @@ database_id = "69961fb8-bab5-401d-85eb-62866b47184b"
 binding = "R2"
 bucket_name = "blob-builds-dev"
 preview_bucket_name = "blob-builds-dev"
+
+[[env.dev.analytics_engine_datasets]]
+binding = "AE"
+dataset = "blob_builds_dev"

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import * as errors from '~/api/errors';
+import { setup, writeAnalytics } from '~/handlers/all';
 import {
 	getProjectLatestBuild,
 	getLatestBuildForReleaseChannel,
@@ -14,7 +15,6 @@ import {
 	newProjectSchema,
 	postNewProject,
 } from '~/handlers/projects/project';
-import { setup } from '~/handlers/setup';
 import { auth } from '~/middleware/auth';
 import { Ctx } from '~/types/hono';
 import jsonValidator from '~/utils/validator/jsonValidator';
@@ -23,6 +23,7 @@ import uploadValidator from '~/utils/validator/uploadValidator';
 const app = new Hono();
 
 app.use('*', setup);
+app.use('*', writeAnalytics);
 
 // Projects
 app.get(
