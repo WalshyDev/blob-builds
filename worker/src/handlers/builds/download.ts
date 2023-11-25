@@ -21,7 +21,7 @@ export async function getDownloadBuild(ctx: Ctx) {
 	}
 
 	let build: Build;
-	if (version !== '') {
+	if (version !== undefined && version !== '') {
 		const buildId = getBuildId(version);
 		if (buildId === null) {
 			return errors.InvalidBuildId.toResponse(ctx);
