@@ -18,7 +18,7 @@ inputs:
     required: true
   file:
     description: 'The file to upload'
-    required: true
+    required: false
   releaseNotes:
     description: 'The release notes for this build'
     required: false
