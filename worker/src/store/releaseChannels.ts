@@ -1,42 +1,27 @@
-import { batch, queryRow } from '~/store/_db';
+import { eq, and } from 'drizzle-orm';
+import { InsertReleaseChannel, ReleaseChannel, releaseChannels } from '~/store/schema';
+import { getDb } from '~/utils/storage';
 
-export async function getReleaseChannel(
-	DB: D1Database,
-	releaseChannelName: string,
-	projectId: number,
-): Promise<ReleaseChannel | null> {
-	const res = await queryRow<ReleaseChannel>(
-		DB,
-		'SELECT * FROM release_channels WHERE name = ? AND project_id = ?',
-		releaseChannelName, projectId,
-	);
+class _ReleaseChannelStore {
 
-	if (res.success) {
-		return res.data;
-	} else {
-		console.error(`getReleaseChannel: Failed to get release channel! Error: ${res.internalError}`);
-		return null;
+	// Get release channel
+	getReleaseChannel(releaseChannelName: string, projectId: number): Promise<ReleaseChannel> {
+		return getDb().select()
+			.from(releaseChannels)
+			.where(and(
+				eq(releaseChannels.name, releaseChannelName),
+				eq(releaseChannels.projectId, projectId),
+			))
+			.get();
+	}
+
+	// Insert a new release channel
+	insertNewReleaseChannel(releaseChannel: InsertReleaseChannel): Promise<D1Result> {
+		return getDb().insert(releaseChannels)
+			.values(releaseChannel)
+			.run();
 	}
 }
 
-export async function createReleaseChannels(DB: D1Database, channels: Omit<ReleaseChannel, 'release_channel_id'>[]) {
-	const res = await batch(
-		DB,
-		`INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming)
-		VALUES (?, ?, ?, ?, ?)`,
-		...channels.map(channel => [
-			channel.project_id,
-			channel.name,
-			channel.supported_versions,
-			JSON.stringify(channel.dependencies),
-			channel.file_naming,
-		]),
-	);
-
-	if (res.success) {
-		return res.data;
-	} else {
-		console.error(`createReleaseChannels: Failed to create release channels! Error: ${res.internalError}`);
-		return null;
-	}
-}
+const ReleaseChannelStore = new _ReleaseChannelStore();
+export default ReleaseChannelStore;

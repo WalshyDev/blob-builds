@@ -1,24 +1,7 @@
 import { eq, desc, and } from 'drizzle-orm';
-import { SQLiteTableWithColumns, SQLiteColumn, TableConfig } from 'drizzle-orm/sqlite-core';
-import { queryRow } from '~/store/_db';
+import { queryRow, selectStar } from '~/store/_db';
 import { Build, BuildWithReleaseChannel, InsertBuild, builds, projects, releaseChannels } from '~/store/schema';
 import { getDb, getStore } from '~/utils/storage';
-
-type Columns<T extends TableConfig> = {
-	[Key in keyof T['columns']]: T['columns'][Key];
-}
-
-function selectStar<T extends TableConfig>(
-	table: SQLiteTableWithColumns<T>,
-): Columns<T> {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	return Object.fromEntries(
-		Object.entries(table)
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			.filter(([_, val]) => val instanceof SQLiteColumn),
-	);
-}
 
 class _BuildStore {
 
@@ -117,9 +100,10 @@ class _BuildStore {
 		}
 	}
 
-	insertNewBuild(build: InsertBuild) {
+	insertNewBuild(build: InsertBuild): Promise<D1Result> {
 		return getDb().insert(builds)
-			.values(build);
+			.values(build)
+			.run();
 	}
 }
 

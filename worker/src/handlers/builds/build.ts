@@ -8,7 +8,7 @@ import Constants from '~/shared/utils/constants';
 import { Pages } from '~/shared/utils/routes';
 import BuildStore from '~/store/builds';
 import { getProjectByNameAndUser } from '~/store/projects';
-import { getReleaseChannel } from '~/store/releaseChannels';
+import ReleaseChannelStore from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
@@ -104,7 +104,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 
-	const releaseChannel = await getReleaseChannel(ctx.env.DB, releaseChannelName, project.project_id);
+	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(releaseChannelName, project.project_id);
 	if (releaseChannel === null) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
@@ -167,10 +167,10 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	// TODO: Make build ID per project
 	await BuildStore.insertNewBuild({
 		buildId: nextBuildId,
-		releaseChannelId: releaseChannel.release_channel_id,
+		releaseChannelId: releaseChannel.releaseChannelId,
 		projectId: project.project_id,
 		fileHash,
-		supportedVersions: metadata.supported_versions ?? releaseChannel.supported_versions,
+		supportedVersions: metadata.supported_versions ?? releaseChannel.supportedVersions,
 		dependencies: metadata.dependencies ?? releaseChannel.dependencies,
 		releaseNotes: metadata.release_notes ?? '',
 	});

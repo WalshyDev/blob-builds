@@ -25,15 +25,6 @@ interface Project {
 	description: string;
 }
 
-interface ReleaseChannel {
-	release_channel_id: number;
-	project_id: number;
-	name: string;
-	supported_versions: string;
-	dependencies: string[];
-	file_naming: string;
-}
-
 // Responses
 interface BuildResponse {
 	projectName: string;

@@ -24,11 +24,14 @@ export const releaseChannels = sqliteTable('release_channels', {
 	projectId: integer('project_id').notNull().references(() => projects.projectId, { onDelete: 'cascade' }),
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
 	supportedVersions: text('supported_versions').notNull(),
-	dependencies: text('dependencies', { mode: 'json' }).notNull(),
+	dependencies: text('dependencies', { mode: 'json' }).notNull().$type<string[]>(),
 	fileNaming: text('file_naming').notNull(),
 }, (table) => ({
 	releaseChannelsNameIdx: index('release_channels_name_idx').on(table.name),
 }));
+
+export type ReleaseChannel = typeof releaseChannels.$inferSelect;
+export type InsertReleaseChannel = typeof releaseChannels.$inferInsert;
 
 export const builds = sqliteTable('builds', {
 	buildId: integer('build_id').primaryKey({ autoIncrement: true }),
