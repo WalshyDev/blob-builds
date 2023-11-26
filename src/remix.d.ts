@@ -2,10 +2,14 @@ interface Env {
 	API: Fetcher;
 }
 
+interface BlobParams {
+	project?: string;
+}
+
 interface DataFunctionArgs {
 	request: Request;
 	context: Env;
-	params: Params;
+	params: BlobParams;
 }
 
 type LoaderFunction<T> = (args: DataFunctionArgs) => Promise<Response> | Response | Promise<T> | T;

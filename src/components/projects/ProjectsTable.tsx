@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { DownloadButton } from '~/components/DownloadButton';
+import Link from '~/components/Link';
 import Constants from '~/utils/constants';
 import { Pages } from '~/utils/routes';
 import { classNames } from '~/utils/utils';
@@ -75,29 +76,6 @@ interface ProjectRowProps {
 }
 
 export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
-	/*if (releaseChannels.length === 1) {
-		return (
-			<tr
-				key={project}
-				className={classNames(
-					'border-t-2 border-table-border',
-					'bg-table-primary-row hover:bg-table-hover',
-				)}
-			>
-				<td className="whitespace-nowrap py-4 pl-4 pr-3 font-medium sm:pl-3">
-					{project} ({releaseChannels[0]})
-				</td>
-
-				<td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right font-medium sm:pr-3">
-					<DownloadButton latest={true} downloadLink={Pages.downloadLatestBuild.toUrl({
-						projectName: project,
-						releaseChannel: releaseChannels[0],
-					})} />
-				</td>
-			</tr>
-		);
-	}*/
-
 	return (
 		<>
 			<tr
@@ -108,7 +86,7 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 				)}
 			>
 				<td className="whitespace-nowrap py-2 pl-4 pr-3 font-medium sm:pl-3">
-					{project}
+					<Link href={`project/${project}`}>{project}</Link>
 				</td>
 				<td></td>
 			</tr>
@@ -126,11 +104,6 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 					</td>
 
 					<td className="relative whitespace-nowrap py-2 pl-3 pr-4 text-right font-medium sm:pr-3">
-						{/* <DownloadButton latest={true} downloadLink={Pages.downloadLatestBuild.toUrl({
-							projectName: project,
-							releaseChannel,
-						})} /> */}
-
 						<DownloadButton
 							latest={true}
 							downloadLink={Pages.downloadLatestBuild.toUrl({ projectName: project, releaseChannel })}
