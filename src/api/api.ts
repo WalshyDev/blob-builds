@@ -1,7 +1,11 @@
-import { ProjectList } from 'worker/src/store/projects';
+import { ProjectList } from 'worker/src/store/ProjectStore';
 
 export function getProjects(env: Env) {
 	return _fetch<ProjectList>(env, '/api/projects');
+}
+
+export function getAllBuildsPerProject(env: Env, project: string) {
+	return _fetch<ProjectList>(env, `/api/builds/${project}`);
 }
 
 export function _fetch<T = unknown>(env: Env, path: string, init?: RequestInit): Promise<ApiResponse<T>> {
