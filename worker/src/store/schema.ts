@@ -4,11 +4,14 @@ import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 export const users = sqliteTable('users', {
 	userId: integer('user_id').primaryKey({ autoIncrement: true }),
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
-	api_token: text('api_token').notNull().unique(),
+	apiToken: text('api_token').notNull().unique(),
 }, (table) => ({
 	usersNameIdx: index('users_name_idx').on(table.name),
-	usersApiTokenIdx: index('users_api_token_idx').on(table.api_token),
+	usersApiTokenIdx: index('users_api_token_idx').on(table.apiToken),
 }));
+
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
 
 export const projects = sqliteTable('projects', {
 	projectId: integer('project_id').primaryKey({ autoIncrement: true }),

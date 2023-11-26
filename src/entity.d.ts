@@ -13,11 +13,6 @@ interface ApiResponseError {
 	stack?: string;
 }
 
-interface User {
-	user_id: number;
-	name: string;
-}
-
 interface Project {
 	project_id: number;
 	user_id: number;

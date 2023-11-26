@@ -1,16 +1,17 @@
-import { queryRow } from '~/store/_db';
+import { eq } from 'drizzle-orm';
+import { User, users } from '~/store/schema';
+import { getDb } from '~/utils/storage';
 
-export async function getUserByApiToken(DB: D1Database, apiToken: string): Promise<User | null> {
-	const res = await queryRow<User>(
-		DB,
-		'SELECT * FROM users WHERE api_token = ?',
-		apiToken,
-	);
+class _UserStore {
 
-	if (res.success === true) {
-		return res.data;
-	} else {
-		console.error(`getUser: Failed to get user! Error: ${res.internalError}`);
-		return null;
+	// Get user by API token
+	getUserByApiToken(apiToken: string): Promise<User> {
+		return getDb().select()
+			.from(users)
+			.where(eq(users.apiToken, apiToken))
+			.get();
 	}
 }
+
+const UserStore = new _UserStore();
+export default UserStore;

@@ -2,6 +2,7 @@ import { Context } from 'hono';
 import { Toucan } from 'toucan-js';
 
 import type { ZodError } from 'zod';
+import type { User } from '~/store/schema';
 
 export type Environment = 'test' | 'dev' | 'staging' | 'production';
 
