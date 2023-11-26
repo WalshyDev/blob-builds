@@ -2,8 +2,8 @@ import { Context } from 'hono';
 import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
-import ProjectStore from '~/store/projects';
-import ReleaseChannelStore from '~/store/releaseChannels';
+import ProjectStore from '~/store/ProjectStore';
+import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { InsertReleaseChannel } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 

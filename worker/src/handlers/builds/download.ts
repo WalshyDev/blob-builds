@@ -1,7 +1,7 @@
 import * as errors from '~/api/errors';
-import BuildStore from '~/store/builds';
-import ProjectStore from '~/store/projects';
-import ReleaseChannelStore from '~/store/releaseChannels';
+import BuildStore from '~/store/BuildStore';
+import ProjectStore from '~/store/ProjectStore';
+import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFileName, getFilePath, getLegacyFilePath } from '~/utils/build';
 import type { Build } from '~/store/schema';

@@ -1,6 +1,6 @@
 import { Next } from 'hono';
 import * as errors from	'~/api/errors';
-import UserStore from '~/store/users';
+import UserStore from '~/store/UserStore';
 import { Ctx } from '~/types/hono';
 import { getStore } from '~/utils/storage';
 import { trace } from '~/utils/trace';
