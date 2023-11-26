@@ -3,7 +3,7 @@ interface Env {
 }
 
 interface BlobParams {
-	resource?: string;
+	project?: string;
 }
 
 interface DataFunctionArgs {
