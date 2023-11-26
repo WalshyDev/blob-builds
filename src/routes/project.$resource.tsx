@@ -1,7 +1,7 @@
 import { json } from '@remix-run/cloudflare';
 import { useLoaderData, useParams } from '@remix-run/react';
 import { getAllBuildsPerProject } from '~/api/api';
-import { ProjectTable } from '~/components/projects/ProjectTable';
+import { BuildsTable } from '~/components/projects/BuildsTable';
 
 export const loader: LoaderFunction<BuildList | { error: string }> = async ({ context, params }) => {
 	const builds = await getAllBuildsPerProject(context, params.resource!);
@@ -25,5 +25,5 @@ export default function Resource() {
 		return <p>Error: {builds.error}</p>;
 	}
 
-	return <ProjectTable builds={builds} project={params.resource!} />;
+	return <BuildsTable builds={builds} project={params.resource!} />;
 }
