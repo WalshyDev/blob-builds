@@ -41,7 +41,7 @@ export class Analytics {
 			blobs: [
 				this.data.url,    // blob1
 				this.data.path,   // blob2
-				this.data.method, // blob23
+				this.data.method, // blob3
 			],
 			doubles: [
 				VERSION,                // double1

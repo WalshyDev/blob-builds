@@ -3,7 +3,7 @@ import { DownloadButton } from '~/components/DownloadButton';
 import Constants from '~/utils/constants';
 import { Pages } from '~/utils/routes';
 import { classNames } from '~/utils/utils';
-import type { ProjectList } from 'worker/src/store/projects';
+import type { ProjectList } from 'worker/src/store/ProjectStore';
 
 interface ProjectsByOwner {
 	name: string;
@@ -14,16 +14,16 @@ export function projectListToProjectsByOwner(list: ProjectList): ProjectsByOwner
 	const arr: ProjectsByOwner[] = [];
 
 	for (const project of list) {
-		const existingOwner = arr.find((owner) => owner.name === project.project_owner);
+		const existingOwner = arr.find((owner) => owner.name === project.owner);
 		if (existingOwner) {
 			existingOwner.projects.push({
-				name: project.project_name,
-				releaseChannels: project.release_channels,
+				name: project.name,
+				releaseChannels: project.releaseChannels,
 			});
 		} else {
 			arr.push({
-				name: project.project_owner,
-				projects: [ { name: project.project_name, releaseChannels: project.release_channels } ],
+				name: project.owner,
+				projects: [ { name: project.name, releaseChannels: project.releaseChannels } ],
 			});
 		}
 	}

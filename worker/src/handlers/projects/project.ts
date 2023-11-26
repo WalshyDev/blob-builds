@@ -2,13 +2,14 @@ import { Context } from 'hono';
 import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
-import { getProjectByName, getProjectListByUser, newProject } from '~/store/projects';
-import { createReleaseChannels } from '~/store/releaseChannels';
+import ProjectStore from '~/store/ProjectStore';
+import ReleaseChannelStore from '~/store/ReleaseChannelStore';
+import { InsertReleaseChannel } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 
 // GET /api/projects
-export async function getProjects(ctx: Context) {
-	const projects = await getProjectListByUser(ctx.env.DB);
+export async function getProjects() {
+	const projects = await ProjectStore.getProjectListByUser();
 
 	return success('Success', projects);
 }
@@ -17,7 +18,7 @@ export async function getProjects(ctx: Context) {
 export async function getProject(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
-	const project = await getProjectByName(ctx.env.DB, projectName);
+	const project = await ProjectStore.getProjectByName(projectName);
 
 	return success('Success', project);
 }
@@ -25,15 +26,15 @@ export async function getProject(ctx: Context) {
 export const newProjectSchema = z.object({
 	name: z.string().min(3).max(64),
 	description: z.string().min(6).max(2000).optional(),
-	release_channels: z.array(z.object({
+	releaseChannels: z.array(z.object({
 		name: z.string(),
-		supported_versions: z.string(),
+		supportedVersions: z.string(),
 		dependencies: z.array(z.string()).default([]),
-		file_naming: z.string().default('$project.jar'),
+		fileNaming: z.string().default('$project.jar'),
 	})).default([
 		{
 			name: 'Dev',
-			supported_versions: 'Unknown',
+			supportedVersions: 'Unknown',
 		},
 	]),
 });
@@ -45,27 +46,31 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 	const userId = ctx.get('userId');
 
 	// Verify no existing project with that name exists (for this user)
-	const existingProject = await getProjectByName(ctx.env.DB, body.name);
+	const existingProject = await ProjectStore.getProjectByName(body.name);
 	if (existingProject !== null) {
 		return errors.ProjectAlreadyExists.toResponse(ctx);
 	}
 
 	// Create a new project
-	const project = await newProject(ctx.env.DB, userId, body.name, body.description ?? 'A new project');
-	if (project === null) {
+	const project = await ProjectStore.insertNewProject({
+		userId,
+		name: body.name,
+		description: body.description ?? 'A new project',
+	});
+	if (project === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
 
 	// Create release channels
-	const channels: Omit<ReleaseChannel, 'release_channel_id'>[] = body.release_channels.map(channel => ({
-		project_id: project.project_id,
+	const channels: InsertReleaseChannel[] = body.releaseChannels.map(channel => ({
+		projectId: project.projectId,
 		name: channel.name,
-		supported_versions: channel.supported_versions,
+		supportedVersions: channel.supportedVersions,
 		dependencies: channel.dependencies,
-		file_naming: channel.file_naming,
+		fileNaming: channel.fileNaming,
 	}));
 
-	await createReleaseChannels(ctx.env.DB, channels);
+	await ReleaseChannelStore.insertNewReleaseChannel(channels);
 
 	return success('Project created!', {
 		project,

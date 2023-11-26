@@ -56,18 +56,18 @@ $ curl https://blob.build/api/projects/new -s \\
 	"message": "Project created!",
 	"data": {
 		"project": {
-			"project_id": 1,
-			"user_id": 1,
+			"projectId": 1,
+			"userId": 1,
 			"name": "NewProject",
 			"description": "This project does some really cool stuff"
 		},
 		"releaseChannels": [
 			{
-				"project_id": 1,
+				"projectId": 1,
 				"name": "Dev",
-				"supported_versions": "Unknown",
+				"supportedVersions": "Unknown",
 				"dependencies": [],
-				"file_naming": "$project.jar"
+				"fileNaming": "$project.jar"
 			}
 		]
 	}
@@ -78,7 +78,7 @@ $ curl https://blob.build/api/projects/new -s \\
 
 			<p>
 				If you want to create a project with a specific release channel, you can do so by adding the{' '}
-				<code>release_channels</code> object, like so:
+				<code>releaseChannels</code> array, like so:
 			</p>
 
 			<Code language='bash'>
@@ -91,18 +91,18 @@ $ curl https://blob.build/api/projects/new -s \\
 	-d '{
 		"name": "NewProject",
 		"description": "This project does some really cool stuff",
-		"release_channels": [
+		"releaseChannels": [
 			{
 				"name": "Dev",
-				"supported_versions": "1.20+",
+				"supportedVersions": "1.20+",
 				"dependencies": [],
-				"file_naming": "$project.jar"
+				"fileNaming": "$project.jar"
 			},
 			{
 				"name": "Release",
-				"supported_versions": "1.20+",
+				"supportedVersions": "1.20+",
 				"dependencies": [],
-				"file_naming": "$project-$releaseChannel.jar"
+				"fileNaming": "$project-$releaseChannel.jar"
 			}
 		]
 	}'
@@ -117,25 +117,25 @@ $ curl https://blob.build/api/projects/new -s \\
 	"message": "Project created!",
 	"data": {
 		"project": {
-			"project_id": 1,
-			"user_id": 1,
+			"projectId": 1,
+			"userId": 1,
 			"name": "NewProject",
 			"description": "This project does some really cool stuff"
 		},
-		"release_channels": [
+		"releaseChannels": [
 			{
-				"project_id": 1,
+				"projectId": 1,
 				"name": "Dev",
-				"supported_versions": "1.20+",
+				"supportedVersions": "1.20+",
 				"dependencies": [],
-				"file_naming": "$project.jar"
+				"fileNaming": "$project.jar"
 			},
 			{
-				"project_id": 1,
+				"projectId": 1,
 				"name": "Release",
-				"supported_versions": "1.20+",
+				"supportedVersions": "1.20+",
 				"dependencies": [],
-				"file_naming": "$project-$releaseChannel.jar"
+				"fileNaming": "$project-$releaseChannel.jar"
 			}
 		]
 	}

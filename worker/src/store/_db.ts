@@ -1,3 +1,6 @@
+import { SQLiteColumn, SQLiteTableWithColumns, TableConfig } from 'drizzle-orm/sqlite-core';
+import { Columns } from '~/types/db';
+
 export type DbResult<T> = DbResultSuccess<T> | DbResultFail;
 
 interface DbResultSuccess<T> {
@@ -71,4 +74,16 @@ export async function batch<T = unknown>(
 		// @ts-ignore
 		return { success: false, internalError: e.message + ' - ' + e.cause };
 	}
+}
+
+export function selectStar<T extends TableConfig>(
+	table: SQLiteTableWithColumns<T>,
+): Columns<T> {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	return Object.fromEntries(
+		Object.entries(table)
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.filter(([_, val]) => val instanceof SQLiteColumn),
+	);
 }

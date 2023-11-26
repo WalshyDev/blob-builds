@@ -6,41 +6,34 @@ import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import Constants from '~/shared/utils/constants';
 import { Pages } from '~/shared/utils/routes';
-import {
-	getLastBuildId,
-	getLatestBuild,
-	getLatestBuildsPerReleaseChannel,
-	insertNewBuild,
-	getProjectBuilds,
-	getProjectBuild,
-} from '~/store/builds';
-import { getProjectByNameAndUser } from '~/store/projects';
-import { getReleaseChannel } from '~/store/releaseChannels';
+import BuildStore from '~/store/BuildStore';
+import ProjectStore from '~/store/ProjectStore';
+import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
+import type { Build, BuildWithReleaseChannel } from '~/store/schema';
 
 // GET /api/builds/:projectName
 export async function getAllProjectBuilds(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 
-	const builds = await getProjectBuilds(ctx.env.DB, projectName);
-	if (builds === null || builds.length === 0) {
+	const builds = await BuildStore.getProjectBuilds(projectName);
+	if (builds === undefined || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
 	const res: { [releaseChannel: string]: BuildResponse[] } = {};
 	for (const build of builds) {
-		let arr = res[build.release_channel];
+		let arr = res[build.releaseChannel];
 		if (arr === undefined) {
-			res[build.release_channel] = [];
-			arr = res[build.release_channel];
+			res[build.releaseChannel] = [];
+			arr = res[build.releaseChannel];
 		}
 
-		arr.push(toBuildResponse(build, projectName, build.release_channel));
+		arr.push(toBuildResponse(build, projectName));
 	}
-	console.log(res);
 
 	return success('Success', res);
 }
@@ -49,14 +42,14 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 export async function getProjectLatestBuild(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
-	const builds = await getLatestBuildsPerReleaseChannel(ctx.env.DB, projectName);
-	if (builds === null || builds.length === 0) {
+	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
+	if (builds === undefined || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
 	const res: { [releaseChannel: string]: BuildResponse } = {};
 	for (const build of builds) {
-		res[build.release_channel] = toBuildResponse(build, projectName, build.release_channel, true);
+		res[build.releaseChannel] = toBuildResponse(build, projectName, undefined, true);
 	}
 
 	return success('Success', res);
@@ -67,8 +60,8 @@ export async function getLatestBuildForReleaseChannel(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 	const releaseChannel = ctx.req.param('releaseChannel');
 
-	const build = await getLatestBuild(ctx.env.DB, projectName, releaseChannel);
-	if (build === null) {
+	const build = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannel);
+	if (build === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
@@ -82,12 +75,12 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 	const version = ctx.req.param('version');
 
 	const buildId = getBuildId(version);
-	if (buildId === null) {
+	if (buildId === undefined) {
 		return errors.InvalidBuildId.toResponse(ctx);
 	}
 
-	const build = await getProjectBuild(ctx.env.DB, projectName, releaseChannel, buildId);
-	if (build === null) {
+	const build = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannel, buildId);
+	if (build === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
@@ -106,13 +99,13 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	const projectName = ctx.req.param('projectName');
 	const releaseChannelName = ctx.req.param('releaseChannel');
 
-	const project = await getProjectByNameAndUser(ctx.env.DB, projectName, userId);
-	if (project === null) {
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
+	if (project === undefined) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 
-	const releaseChannel = await getReleaseChannel(ctx.env.DB, releaseChannelName, project.project_id);
-	if (releaseChannel === null) {
+	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(releaseChannelName, project.projectId);
+	if (releaseChannel === undefined) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
 
@@ -122,8 +115,8 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		return errors.InvalidUpload('Checksum does not match').toResponse(ctx);
 	}
 
-	const lastBuildId = await getLastBuildId(ctx.env.DB);
-	if (lastBuildId === null) {
+	const lastBuildId = await BuildStore.getLastBuildId();
+	if (lastBuildId === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
 	const nextBuildId = lastBuildId + 1;
@@ -172,33 +165,41 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 
 	// Add build to database
 	// TODO: Make build ID per project
-	await insertNewBuild(ctx.env.DB, {
-		file_hash: fileHash,
-		supported_versions: metadata.supported_versions ?? releaseChannel.supported_versions,
+	await BuildStore.insertNewBuild({
+		buildId: nextBuildId,
+		releaseChannelId: releaseChannel.releaseChannelId,
+		projectId: project.projectId,
+		fileHash,
+		supportedVersions: metadata.supported_versions ?? releaseChannel.supportedVersions,
 		dependencies: metadata.dependencies ?? releaseChannel.dependencies,
-		release_notes: metadata.release_notes ?? '',
-	}, project.project_id, releaseChannel.release_channel_id);
+		releaseNotes: metadata.release_notes ?? '',
+	});
 
 	return success('Success');
 }
 
 function toBuildResponse(
-	build: Build,
+	build: Build | BuildWithReleaseChannel,
 	projectName: string,
-	releaseChannel: string,
+	releaseChannel?: string,
 	latest: boolean = false,
 ): BuildResponse {
-	const version = latest ? 'latest' : String(build.build_id);
-	const downloadPath = Pages.downloadSpecificBuild.toUrl({ projectName, releaseChannel, version });
+	const version = latest ? 'latest' : String(build.buildId);
+	const downloadPath = Pages.downloadSpecificBuild.toUrl({
+		projectName, releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel, version,
+	});
 
 	return {
-		project_name: projectName,
-		release_channel: releaseChannel,
-		build_id: build.build_id,
-		file_hash: build.file_hash,
+		projectName,
+		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
+		buildId: build.buildId,
+		build_id: build.buildId, // TODO: Remove - here to keep compatibility for auto-updater
+		fileHash: build.fileHash,
+		fileDownloadUrl: `${Constants.DOMAIN}${downloadPath}`,
+		// TODO: Remove - here to keep compatibility for auto-updater
 		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
-		supported_versions: build.supported_versions,
+		supportedVersions: build.supportedVersions,
 		dependencies: build.dependencies,
-		release_notes: build.release_notes,
+		releaseNotes: build.releaseNotes,
 	};
 }

@@ -2,7 +2,7 @@ import { json } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
 import { getProjects } from '~/api/api';
 import { ProjectsTable } from '~/components/projects/ProjectsTable';
-import type { ProjectList} from 'worker/src/store/projects';
+import type { ProjectList} from 'worker/src/store/ProjectStore';
 
 export const loader: LoaderFunction<ProjectList | { error: string }> = async ({ context }) => {
 	const projects = await getProjects(context);

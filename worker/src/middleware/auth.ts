@@ -1,6 +1,6 @@
 import { Next } from 'hono';
 import * as errors from	'~/api/errors';
-import { getUserByApiToken } from '~/store/users';
+import UserStore from '~/store/UserStore';
 import { Ctx } from '~/types/hono';
 import { getStore } from '~/utils/storage';
 import { trace } from '~/utils/trace';
@@ -19,15 +19,15 @@ export const auth = async (ctx: Ctx, next: Next): Promise<Response | void> => {
 
 		const apiToken = authHeader.substring('bearer '.length);
 
-		const user = await getUserByApiToken(ctx.env.DB, apiToken);
-		if (user === null) {
+		const user = await UserStore.getUserByApiToken(apiToken);
+		if (user === undefined) {
 			return errors.InvalidApiToken.toResponse(ctx);
 		}
 
-		ctx.set('userId', user.user_id);
+		ctx.set('userId', user.userId);
 		ctx.set('user', user);
 
-		getStore().sentry.setUser({ id: user.user_id, ip_address: '0.0.0.0' });
+		getStore().sentry.setUser({ id: user.userId, ip_address: '0.0.0.0' });
 
 		return next();
 	});
