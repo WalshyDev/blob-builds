@@ -4,6 +4,7 @@ import Constants from '~/utils/constants';
 import { Pages } from '~/utils/routes';
 import { classNames } from '~/utils/utils';
 import type { ProjectList } from 'worker/src/store/ProjectStore';
+import Link from '../Link';
 
 interface ProjectsByOwner {
 	name: string;
@@ -108,7 +109,7 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 				)}
 			>
 				<td className="whitespace-nowrap py-2 pl-4 pr-3 font-medium sm:pl-3">
-					{project}
+					<Link href={`project/${project}`}>{project}</Link>
 				</td>
 				<td></td>
 			</tr>
