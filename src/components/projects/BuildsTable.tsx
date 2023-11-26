@@ -48,7 +48,7 @@ export function BuildsTable({ builds, project }: Props) {
 										)}
 									>
 										<td className="whitespace-nowrap py-2 pl-8 pr-3 font-medium">
-											↳ {build.buildId}
+											Build {build.buildId}
 
 											{build.releaseNotes && (
 												<>
