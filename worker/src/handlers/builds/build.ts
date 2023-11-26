@@ -6,20 +6,14 @@ import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import Constants from '~/shared/utils/constants';
 import { Pages } from '~/shared/utils/routes';
-import BuildStore, {
-	getLastBuildId,
-	getLatestBuild,
-	getLatestBuildsPerReleaseChannel,
-	insertNewBuild,
-	getProjectBuild,
-} from '~/store/builds';
+import BuildStore from '~/store/builds';
 import { getProjectByNameAndUser } from '~/store/projects';
 import { getReleaseChannel } from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
-import type { NewBuildWithReleaseChannel } from '~/store/schema';
+import type { Build, BuildWithReleaseChannel } from '~/store/schema';
 
 // GET /api/builds/:projectName
 export async function getAllProjectBuilds(ctx: Ctx) {
@@ -30,7 +24,7 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	const res: { [releaseChannel: string]: NewBuildResponse[] } = {};
+	const res: { [releaseChannel: string]: BuildResponse[] } = {};
 	for (const build of builds) {
 		let arr = res[build.releaseChannel];
 		if (arr === undefined) {
@@ -38,9 +32,8 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 			arr = res[build.releaseChannel];
 		}
 
-		arr.push(newToBuildResponse(build, projectName));
+		arr.push(toBuildResponse(build, projectName));
 	}
-	console.log(res);
 
 	return success('Success', res);
 }
@@ -49,14 +42,14 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 export async function getProjectLatestBuild(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
-	const builds = await getLatestBuildsPerReleaseChannel(ctx.env.DB, projectName);
+	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
 	if (builds === null || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
 	const res: { [releaseChannel: string]: BuildResponse } = {};
 	for (const build of builds) {
-		res[build.release_channel] = toBuildResponse(build, projectName, build.release_channel, true);
+		res[build.releaseChannel] = toBuildResponse(build, projectName, undefined, true);
 	}
 
 	return success('Success', res);
@@ -67,7 +60,7 @@ export async function getLatestBuildForReleaseChannel(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 	const releaseChannel = ctx.req.param('releaseChannel');
 
-	const build = await getLatestBuild(ctx.env.DB, projectName, releaseChannel);
+	const build = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannel);
 	if (build === null) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
@@ -86,7 +79,7 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 		return errors.InvalidBuildId.toResponse(ctx);
 	}
 
-	const build = await getProjectBuild(ctx.env.DB, projectName, releaseChannel, buildId);
+	const build = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannel, buildId);
 	if (build === null) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
@@ -122,7 +115,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		return errors.InvalidUpload('Checksum does not match').toResponse(ctx);
 	}
 
-	const lastBuildId = await getLastBuildId(ctx.env.DB);
+	const lastBuildId = await BuildStore.getLastBuildId();
 	if (lastBuildId === null) {
 		return errors.InternalError.toResponse(ctx);
 	}
@@ -172,53 +165,39 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 
 	// Add build to database
 	// TODO: Make build ID per project
-	await insertNewBuild(ctx.env.DB, {
-		file_hash: fileHash,
-		supported_versions: metadata.supported_versions ?? releaseChannel.supported_versions,
+	await BuildStore.insertNewBuild({
+		buildId: nextBuildId,
+		releaseChannelId: releaseChannel.release_channel_id,
+		projectId: project.project_id,
+		fileHash,
+		supportedVersions: metadata.supported_versions ?? releaseChannel.supported_versions,
 		dependencies: metadata.dependencies ?? releaseChannel.dependencies,
-		release_notes: metadata.release_notes ?? '',
-	}, project.project_id, releaseChannel.release_channel_id);
+		releaseNotes: metadata.release_notes ?? '',
+	});
 
 	return success('Success');
 }
 
 function toBuildResponse(
-	build: Build,
+	build: Build | BuildWithReleaseChannel,
 	projectName: string,
-	releaseChannel: string,
+	releaseChannel?: string,
 	latest: boolean = false,
 ): BuildResponse {
-	const version = latest ? 'latest' : String(build.build_id);
-	const downloadPath = Pages.downloadSpecificBuild.toUrl({ projectName, releaseChannel, version });
-
-	return {
-		project_name: projectName,
-		release_channel: releaseChannel,
-		build_id: build.build_id,
-		file_hash: build.file_hash,
-		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
-		supported_versions: build.supported_versions,
-		dependencies: build.dependencies,
-		release_notes: build.release_notes,
-	};
-}
-
-function newToBuildResponse(
-	build: NewBuildWithReleaseChannel,
-	projectName: string,
-	latest: boolean = false,
-): NewBuildResponse {
 	const version = latest ? 'latest' : String(build.buildId);
 	const downloadPath = Pages.downloadSpecificBuild.toUrl({
-		projectName, releaseChannel: build.releaseChannel, version,
+		projectName, releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel, version,
 	});
 
 	return {
 		projectName,
-		releaseChannel: build.releaseChannel,
+		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		buildId: build.buildId,
+		build_id: build.buildId, // TODO: Remove - here to keep compatibility for auto-updater
 		fileHash: build.fileHash,
 		fileDownloadUrl: `${Constants.DOMAIN}${downloadPath}`,
+		// TODO: Remove - here to keep compatibility for auto-updater
+		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
 		supportedVersions: build.supportedVersions,
 		dependencies: build.dependencies,
 		releaseNotes: build.releaseNotes,

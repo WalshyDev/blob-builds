@@ -8,7 +8,7 @@
     "deploy:dev": "wrangler deploy --env dev",
     "deploy:prod": "wrangler deploy --env production",
     "dev": "wrangler dev --env dev",
-		"migrate:generate": "drizzle-kit generate:sqlite --out=migrations --schema=./src/store/schema.ts",
+    "migrate:generate": "drizzle-kit generate:sqlite --out=migrations --schema=./src/store/schema.ts",
     "migrate:local": "wrangler d1 migrations apply DB --env dev --local",
     "migrate:seed-local": "wrangler d1 execute DB --env dev --local --file migrations/seed/seed.sql",
     "migrate:dev": "wrangler d1 migrations apply DB --env dev",
@@ -28,6 +28,7 @@
     "@types/node": "20.10.0",
     "drizzle-kit": "0.20.4",
     "typescript": "5.3.2",
-    "vitest": "0.34.6"
+    "vitest": "0.34.6",
+    "wrangler": "3.17.1"
   }
 }

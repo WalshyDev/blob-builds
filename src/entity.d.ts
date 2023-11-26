@@ -34,36 +34,15 @@ interface ReleaseChannel {
 	file_naming: string;
 }
 
-interface Build {
-	build_id: number;
-	release_channel_id: number;
-	project_id: number;
-	file_hash: string;
-	supported_versions: string;
-	dependencies: string[];
-	release_notes: string;
-}
-
-type BuildWithReleaseChannel = Build & { release_channel: string };
-
 // Responses
 interface BuildResponse {
-	project_name: string;
-	release_channel: string;
-	build_id: number;
-	file_hash: string;
-	file_download_url: string;
-	supported_versions: string;
-  dependencies: string[];
-  release_notes: string;
-}
-
-interface NewBuildResponse {
 	projectName: string;
 	releaseChannel: string;
 	buildId: number;
+	build_id: number; // TODO: Remove - here to keep compatibility for auto-updater
 	fileHash: string;
 	fileDownloadUrl: string;
+	file_download_url: string; // TODO: Remove - here to keep compatibility for auto-updater
 	supportedVersions: string;
   dependencies: string[];
   releaseNotes: string;

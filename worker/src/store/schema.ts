@@ -41,8 +41,9 @@ export const builds = sqliteTable('builds', {
 	releaseNotes: text('release_notes').notNull(),
 });
 
-export type NewBuild = typeof builds.$inferSelect;
-export type NewBuildWithReleaseChannel = NewBuild & { releaseChannel: string };
+export type Build = typeof builds.$inferSelect;
+export type BuildWithReleaseChannel = Build & { releaseChannel: string };
+export type InsertBuild = typeof builds.$inferInsert;
 
 // Types
 function integer(name: string) {
