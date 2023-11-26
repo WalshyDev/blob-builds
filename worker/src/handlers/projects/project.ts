@@ -57,7 +57,7 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 		name: body.name,
 		description: body.description ?? 'A new project',
 	});
-	if (project === null) {
+	if (project === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
 

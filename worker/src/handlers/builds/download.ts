@@ -12,7 +12,7 @@ export async function getDownloadBuild(ctx: Ctx) {
 	const version = ctx.req.param('version');
 
 	const project = await ProjectStore.getProjectByName(projectName);
-	if (project === null) {
+	if (project === undefined) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 
@@ -24,17 +24,17 @@ export async function getDownloadBuild(ctx: Ctx) {
 	let build: Build;
 	if (version !== undefined && version !== '') {
 		const buildId = getBuildId(version);
-		if (buildId === null) {
+		if (buildId === undefined) {
 			return errors.InvalidBuildId.toResponse(ctx);
 		}
 
 		build = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannelName, buildId);
-		if (build === null) {
+		if (build === undefined) {
 			return errors.BuildNotFound.toResponse(ctx);
 		}
 	} else {
 		build = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannelName);
-		if (build === null) {
+		if (build === undefined) {
 			return errors.BuildNotFound.toResponse(ctx);
 		}
 	}

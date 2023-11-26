@@ -20,7 +20,7 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 
 	const builds = await BuildStore.getProjectBuilds(projectName);
-	if (builds === null || builds.length === 0) {
+	if (builds === undefined || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
@@ -43,7 +43,7 @@ export async function getProjectLatestBuild(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
 	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
-	if (builds === null || builds.length === 0) {
+	if (builds === undefined || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
@@ -61,7 +61,7 @@ export async function getLatestBuildForReleaseChannel(ctx: Context) {
 	const releaseChannel = ctx.req.param('releaseChannel');
 
 	const build = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannel);
-	if (build === null) {
+	if (build === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
@@ -75,12 +75,12 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 	const version = ctx.req.param('version');
 
 	const buildId = getBuildId(version);
-	if (buildId === null) {
+	if (buildId === undefined) {
 		return errors.InvalidBuildId.toResponse(ctx);
 	}
 
 	const build = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannel, buildId);
-	if (build === null) {
+	if (build === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
@@ -100,12 +100,12 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	const releaseChannelName = ctx.req.param('releaseChannel');
 
 	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
-	if (project === null) {
+	if (project === undefined) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 
 	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(releaseChannelName, project.projectId);
-	if (releaseChannel === null) {
+	if (releaseChannel === undefined) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
 
@@ -116,7 +116,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	}
 
 	const lastBuildId = await BuildStore.getLastBuildId();
-	if (lastBuildId === null) {
+	if (lastBuildId === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
 	const nextBuildId = lastBuildId + 1;

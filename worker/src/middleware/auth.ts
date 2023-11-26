@@ -20,7 +20,7 @@ export const auth = async (ctx: Ctx, next: Next): Promise<Response | void> => {
 		const apiToken = authHeader.substring('bearer '.length);
 
 		const user = await UserStore.getUserByApiToken(apiToken);
-		if (user === null) {
+		if (user === undefined) {
 			return errors.InvalidApiToken.toResponse(ctx);
 		}
 
