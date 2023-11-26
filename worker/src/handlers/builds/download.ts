@@ -1,7 +1,7 @@
 import * as errors from '~/api/errors';
 import BuildStore from '~/store/builds';
-import { getProjectByName } from '~/store/projects';
-import { getReleaseChannel } from '~/store/releaseChannels';
+import ProjectStore from '~/store/projects';
+import ReleaseChannelStore from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFileName, getFilePath, getLegacyFilePath } from '~/utils/build';
 import type { Build } from '~/store/schema';
@@ -11,12 +11,12 @@ export async function getDownloadBuild(ctx: Ctx) {
 	const releaseChannelName = ctx.req.param('releaseChannel');
 	const version = ctx.req.param('version');
 
-	const project = await getProjectByName(ctx.env.DB, projectName);
+	const project = await ProjectStore.getProjectByName(projectName);
 	if (project === null) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 
-	const releaseChannel = await getReleaseChannel(ctx.env.DB, releaseChannelName, project.project_id);
+	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(releaseChannelName, project.projectId);
 	if (releaseChannel === undefined) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}

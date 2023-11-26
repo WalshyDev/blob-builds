@@ -7,7 +7,7 @@ import * as errors from '~/api/errors';
 import Constants from '~/shared/utils/constants';
 import { Pages } from '~/shared/utils/routes';
 import BuildStore from '~/store/builds';
-import { getProjectByNameAndUser } from '~/store/projects';
+import ProjectStore from '~/store/projects';
 import ReleaseChannelStore from '~/store/releaseChannels';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
@@ -99,12 +99,12 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	const projectName = ctx.req.param('projectName');
 	const releaseChannelName = ctx.req.param('releaseChannel');
 
-	const project = await getProjectByNameAndUser(ctx.env.DB, projectName, userId);
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
 	if (project === null) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 
-	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(releaseChannelName, project.project_id);
+	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(releaseChannelName, project.projectId);
 	if (releaseChannel === null) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
@@ -168,7 +168,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	await BuildStore.insertNewBuild({
 		buildId: nextBuildId,
 		releaseChannelId: releaseChannel.releaseChannelId,
-		projectId: project.project_id,
+		projectId: project.projectId,
 		fileHash,
 		supportedVersions: metadata.supported_versions ?? releaseChannel.supportedVersions,
 		dependencies: metadata.dependencies ?? releaseChannel.dependencies,
