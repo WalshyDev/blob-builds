@@ -13,6 +13,7 @@ export async function getFileFromPomXml() {
 		setFailed('<finalName> does not exist in pom.xml, therefor we can not grap the final file name!');
 	}
 
+	// Evaluate the final name, this will probably have variables therefore we cannot simply grab from the file.
 	const output = execSync(
 		'mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout',
 		{ encoding: 'utf-8' },
