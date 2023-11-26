@@ -3,7 +3,8 @@ import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import { getProjectByName, getProjectListByUser, newProject } from '~/store/projects';
-import { createReleaseChannels } from '~/store/releaseChannels';
+import ReleaseChannelStore from '~/store/releaseChannels';
+import { InsertReleaseChannel } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 
 // GET /api/projects
@@ -57,15 +58,15 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 	}
 
 	// Create release channels
-	const channels: Omit<ReleaseChannel, 'release_channel_id'>[] = body.release_channels.map(channel => ({
-		project_id: project.project_id,
+	const channels: InsertReleaseChannel[] = body.release_channels.map(channel => ({
+		projectId: project.projectId,
 		name: channel.name,
-		supported_versions: channel.supported_versions,
+		supportedVersions: channel.supported_versions,
 		dependencies: channel.dependencies,
-		file_naming: channel.file_naming,
+		fileNaming: channel.file_naming,
 	}));
 
-	await createReleaseChannels(ctx.env.DB, channels);
+	await ReleaseChannelStore.insertNewReleaseChannel(channels);
 
 	return success('Project created!', {
 		project,

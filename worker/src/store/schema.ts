@@ -15,12 +15,15 @@ export type InsertUser = typeof users.$inferInsert;
 
 export const projects = sqliteTable('projects', {
 	projectId: integer('project_id').primaryKey({ autoIncrement: true }),
-	user_id: integer('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
+	userId: integer('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
 	description: text('description').notNull(),
 }, (table) => ({
 	projectsNameIdx: index('projects_name_idx').on(table.name),
 }));
+
+export type Project = typeof projects.$inferSelect;
+export type InsertProject = typeof projects.$inferInsert;
 
 export const releaseChannels = sqliteTable('release_channels', {
 	releaseChannelId: integer('release_channel_id').primaryKey({ autoIncrement: true }),

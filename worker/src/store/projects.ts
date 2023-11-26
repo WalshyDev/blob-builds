@@ -1,18 +1,23 @@
+import { and, eq } from 'drizzle-orm';
 import { queryRow, queryRows } from '~/store/_db';
+import { projects } from '~/store/schema';
+import { getDb } from '~/utils/storage';
+import type { Project } from '~/store/schema';
 
-export async function getProject(DB: D1Database, projectName: string, userId: number): Promise<Project | null> {
-	const res = await queryRow<Project>(DB,
-		'SELECT * FROM projects WHERE name = ? AND user_id = ?',
-		projectName, userId,
-	);
+class _UserStore {
 
-	if (res.success === true) {
-		return res.data;
-	} else {
-		console.error(`getProject: Failed to get project! Error: ${res.internalError}`);
-		return null;
+	getProject(projectName: string, userId: number): Promise<Project | null> {
+		return getDb().select().from(projects)
+			.where(and(
+				eq(projects.name, projectName),
+				eq(projects.userId, userId),
+			))
+			.get();
 	}
 }
+
+const UserStore = new _UserStore();
+export default UserStore;
 
 export async function getProjectByName(DB: D1Database, projectName: string): Promise<Project | null> {
 	const res = await queryRow<Project>(DB,

@@ -16,9 +16,9 @@ class _ReleaseChannelStore {
 	}
 
 	// Insert a new release channel
-	insertNewReleaseChannel(releaseChannel: InsertReleaseChannel): Promise<D1Result> {
+	insertNewReleaseChannel(releaseChannel: InsertReleaseChannel | InsertReleaseChannel[]): Promise<D1Result> {
 		return getDb().insert(releaseChannels)
-			.values(releaseChannel)
+			.values(Array.isArray(releaseChannel) ? releaseChannel : [releaseChannel])
 			.run();
 	}
 }
