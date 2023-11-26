@@ -6,12 +6,11 @@ import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import Constants from '~/shared/utils/constants';
 import { Pages } from '~/shared/utils/routes';
-import {
+import BuildStore, {
 	getLastBuildId,
 	getLatestBuild,
 	getLatestBuildsPerReleaseChannel,
 	insertNewBuild,
-	getProjectBuilds,
 	getProjectBuild,
 } from '~/store/builds';
 import { getProjectByNameAndUser } from '~/store/projects';
@@ -20,25 +19,26 @@ import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
+import type { NewBuildWithReleaseChannel } from '~/store/schema';
 
 // GET /api/builds/:projectName
 export async function getAllProjectBuilds(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 
-	const builds = await getProjectBuilds(ctx.env.DB, projectName);
+	const builds = await BuildStore.getProjectBuilds(projectName);
 	if (builds === null || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	const res: { [releaseChannel: string]: BuildResponse[] } = {};
+	const res: { [releaseChannel: string]: NewBuildResponse[] } = {};
 	for (const build of builds) {
-		let arr = res[build.release_channel];
+		let arr = res[build.releaseChannel];
 		if (arr === undefined) {
-			res[build.release_channel] = [];
-			arr = res[build.release_channel];
+			res[build.releaseChannel] = [];
+			arr = res[build.releaseChannel];
 		}
 
-		arr.push(toBuildResponse(build, projectName, build.release_channel));
+		arr.push(newToBuildResponse(build, projectName));
 	}
 	console.log(res);
 
@@ -200,5 +200,27 @@ function toBuildResponse(
 		supported_versions: build.supported_versions,
 		dependencies: build.dependencies,
 		release_notes: build.release_notes,
+	};
+}
+
+function newToBuildResponse(
+	build: NewBuildWithReleaseChannel,
+	projectName: string,
+	latest: boolean = false,
+): NewBuildResponse {
+	const version = latest ? 'latest' : String(build.buildId);
+	const downloadPath = Pages.downloadSpecificBuild.toUrl({
+		projectName, releaseChannel: build.releaseChannel, version,
+	});
+
+	return {
+		projectName,
+		releaseChannel: build.releaseChannel,
+		buildId: build.buildId,
+		fileHash: build.fileHash,
+		fileDownloadUrl: `${Constants.DOMAIN}${downloadPath}`,
+		supportedVersions: build.supportedVersions,
+		dependencies: build.dependencies,
+		releaseNotes: build.releaseNotes,
 	};
 }

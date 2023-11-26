@@ -1,0 +1,283 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "id": "3150f545-d399-414a-8727-e94b478a0969",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "builds": {
+      "name": "builds",
+      "columns": {
+        "build_id": {
+          "name": "build_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "release_channel_id": {
+          "name": "release_channel_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_hash": {
+          "name": "file_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "supported_versions": {
+          "name": "supported_versions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dependencies": {
+          "name": "dependencies",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "release_notes": {
+          "name": "release_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "builds_release_channel_id_release_channels_release_channel_id_fk": {
+          "name": "builds_release_channel_id_release_channels_release_channel_id_fk",
+          "tableFrom": "builds",
+          "tableTo": "release_channels",
+          "columnsFrom": [
+            "release_channel_id"
+          ],
+          "columnsTo": [
+            "release_channel_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "builds_project_id_projects_project_id_fk": {
+          "name": "builds_project_id_projects_project_id_fk",
+          "tableFrom": "builds",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "project_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "projects": {
+      "name": "projects",
+      "columns": {
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "projects_name_idx": {
+          "name": "projects_name_idx",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "projects_user_id_users_user_id_fk": {
+          "name": "projects_user_id_users_user_id_fk",
+          "tableFrom": "projects",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "release_channels": {
+      "name": "release_channels",
+      "columns": {
+        "release_channel_id": {
+          "name": "release_channel_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "supported_versions": {
+          "name": "supported_versions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dependencies": {
+          "name": "dependencies",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_naming": {
+          "name": "file_naming",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "release_channels_name_idx": {
+          "name": "release_channels_name_idx",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "release_channels_project_id_projects_project_id_fk": {
+          "name": "release_channels_project_id_projects_project_id_fk",
+          "tableFrom": "release_channels",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "project_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "api_token": {
+          "name": "api_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "users_api_token_unique": {
+          "name": "users_api_token_unique",
+          "columns": [
+            "api_token"
+          ],
+          "isUnique": true
+        },
+        "users_name_idx": {
+          "name": "users_name_idx",
+          "columns": [
+            "name"
+          ],
+          "isUnique": false
+        },
+        "users_api_token_idx": {
+          "name": "users_api_token_idx",
+          "columns": [
+            "api_token"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

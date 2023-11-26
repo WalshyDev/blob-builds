@@ -1,4 +1,43 @@
+import { eq, desc } from 'drizzle-orm';
+import { SQLiteTableWithColumns, SQLiteColumn, TableConfig } from 'drizzle-orm/sqlite-core';
 import { queryRow, queryRows, run } from '~/store/_db';
+import { NewBuildWithReleaseChannel, builds, projects, releaseChannels } from '~/store/schema';
+import { getDb } from '~/utils/storage';
+
+type Columns<T extends TableConfig> = {
+	[Key in keyof T['columns']]: T['columns'][Key];
+}
+
+function selectStar<T extends TableConfig>(
+	table: SQLiteTableWithColumns<T>,
+): Columns<T> {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	return Object.fromEntries(
+		Object.entries(table)
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			.filter(([_, val]) => val instanceof SQLiteColumn),
+	);
+}
+
+class _BuildStore {
+
+	getProjectBuilds(projectName: string): Promise<NewBuildWithReleaseChannel[]> {
+		return getDb().select({
+			...selectStar(builds),
+			releaseChannel: releaseChannels.name,
+		})
+			.from(builds)
+			.leftJoin(projects, eq(projects.projectId, builds.projectId))
+			.leftJoin(releaseChannels, eq(releaseChannels.releaseChannelId, builds.releaseChannelId))
+			.where(eq(projects.name, projectName))
+			.orderBy(desc(builds.buildId))
+			.all();
+	}
+}
+
+const BuildStore = new _BuildStore();
+export default BuildStore;
 
 export async function getProjectBuilds(DB: D1Database, projectName: string) {
 	const res = await queryRows<BuildWithReleaseChannel>(

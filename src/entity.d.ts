@@ -58,6 +58,17 @@ interface BuildResponse {
   release_notes: string;
 }
 
+interface NewBuildResponse {
+	projectName: string;
+	releaseChannel: string;
+	buildId: number;
+	fileHash: string;
+	fileDownloadUrl: string;
+	supportedVersions: string;
+  dependencies: string[];
+  releaseNotes: string;
+}
+
 interface BuildList {
 	[releaseChannel: string]: BuildResponse[];
 }
