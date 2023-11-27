@@ -115,11 +115,11 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		return errors.InvalidUpload('Checksum does not match').toResponse(ctx);
 	}
 
-	const lastBuildId = await BuildStore.getLastBuildId();
-	if (lastBuildId === undefined) {
+	const buildCount = await BuildStore.getBuildCount(project.projectId, releaseChannel.releaseChannelId);
+	if (buildCount === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
-	const nextBuildId = lastBuildId + 1;
+	const nextBuildId = buildCount.count + 1;
 
 	// Modify the version
 	const jsZip = new JSZip();
@@ -164,7 +164,6 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	});
 
 	// Add build to database
-	// TODO: Make build ID per project
 	await BuildStore.insertNewBuild({
 		buildId: nextBuildId,
 		releaseChannelId: releaseChannel.releaseChannelId,

@@ -1,7 +1,7 @@
-import { eq, desc, and } from 'drizzle-orm';
-import { queryRow, selectStar } from '~/store/_db';
+import { eq, desc, and, sql } from 'drizzle-orm';
+import { selectStar } from '~/store/_db';
 import { Build, BuildWithReleaseChannel, InsertBuild, builds, projects, releaseChannels } from '~/store/schema';
-import { getDb, getStore } from '~/utils/storage';
+import { getDb } from '~/utils/storage';
 
 class _BuildStore {
 
@@ -88,16 +88,14 @@ class _BuildStore {
 			.get();
 	}
 
-	async getLastBuildId(): Promise<number | null> {
-		const db = getStore().env.DB;
-		const res = await queryRow<{ seq: number }>(db, 'select seq from sqlite_sequence WHERE name = "builds"');
-
-		if (res.success === true) {
-			return res.data.seq;
-		} else {
-			console.error(`getLastBuildId: Failed to get last build ID! Error: ${res.internalError}`);
-			return null;
-		}
+	async getBuildCount(projectId: number, releaseChannelId: number): Promise<{ count: number }> {
+		return getDb().select({ count: sql<number>`COUNT(*)` })
+			.from(builds)
+			.where(and(
+				eq(builds.projectId, projectId),
+				eq(builds.releaseChannelId, releaseChannelId),
+			))
+			.get();
 	}
 
 	insertNewBuild(build: InsertBuild): Promise<D1Result> {
