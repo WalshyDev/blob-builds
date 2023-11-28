@@ -1,4 +1,4 @@
-import { index, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 // TODO: Auth stuff
 export const users = sqliteTable('users', {
@@ -40,7 +40,7 @@ export type ReleaseChannel = typeof releaseChannels.$inferSelect;
 export type InsertReleaseChannel = typeof releaseChannels.$inferInsert;
 
 export const builds = sqliteTable('builds', {
-	buildId: integer('build_id').primaryKey({ autoIncrement: true }),
+	buildId: integer('build_id'),
 	releaseChannelId: integer('release_channel_id').notNull()
 		.references(() => releaseChannels.releaseChannelId, { onDelete: 'cascade' }),
 	projectId: integer('project_id').notNull().references(() => projects.projectId, { onDelete: 'cascade' }),
@@ -48,7 +48,9 @@ export const builds = sqliteTable('builds', {
 	supportedVersions: text('supported_versions').notNull(),
 	dependencies: text('dependencies', { mode: 'json' }).notNull().$type<string[]>(),
 	releaseNotes: text('release_notes').notNull(),
-});
+}, (table) => ({
+	pk: primaryKey({ columns: [table.buildId, table.releaseChannelId] }),
+}));
 
 export type Build = typeof builds.$inferSelect;
 export type BuildWithReleaseChannel = Build & { releaseChannel: string };

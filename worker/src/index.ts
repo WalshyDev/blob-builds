@@ -15,6 +15,8 @@ import {
 	newProjectSchema,
 	postNewProject,
 } from '~/handlers/projects/project';
+import { dbQueryHandler, dbQuerySchema } from '~/handlers/test/db';
+import { testOnlyMiddleware } from '~/handlers/test/middleware';
 import { auth } from '~/middleware/auth';
 import { Ctx } from '~/types/hono';
 import jsonValidator from '~/utils/validator/jsonValidator';
@@ -96,5 +98,9 @@ app.get(
 
 app.onError((err, ctx) => errors.InternalError.withError(err).toResponse(ctx as Ctx));
 app.notFound((ctx) => errors.RouteNotFound.toResponse(ctx as Ctx));
+
+// Test only
+app.use('/__test/*', testOnlyMiddleware);
+app.post('/__test/db', jsonValidator(dbQuerySchema, dbQueryHandler));
 
 export default app;

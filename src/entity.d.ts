@@ -1,4 +1,4 @@
-type ApiResponse<T> = ApiResponseSuccess<T> | ApiResponseError;
+type ApiResponse<T = unknown> = ApiResponseSuccess<T> | ApiResponseError;
 
 interface ApiResponseSuccess<T> {
 	success: true;
@@ -11,13 +11,6 @@ interface ApiResponseError {
 	code: number;
 	error: string;
 	stack?: string;
-}
-
-interface Project {
-	project_id: number;
-	user_id: number;
-	name: string;
-	description: string;
 }
 
 // Responses
