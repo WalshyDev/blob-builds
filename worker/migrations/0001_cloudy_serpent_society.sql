@@ -26,4 +26,4 @@ ALTER TABLE builds RENAME TO builds_old;
 ALTER TABLE builds_new RENAME TO builds;
 
 -- Drop the old table
--- DROP TABLE builds_old;
+DROP TABLE builds_old;
