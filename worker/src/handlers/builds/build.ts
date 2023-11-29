@@ -7,6 +7,7 @@ import * as errors from '~/api/errors';
 import Constants from '~/shared/utils/constants';
 import { Pages } from '~/shared/utils/routes';
 import BuildStore from '~/store/BuildStore';
+import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { Ctx } from '~/types/hono';
@@ -115,47 +116,57 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		return errors.InvalidUpload('Checksum does not match').toResponse(ctx);
 	}
 
+	const projectSettings = await ProjectSettingStore.getSettings(project.projectId);
+	if (projectSettings === undefined) {
+		return errors.InternalError.toResponse(ctx);
+	}
+
 	const buildCount = await BuildStore.getBuildCount(project.projectId, releaseChannel.releaseChannelId);
 	if (buildCount === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
 	const nextBuildId = buildCount.count + 1;
 
-	// Modify the version
-	const jsZip = new JSZip();
-	const zip = await jsZip.loadAsync(await file.arrayBuffer());
+	let jarFile = await file.arrayBuffer();
+	let fileHash = checksum;
+	// Overwrite `version` in plugin.yml with the build ID.
+	// If someone wants to bring their own version, they can disable this in the project settings.
+	if (projectSettings.overwritePluginYml === true) {
+		// Modify the version
+		const jsZip = new JSZip();
+		const zip = await jsZip.loadAsync(jarFile);
 
-	let pluginYml = zip.file('plugin.yml');
-	if (pluginYml === null) {
-		// Try .yaml
-		pluginYml = zip.file('plugin.yaml');
+		let pluginYml = zip.file('plugin.yml');
 		if (pluginYml === null) {
-			return errors.InvalidUpload('plugin.yml not found').toResponse(ctx);
+			// Try .yaml
+			pluginYml = zip.file('plugin.yaml');
+			if (pluginYml === null) {
+				return errors.InvalidUpload('plugin.yml not found').toResponse(ctx);
+			}
 		}
+		const content = await pluginYml.async('string');
+		const yaml = parse(content);
+		if (yaml.version === undefined) {
+			return errors.InvalidUpload('plugin.yml does not contain a version').toResponse(ctx);
+		}
+
+		// Update the version
+		yaml.version = `${releaseChannel.name} - ${nextBuildId}`;
+
+		// Write the new plugin.yml
+		const newYaml = stringify(yaml);
+		zip.file('plugin.yml', newYaml);
+
+		// Write the new jar
+		jarFile = await zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+		fileHash = sha256(Buffer.from(jarFile));
 	}
-	const content = await pluginYml.async('string');
-	const yaml = parse(content);
-	if (yaml.version === undefined) {
-		return errors.InvalidUpload('plugin.yml does not contain version').toResponse(ctx);
-	}
-
-	// Update the version
-	yaml.version = `${releaseChannel.name} - ${nextBuildId}`;
-
-	// Write the new plugin.yml
-	const newYaml = stringify(yaml);
-	zip.file('plugin.yml', newYaml);
-
-	// Write the new jar
-	const newJar = await zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
-
-	const fileHash = sha256(Buffer.from(newJar));
 
 	// Upload build to R2
 	const path = getFilePath(projectName, releaseChannelName, fileHash);
 	console.log(`Uploading build to ${path}`);
 
-	await ctx.env.R2.put(path, newJar, {
+	await ctx.env.R2.put(path, jarFile, {
 		httpMetadata: {
 			contentType: 'application/java-archive',
 			cacheControl: Constants.ONE_YEAR_CACHE,

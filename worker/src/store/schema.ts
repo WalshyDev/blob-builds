@@ -25,6 +25,14 @@ export const projects = sqliteTable('projects', {
 export type Project = typeof projects.$inferSelect;
 export type InsertProject = typeof projects.$inferInsert;
 
+export const projectSettings = sqliteTable('project_settings', {
+	projectId: integer('project_id').primaryKey().references(() => projects.projectId, { onDelete: 'cascade' }),
+	overwritePluginYml: boolean('overwrite_plugin_yml').notNull().default(true),
+});
+
+export type ProjectSettings = typeof projectSettings.$inferSelect;
+export type InsertProjectSettings = typeof projectSettings.$inferInsert;
+
 export const releaseChannels = sqliteTable('release_channels', {
 	releaseChannelId: integer('release_channel_id').primaryKey({ autoIncrement: true }),
 	projectId: integer('project_id').notNull().references(() => projects.projectId, { onDelete: 'cascade' }),
@@ -59,4 +67,8 @@ export type InsertBuild = typeof builds.$inferInsert;
 // Types
 function integer(name: string) {
 	return int(name, { mode: 'number' });
+}
+
+function boolean(name: string) {
+	return int(name, { mode: 'boolean' });
 }
