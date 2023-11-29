@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import JSZip from 'jszip';
 import { randomInt } from 'tests/testutils/rand';
 import { expect } from 'vitest';
@@ -109,19 +110,41 @@ export async function createMockProject(
 	};
 }
 
-export async function createMockJarFile(): Promise<{ bytes: ArrayBuffer, blob: Blob }> {
+export interface MockJarOptions {
+	pluginYml?: string | null;
+	mainFile?: string | null;
+}
+
+interface MockJar {
+	bytes: ArrayBuffer;
+	blob: Blob;
+	hash: string;
+}
+
+export async function createMockJarFile(opts?: MockJarOptions): Promise<MockJar> {
 	const zip = new JSZip();
+	const fixedDate = new Date('2023-01-01');
 	// Create a plugin.yml and main file so that can make this "real"
 	// and so that we can read the plugin.yml on upload
 	// Note: The date is fixed so that the checksum is always the same
-	zip.file('plugin.yml', 'name: test-plugin\nversion: 1.0\nmain: TestPlugin.java', { date: new Date('2023-01-01') });
-	zip.file('TestPlugin.java', 'public class TestPlugin extends JavaPlugin {}', { date: new Date('2023-01-01') });
+	if (opts?.pluginYml === undefined) {
+		zip.file('plugin.yml', 'name: test-plugin\nversion: 1.0\nmain: TestPlugin.java', { date: fixedDate });
+	} else if (opts?.pluginYml !== null) {
+		zip.file('plugin.yml', opts.pluginYml, { date: fixedDate });
+	}
+	if (opts?.mainFile === undefined) {
+		zip.file('TestPlugin.java', 'public class TestPlugin extends JavaPlugin {}', { date: fixedDate });
+	} else if (opts?.mainFile !== null) {
+		zip.file('TestPlugin.java', opts.mainFile, { date: fixedDate });
+	}
 
 	const bytes = await zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
 	const blob = new Blob([bytes], { type: 'application/java-archive' });
+	const hash = createHash('sha256').update(Buffer.from(bytes)).digest('hex');
 
 	return {
 		bytes,
 		blob,
+		hash,
 	};
 }

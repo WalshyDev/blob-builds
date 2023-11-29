@@ -10,9 +10,11 @@ import {
 } from '~/handlers/builds/build';
 import { getDownloadBuild } from '~/handlers/builds/download';
 import {
+	projectSettingsSchema,
 	getProject,
 	getProjects,
 	newProjectSchema,
+	patchProjectSettings,
 	postNewProject,
 } from '~/handlers/projects/project';
 import { dbQueryHandler, dbQuerySchema } from '~/handlers/test/db';
@@ -56,6 +58,11 @@ app.post(
 	'/api/projects/:projectName/new',
 	auth,
 	jsonValidator(newProjectSchema, postNewProject),
+);
+app.patch(
+	'/api/projects/:projectName/settings',
+	auth,
+	jsonValidator(projectSettingsSchema, patchProjectSettings),
 );
 
 // Builds

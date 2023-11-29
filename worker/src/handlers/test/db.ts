@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import { queryRow } from '~/store/_db';
-import { Project, ReleaseChannel, User, projects, releaseChannels, users } from '~/store/schema';
+import { Project, ReleaseChannel, User, projectSettings, projects, releaseChannels, users } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 import { getDb } from '~/utils/storage';
 
@@ -51,6 +51,7 @@ export async function dbQueryHandler(ctx: Ctx, body: DbQueryBody) {
 		}
 
 		const project = await getDb().insert(projects).values(body.project as Project).returning().get();
+		await getDb().insert(projectSettings).values({ projectId: project.projectId }).run();
 
 		return success('Success', project);
 	}  else if (body.whatDo === 'newReleaseChannel') {

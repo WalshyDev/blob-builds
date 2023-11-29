@@ -2,6 +2,7 @@ import { Context } from 'hono';
 import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
+import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { InsertReleaseChannel } from '~/store/schema';
@@ -71,9 +72,33 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 	}));
 
 	await ReleaseChannelStore.insertNewReleaseChannel(channels);
+	await ProjectSettingStore.newProject(project.projectId);
 
 	return success('Project created!', {
 		project,
 		release_channels: channels,
 	});
+}
+
+export const projectSettingsSchema = z.object({
+	overwritePluginYml: z.boolean().optional(),
+});
+
+type ProjectSettingsBody = z.infer<typeof projectSettingsSchema>;
+
+// PATCH /api/projects/:projectName/settings
+export async function patchProjectSettings(ctx: Ctx, body: ProjectSettingsBody) {
+	const userId = ctx.get('userId');
+	const projectName = ctx.req.param('projectName');
+
+	// Get project
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
+
+	// Update settings
+	const updatedSettings = await ProjectSettingStore.updateSettings(project.projectId, body);
+
+	return success('Settings updated!', updatedSettings);
 }
