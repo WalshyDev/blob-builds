@@ -47,7 +47,7 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 
 	// Verify no existing project with that name exists (for this user)
 	const existingProject = await ProjectStore.getProjectByName(body.name);
-	if (existingProject !== null) {
+	if (existingProject !== undefined) {
 		return errors.ProjectAlreadyExists.toResponse(ctx);
 	}
 
