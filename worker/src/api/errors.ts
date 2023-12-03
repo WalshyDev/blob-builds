@@ -14,6 +14,12 @@ export const RouteNotFound = new ApiError({
 	statusCode: StatusCode.NOT_FOUND,
 });
 
+export const AdminOnly = new ApiError({
+	code: 2,
+	errorMessage: 'Admin only!',
+	statusCode: StatusCode.FORBIDDEN,
+});
+
 // Input errors
 /**
 INVALID_TYPE: 1001,

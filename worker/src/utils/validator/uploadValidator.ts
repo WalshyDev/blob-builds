@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { ZodType, z } from 'zod';
 import * as errors from '~/api/errors';
 import { Ctx } from '~/types/hono';
 
@@ -11,9 +11,14 @@ const uploadSchema = z.object({
 
 export type UploadMetadata = z.infer<typeof uploadSchema>;
 
-export type Handler = (ctx: Ctx, file: File, metadata: UploadMetadata) => Response | Promise<Response>;
+export type Handler<T> = (ctx: Ctx, file: File, metadata: T) => Response | Promise<Response>;
 
-export default function uploadValidator(controller: Handler) {
+type ZodSchema = ZodType<unknown, unknown, unknown>;
+
+export default function uploadValidator(
+	controller: Handler<z.infer<ZodSchema>>,
+	schema: ZodSchema = uploadSchema,
+) {
 	return async (ctx: Ctx) => {
 		let formData: FormData;
 		try {
@@ -28,7 +33,7 @@ export default function uploadValidator(controller: Handler) {
 		}
 
 		const metadata = formData.get('metadata');
-		if (metadata === null) {
+		if (metadata === null || typeof metadata !== 'string') {
 			return errors.InvalidUpload('Metadata not provided').toResponse(ctx);
 		}
 
@@ -39,7 +44,7 @@ export default function uploadValidator(controller: Handler) {
 			return errors.InvalidUpload('Metadata is invalid json').toResponse(ctx);
 		}
 
-		const parsed = uploadSchema.safeParse(json);
+		const parsed = schema.safeParse(json);
 
 		if (parsed.success === true) {
 			return controller(ctx, file, parsed.data);

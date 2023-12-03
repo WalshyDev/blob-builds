@@ -50,6 +50,14 @@ class _ProjectStore {
 			.get();
 	}
 
+	getProjectById(projectId: number): Promise<Project> {
+		return getDb()
+			.select()
+			.from(projects)
+			.where(eq(projects.projectId, projectId))
+			.get();
+	}
+
 	// Insert a new project
 	// Be sure to also make release channels for the project
 	insertNewProject(project: InsertProject): Promise<Project> {

@@ -4,8 +4,18 @@ import { getDb } from '~/utils/storage';
 
 class _ProjectSettingStore {
 
-	getSettings(projectId: number): Promise<ProjectSettings> {
-		return getDb().select().from(projectSettings).where(eq(projectSettings.projectId, projectId)).get();
+	async getSettings(projectId: number, createIfNotExists = true): Promise<ProjectSettings> {
+		let settings = await getDb()
+			.select()
+			.from(projectSettings)
+			.where(eq(projectSettings.projectId, projectId))
+			.get();
+
+		if (settings === undefined && createIfNotExists) {
+			settings = await this.newProject(projectId);
+		}
+
+		return settings;
 	}
 
 	updateSettings(projectId: number, settings: Partial<ProjectSettings>): Promise<ProjectSettings> {
@@ -18,7 +28,7 @@ class _ProjectSettingStore {
 	}
 
 	newProject(projectId: number) {
-		return getDb().insert(projectSettings).values({ projectId }).run();
+		return getDb().insert(projectSettings).values({ projectId }).returning().get();
 	}
 }
 
