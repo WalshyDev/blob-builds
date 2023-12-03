@@ -6,7 +6,14 @@ import { BuildsTable } from '~/components/projects/BuildsTable';
 export const loader: LoaderFunction<BuildList | { error: string }> = async ({ context, params }) => {
 	const builds = await getAllBuildsPerProject(context, params.project!);
 	if (builds.success) {
-		return json(builds.data);
+		const buildList = builds.data ?? {};
+		for (const channel of Object.keys(buildList)) {
+			if (buildList[channel].length > 100) {
+				buildList[channel] = buildList[channel].slice(0, 100);
+			}
+		}
+
+		return json(buildList);
 	}
 
 	return json({ error: builds.error });

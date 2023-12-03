@@ -5,7 +5,7 @@ export function getProjects(env: Env) {
 }
 
 export function getAllBuildsPerProject(env: Env, project: string) {
-	return _fetch<ProjectList>(env, `/api/builds/${project}`);
+	return _fetch<BuildList>(env, `/api/builds/${project}`);
 }
 
 export function _fetch<T = unknown>(env: Env, path: string, init?: RequestInit): Promise<ApiResponse<T>> {
