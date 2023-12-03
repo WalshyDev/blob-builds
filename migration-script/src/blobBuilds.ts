@@ -2,8 +2,8 @@ import { createHash } from 'node:crypto';
 import JSZip from 'jszip';
 import { parse, stringify } from 'yaml';
 
-// const BLOB_BUILDS = 'https://blob.build';
-const BLOB_BUILDS = 'http://localhost:8787';
+const BLOB_BUILDS = 'https://blob.build';
+// const BLOB_BUILDS = 'http://localhost:8787';
 
 export async function grabBuilds(project: string, releaseChannel: string): Promise<BlobBuild[]> {
 	const res = await fetch(`${BLOB_BUILDS}/api/builds/${project}`);

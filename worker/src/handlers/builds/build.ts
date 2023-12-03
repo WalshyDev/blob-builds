@@ -20,20 +20,25 @@ import type { Build, BuildWithReleaseChannel } from '~/store/schema';
 export async function getAllProjectBuilds(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 
+	const project = await ProjectStore.getProjectByName(projectName);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
 	const builds = await BuildStore.getProjectBuilds(projectName);
-	if (builds === undefined || builds.length === 0) {
+	if (builds === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
+	}
+	const releaseChannels = await ReleaseChannelStore.getReleaseChannelsForProject(project.projectId);
+	if (releaseChannels === undefined) {
+		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
 
 	const res: { [releaseChannel: string]: BuildResponse[] } = {};
+	for (const releaseChannel of releaseChannels) {
+		res[releaseChannel.name] = [];
+	}
 	for (const build of builds) {
-		let arr = res[build.releaseChannel];
-		if (arr === undefined) {
-			res[build.releaseChannel] = [];
-			arr = res[build.releaseChannel];
-		}
-
-		arr.push(toBuildResponse(build, projectName));
+		res[build.releaseChannel].push(toBuildResponse(build, projectName));
 	}
 
 	return success('Success', res);

@@ -23,6 +23,14 @@ class _ReleaseChannelStore {
 			.get();
 	}
 
+	getReleaseChannelsForProject(projectId: number): Promise<ReleaseChannel[]> {
+		return getDb()
+			.select()
+			.from(releaseChannels)
+			.where(eq(releaseChannels.projectId, projectId))
+			.all();
+	}
+
 	// Insert a new release channel
 	insertNewReleaseChannel(releaseChannel: InsertReleaseChannel | InsertReleaseChannel[]): Promise<D1Result> {
 		return getDb().insert(releaseChannels)
