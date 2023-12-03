@@ -88,6 +88,18 @@ class _BuildStore {
 			.get();
 	}
 
+	getBuildById(projectId: number, releaseChannelId: number, buildId: number): Promise<Build> {
+		return getDb()
+			.select()
+			.from(builds)
+			.where(and(
+				eq(builds.projectId, projectId),
+				eq(builds.releaseChannelId, releaseChannelId),
+				eq(builds.buildId, buildId),
+			))
+			.get();
+	}
+
 	async getBuildCount(projectId: number, releaseChannelId: number): Promise<{ count: number }> {
 		return getDb().select({ count: sql<number>`COUNT(*)` })
 			.from(builds)
@@ -98,10 +110,24 @@ class _BuildStore {
 			.get();
 	}
 
-	insertNewBuild(build: InsertBuild): Promise<D1Result> {
+	insertNewBuild(build: InsertBuild): Promise<Build> {
 		return getDb().insert(builds)
 			.values(build)
-			.run();
+			.returning()
+			.get();
+	}
+
+	update(projectId: number, releaseChannelId: number, buildId: number, build: Partial<InsertBuild>): Promise<Build> {
+		return getDb()
+			.update(builds)
+			.set(build)
+			.where(and(
+				eq(builds.projectId, projectId),
+				eq(builds.releaseChannelId, releaseChannelId),
+				eq(builds.buildId, buildId),
+			))
+			.returning()
+			.get();
 	}
 }
 

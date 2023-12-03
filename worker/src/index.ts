@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import * as errors from '~/api/errors';
+import { postRewriteBuild, rewriteBuildSchema } from '~/handlers/admin/migration/migration';
 import { setup, writeAnalytics } from '~/handlers/all';
 import {
 	getProjectLatestBuild,
@@ -19,6 +20,7 @@ import {
 } from '~/handlers/projects/project';
 import { dbQueryHandler, dbQuerySchema } from '~/handlers/test/db';
 import { testOnlyMiddleware } from '~/handlers/test/middleware';
+import { adminOnly } from '~/middleware/admin';
 import { auth } from '~/middleware/auth';
 import { Ctx } from '~/types/hono';
 import jsonValidator from '~/utils/validator/jsonValidator';
@@ -101,6 +103,14 @@ app.get(
 app.get(
 	'/dl/:projectName/:releaseChannel/:version',
 	getDownloadBuild,
+);
+
+// -- Admin --
+app.use('/api/admin/*', auth, adminOnly);
+// Migration
+app.post(
+	'/api/admin/migration/rewrite_build',
+	uploadValidator(postRewriteBuild, rewriteBuildSchema),
 );
 
 app.onError((err, ctx) => errors.InternalError.withError(err).toResponse(ctx as Ctx));
