@@ -47,7 +47,7 @@ export function BuildsTable({ builds, project }: Props) {
 											'bg-table-secondary-row hover:bg-table-hover',
 										)}
 									>
-										<td className="whitespace-nowrap py-2 pl-8 pr-3 font-medium">
+										<td className="py-2 pl-8 pr-3 font-medium">
 											Build {build.buildId}
 
 											{build.releaseNotes && (
