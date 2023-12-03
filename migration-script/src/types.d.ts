@@ -13,7 +13,7 @@ interface BuildsJson {
 				url: string;
 		},
 		candidate: string;
-		status: 'SUCCESS' | 'FAILED';
+		status: 'SUCCESS' | 'FAILED' | 'COMPILE_ONLY';
 	}
 }
 
@@ -22,6 +22,7 @@ interface OldBuild {
 	commitSha: string;
 	changelog: string;
 	timestamp: number;
+	status: 'SUCCESS' | 'FAILED' | 'COMPILE_ONLY';
 }
 
 interface BlobBuild {

@@ -1,4 +1,4 @@
-const BUILDS_GITHUB = 'https://raw.githubusercontent.com/TheBusyBiscuit/builds/gh-pages/';
+const BUILDS_GITHUB = 'https://raw.githubusercontent.com/TheBusyBiscuit/builds/gh-pages';
 
 export async function parseParth(oldPath: string): Promise<{ owner: string, repo: string, branch: string }> {
 	const [owner, repo, branch] = oldPath.split('/');
@@ -19,6 +19,7 @@ export async function loadBuilds(oldPath: string): Promise<OldBuild[]> {
 			commitSha: build.sha,
 			changelog: build.message,
 			timestamp: build.timestamp,
+			status: build.status,
 		});
 	}
 
@@ -28,6 +29,7 @@ export async function loadBuilds(oldPath: string): Promise<OldBuild[]> {
 export async function downloadJarFromOld(oldPath: string, build: OldBuild): Promise<ArrayBuffer> {
 	const { repo } = await parseParth(oldPath);
 
+	console.log(`Downloading ${BUILDS_GITHUB}/${oldPath}/${repo}-${build.id}.jar...`);
 	const jarRes = await fetch(`${BUILDS_GITHUB}/${oldPath}/${repo}-${build.id}.jar`);
 	if (!jarRes.ok) throw new Error(`Failed to download jar: ${jarRes.statusText}`);
 

@@ -65,6 +65,17 @@ async function main() {
 	for (const build of oldBuilds) {
 		log(`Migrating build ${build.id}...`);
 
+		if (builds.find((b) => b.buildId === build.id) !== undefined) {
+			log(`  Skipping build ${build.id} because it already exists`);
+			continue;
+		}
+
+		if (build.status !== 'SUCCESS') {
+			// TODO: Figure out what to do with failed builds
+			log(`  Skipping build ${build.id} because it is not successful`);
+			continue;
+		}
+
 		// Download the old jar
 		const file = await downloadJarFromOld(oldPath, build);
 
