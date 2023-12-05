@@ -22,9 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # We lint from root which is a bit awkward since we need to install root too
+      # TODO: Improve
       - name: Lint
         working-directory: .
-        run: npm run lint
+        run: npm ci && npm run lint
 
       - name: Build
         run: npm run build
