@@ -1,4 +1,4 @@
-import { eq, desc, and, sql } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { selectStar } from '~/store/_db';
 import { Build, BuildWithReleaseChannel, InsertBuild, builds, projects, releaseChannels } from '~/store/schema';
 import { getDb } from '~/utils/storage';
@@ -100,13 +100,15 @@ class _BuildStore {
 			.get();
 	}
 
-	async getBuildCount(projectId: number, releaseChannelId: number): Promise<{ count: number }> {
-		return getDb().select({ count: sql<number>`COUNT(*)` })
+	getLastBuildId(projectId: number, releaseChannelId: number): Promise<{ buildId: number }> {
+		return getDb().select({ buildId: builds.buildId })
 			.from(builds)
 			.where(and(
 				eq(builds.projectId, projectId),
 				eq(builds.releaseChannelId, releaseChannelId),
 			))
+			.orderBy(desc(builds.buildId))
+			.limit(1)
 			.get();
 	}
 

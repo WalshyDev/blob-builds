@@ -126,11 +126,11 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		return errors.InternalError.toResponse(ctx);
 	}
 
-	const buildCount = await BuildStore.getBuildCount(project.projectId, releaseChannel.releaseChannelId);
-	if (buildCount === undefined) {
-		return errors.InternalError.toResponse(ctx);
+	let lastBuildId = await BuildStore.getLastBuildId(project.projectId, releaseChannel.releaseChannelId);
+	if (lastBuildId === undefined) {
+		lastBuildId = { buildId: 0 };
 	}
-	const nextBuildId = buildCount.count + 1;
+	const nextBuildId = lastBuildId.buildId + 1;
 
 	let jarFile = await file.arrayBuffer();
 	let fileHash = checksum;
