@@ -935,46 +935,46 @@ var require_errors = __commonJS({
         this.code = "UND_ERR";
       }
     };
-    var ConnectTimeoutError = class extends UndiciError {
+    var ConnectTimeoutError = class _ConnectTimeoutError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, ConnectTimeoutError);
+        Error.captureStackTrace(this, _ConnectTimeoutError);
         this.name = "ConnectTimeoutError";
         this.message = message || "Connect Timeout Error";
         this.code = "UND_ERR_CONNECT_TIMEOUT";
       }
     };
-    var HeadersTimeoutError = class extends UndiciError {
+    var HeadersTimeoutError = class _HeadersTimeoutError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, HeadersTimeoutError);
+        Error.captureStackTrace(this, _HeadersTimeoutError);
         this.name = "HeadersTimeoutError";
         this.message = message || "Headers Timeout Error";
         this.code = "UND_ERR_HEADERS_TIMEOUT";
       }
     };
-    var HeadersOverflowError = class extends UndiciError {
+    var HeadersOverflowError = class _HeadersOverflowError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, HeadersOverflowError);
+        Error.captureStackTrace(this, _HeadersOverflowError);
         this.name = "HeadersOverflowError";
         this.message = message || "Headers Overflow Error";
         this.code = "UND_ERR_HEADERS_OVERFLOW";
       }
     };
-    var BodyTimeoutError = class extends UndiciError {
+    var BodyTimeoutError = class _BodyTimeoutError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, BodyTimeoutError);
+        Error.captureStackTrace(this, _BodyTimeoutError);
         this.name = "BodyTimeoutError";
         this.message = message || "Body Timeout Error";
         this.code = "UND_ERR_BODY_TIMEOUT";
       }
     };
-    var ResponseStatusCodeError = class extends UndiciError {
+    var ResponseStatusCodeError = class _ResponseStatusCodeError extends UndiciError {
       constructor(message, statusCode, headers, body) {
         super(message);
-        Error.captureStackTrace(this, ResponseStatusCodeError);
+        Error.captureStackTrace(this, _ResponseStatusCodeError);
         this.name = "ResponseStatusCodeError";
         this.message = message || "Response Status Code Error";
         this.code = "UND_ERR_RESPONSE_STATUS_CODE";
@@ -984,92 +984,92 @@ var require_errors = __commonJS({
         this.headers = headers;
       }
     };
-    var InvalidArgumentError = class extends UndiciError {
+    var InvalidArgumentError = class _InvalidArgumentError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, InvalidArgumentError);
+        Error.captureStackTrace(this, _InvalidArgumentError);
         this.name = "InvalidArgumentError";
         this.message = message || "Invalid Argument Error";
         this.code = "UND_ERR_INVALID_ARG";
       }
     };
-    var InvalidReturnValueError = class extends UndiciError {
+    var InvalidReturnValueError = class _InvalidReturnValueError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, InvalidReturnValueError);
+        Error.captureStackTrace(this, _InvalidReturnValueError);
         this.name = "InvalidReturnValueError";
         this.message = message || "Invalid Return Value Error";
         this.code = "UND_ERR_INVALID_RETURN_VALUE";
       }
     };
-    var RequestAbortedError = class extends UndiciError {
+    var RequestAbortedError = class _RequestAbortedError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, RequestAbortedError);
+        Error.captureStackTrace(this, _RequestAbortedError);
         this.name = "AbortError";
         this.message = message || "Request aborted";
         this.code = "UND_ERR_ABORTED";
       }
     };
-    var InformationalError = class extends UndiciError {
+    var InformationalError = class _InformationalError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, InformationalError);
+        Error.captureStackTrace(this, _InformationalError);
         this.name = "InformationalError";
         this.message = message || "Request information";
         this.code = "UND_ERR_INFO";
       }
     };
-    var RequestContentLengthMismatchError = class extends UndiciError {
+    var RequestContentLengthMismatchError = class _RequestContentLengthMismatchError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, RequestContentLengthMismatchError);
+        Error.captureStackTrace(this, _RequestContentLengthMismatchError);
         this.name = "RequestContentLengthMismatchError";
         this.message = message || "Request body length does not match content-length header";
         this.code = "UND_ERR_REQ_CONTENT_LENGTH_MISMATCH";
       }
     };
-    var ResponseContentLengthMismatchError = class extends UndiciError {
+    var ResponseContentLengthMismatchError = class _ResponseContentLengthMismatchError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, ResponseContentLengthMismatchError);
+        Error.captureStackTrace(this, _ResponseContentLengthMismatchError);
         this.name = "ResponseContentLengthMismatchError";
         this.message = message || "Response body length does not match content-length header";
         this.code = "UND_ERR_RES_CONTENT_LENGTH_MISMATCH";
       }
     };
-    var ClientDestroyedError = class extends UndiciError {
+    var ClientDestroyedError = class _ClientDestroyedError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, ClientDestroyedError);
+        Error.captureStackTrace(this, _ClientDestroyedError);
         this.name = "ClientDestroyedError";
         this.message = message || "The client is destroyed";
         this.code = "UND_ERR_DESTROYED";
       }
     };
-    var ClientClosedError = class extends UndiciError {
+    var ClientClosedError = class _ClientClosedError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, ClientClosedError);
+        Error.captureStackTrace(this, _ClientClosedError);
         this.name = "ClientClosedError";
         this.message = message || "The client is closed";
         this.code = "UND_ERR_CLOSED";
       }
     };
-    var SocketError = class extends UndiciError {
+    var SocketError = class _SocketError extends UndiciError {
       constructor(message, socket) {
         super(message);
-        Error.captureStackTrace(this, SocketError);
+        Error.captureStackTrace(this, _SocketError);
         this.name = "SocketError";
         this.message = message || "Socket error";
         this.code = "UND_ERR_SOCKET";
         this.socket = socket;
       }
     };
-    var NotSupportedError = class extends UndiciError {
+    var NotSupportedError = class _NotSupportedError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, NotSupportedError);
+        Error.captureStackTrace(this, _NotSupportedError);
         this.name = "NotSupportedError";
         this.message = message || "Not supported error";
         this.code = "UND_ERR_NOT_SUPPORTED";
@@ -1084,19 +1084,19 @@ var require_errors = __commonJS({
         this.code = "UND_ERR_BPL_MISSING_UPSTREAM";
       }
     };
-    var HTTPParserError = class extends Error {
+    var HTTPParserError = class _HTTPParserError extends Error {
       constructor(message, code, data) {
         super(message);
-        Error.captureStackTrace(this, HTTPParserError);
+        Error.captureStackTrace(this, _HTTPParserError);
         this.name = "HTTPParserError";
         this.code = code ? `HPE_${code}` : void 0;
         this.data = data ? data.toString() : void 0;
       }
     };
-    var ResponseExceededMaxSizeError = class extends UndiciError {
+    var ResponseExceededMaxSizeError = class _ResponseExceededMaxSizeError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, ResponseExceededMaxSizeError);
+        Error.captureStackTrace(this, _ResponseExceededMaxSizeError);
         this.name = "ResponseExceededMaxSizeError";
         this.message = message || "Response content exceeded max size";
         this.code = "UND_ERR_RES_EXCEEDED_MAX_SIZE";
@@ -5030,7 +5030,7 @@ var require_file = __commonJS({
     var { parseMIMEType, serializeAMimeType } = require_dataURL();
     var { kEnumerableProperty } = require_util();
     var encoder = new TextEncoder();
-    var File2 = class extends Blob2 {
+    var File2 = class _File extends Blob2 {
       constructor(fileBits, fileName, options = {}) {
         webidl.argumentLengthCheck(arguments, 2, { header: "File constructor" });
         fileBits = webidl.converters["sequence<BlobPart>"](fileBits);
@@ -5058,19 +5058,19 @@ var require_file = __commonJS({
         };
       }
       get name() {
-        webidl.brandCheck(this, File2);
+        webidl.brandCheck(this, _File);
         return this[kState].name;
       }
       get lastModified() {
-        webidl.brandCheck(this, File2);
+        webidl.brandCheck(this, _File);
         return this[kState].lastModified;
       }
       get type() {
-        webidl.brandCheck(this, File2);
+        webidl.brandCheck(this, _File);
         return this[kState].type;
       }
     };
-    var FileLike = class {
+    var FileLike = class _FileLike {
       constructor(blobLike, fileName, options = {}) {
         const n = fileName;
         const t = options.type;
@@ -5083,35 +5083,35 @@ var require_file = __commonJS({
         };
       }
       stream(...args) {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].blobLike.stream(...args);
       }
       arrayBuffer(...args) {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].blobLike.arrayBuffer(...args);
       }
       slice(...args) {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].blobLike.slice(...args);
       }
       text(...args) {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].blobLike.text(...args);
       }
       get size() {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].blobLike.size;
       }
       get type() {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].blobLike.type;
       }
       get name() {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].name;
       }
       get lastModified() {
-        webidl.brandCheck(this, FileLike);
+        webidl.brandCheck(this, _FileLike);
         return this[kState].lastModified;
       }
       get [Symbol.toStringTag]() {
@@ -5214,7 +5214,7 @@ var require_formdata = __commonJS({
     var { webidl } = require_webidl();
     var { Blob: Blob2, File: NativeFile } = require("buffer");
     var File2 = NativeFile ?? UndiciFile;
-    var FormData2 = class {
+    var FormData2 = class _FormData {
       constructor(form) {
         if (form !== void 0) {
           throw webidl.errors.conversionFailed({
@@ -5226,7 +5226,7 @@ var require_formdata = __commonJS({
         this[kState] = [];
       }
       append(name, value, filename = void 0) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 2, { header: "FormData.append" });
         if (arguments.length === 3 && !isBlobLike(value)) {
           throw new TypeError(
@@ -5240,13 +5240,13 @@ var require_formdata = __commonJS({
         this[kState].push(entry);
       }
       delete(name) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 1, { header: "FormData.delete" });
         name = webidl.converters.USVString(name);
         this[kState] = this[kState].filter((entry) => entry.name !== name);
       }
       get(name) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 1, { header: "FormData.get" });
         name = webidl.converters.USVString(name);
         const idx = this[kState].findIndex((entry) => entry.name === name);
@@ -5256,19 +5256,19 @@ var require_formdata = __commonJS({
         return this[kState][idx].value;
       }
       getAll(name) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 1, { header: "FormData.getAll" });
         name = webidl.converters.USVString(name);
         return this[kState].filter((entry) => entry.name === name).map((entry) => entry.value);
       }
       has(name) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 1, { header: "FormData.has" });
         name = webidl.converters.USVString(name);
         return this[kState].findIndex((entry) => entry.name === name) !== -1;
       }
       set(name, value, filename = void 0) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 2, { header: "FormData.set" });
         if (arguments.length === 3 && !isBlobLike(value)) {
           throw new TypeError(
@@ -5291,7 +5291,7 @@ var require_formdata = __commonJS({
         }
       }
       entries() {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         return makeIterator(
           () => this[kState].map((pair) => [pair.name, pair.value]),
           "FormData",
@@ -5299,7 +5299,7 @@ var require_formdata = __commonJS({
         );
       }
       keys() {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         return makeIterator(
           () => this[kState].map((pair) => [pair.name, pair.value]),
           "FormData",
@@ -5307,7 +5307,7 @@ var require_formdata = __commonJS({
         );
       }
       values() {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         return makeIterator(
           () => this[kState].map((pair) => [pair.name, pair.value]),
           "FormData",
@@ -5319,7 +5319,7 @@ var require_formdata = __commonJS({
        * @param {unknown} thisArg
        */
       forEach(callbackFn, thisArg = globalThis) {
-        webidl.brandCheck(this, FormData2);
+        webidl.brandCheck(this, _FormData);
         webidl.argumentLengthCheck(arguments, 1, { header: "FormData.forEach" });
         if (typeof callbackFn !== "function") {
           throw new TypeError(
@@ -5765,7 +5765,7 @@ var require_request = __commonJS({
       channels.trailers = { hasSubscribers: false };
       channels.error = { hasSubscribers: false };
     }
-    var Request = class {
+    var Request = class _Request {
       constructor(origin, {
         path,
         method,
@@ -5986,12 +5986,12 @@ var require_request = __commonJS({
         return this;
       }
       static [kHTTP1BuildRequest](origin, opts, handler) {
-        return new Request(origin, opts, handler);
+        return new _Request(origin, opts, handler);
       }
       static [kHTTP2BuildRequest](origin, opts, handler) {
         const headers = opts.headers;
         opts = { ...opts, headers: null };
-        const request = new Request(origin, opts, handler);
+        const request = new _Request(origin, opts, handler);
         request.headers = {};
         if (Array.isArray(headers)) {
           if (headers.length % 2 !== 0) {
@@ -10351,10 +10351,10 @@ var require_mock_errors = __commonJS({
   "node_modules/undici/lib/mock/mock-errors.js"(exports, module2) {
     "use strict";
     var { UndiciError } = require_errors();
-    var MockNotMatchedError = class extends UndiciError {
+    var MockNotMatchedError = class _MockNotMatchedError extends UndiciError {
       constructor(message) {
         super(message);
-        Error.captureStackTrace(this, MockNotMatchedError);
+        Error.captureStackTrace(this, _MockNotMatchedError);
         this.name = "MockNotMatchedError";
         this.message = message || "The request does not match any registered mock dispatches";
         this.code = "UND_MOCK_ERR_MOCK_NOT_MATCHED";
@@ -11409,11 +11409,11 @@ var require_headers = __commonJS({
         });
       }
     }
-    var HeadersList = class {
+    var HeadersList = class _HeadersList {
       /** @type {[string, string][]|null} */
       cookies = null;
       constructor(init) {
-        if (init instanceof HeadersList) {
+        if (init instanceof _HeadersList) {
           this[kHeadersMap] = new Map(init[kHeadersMap]);
           this[kHeadersSortedMap] = init[kHeadersSortedMap];
           this.cookies = init.cookies;
@@ -11491,7 +11491,7 @@ var require_headers = __commonJS({
         return headers;
       }
     };
-    var Headers = class {
+    var Headers = class _Headers {
       constructor(init = void 0) {
         this[kHeadersList] = new HeadersList();
         this[kGuard] = "none";
@@ -11502,7 +11502,7 @@ var require_headers = __commonJS({
       }
       // https://fetch.spec.whatwg.org/#dom-headers-append
       append(name, value) {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         webidl.argumentLengthCheck(arguments, 2, { header: "Headers.append" });
         name = webidl.converters.ByteString(name);
         value = webidl.converters.ByteString(value);
@@ -11528,7 +11528,7 @@ var require_headers = __commonJS({
       }
       // https://fetch.spec.whatwg.org/#dom-headers-delete
       delete(name) {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         webidl.argumentLengthCheck(arguments, 1, { header: "Headers.delete" });
         name = webidl.converters.ByteString(name);
         if (!isValidHeaderName(name)) {
@@ -11549,7 +11549,7 @@ var require_headers = __commonJS({
       }
       // https://fetch.spec.whatwg.org/#dom-headers-get
       get(name) {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         webidl.argumentLengthCheck(arguments, 1, { header: "Headers.get" });
         name = webidl.converters.ByteString(name);
         if (!isValidHeaderName(name)) {
@@ -11563,7 +11563,7 @@ var require_headers = __commonJS({
       }
       // https://fetch.spec.whatwg.org/#dom-headers-has
       has(name) {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         webidl.argumentLengthCheck(arguments, 1, { header: "Headers.has" });
         name = webidl.converters.ByteString(name);
         if (!isValidHeaderName(name)) {
@@ -11577,7 +11577,7 @@ var require_headers = __commonJS({
       }
       // https://fetch.spec.whatwg.org/#dom-headers-set
       set(name, value) {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         webidl.argumentLengthCheck(arguments, 2, { header: "Headers.set" });
         name = webidl.converters.ByteString(name);
         value = webidl.converters.ByteString(value);
@@ -11603,7 +11603,7 @@ var require_headers = __commonJS({
       }
       // https://fetch.spec.whatwg.org/#dom-headers-getsetcookie
       getSetCookie() {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         const list = this[kHeadersList].cookies;
         if (list) {
           return [...list];
@@ -11632,7 +11632,7 @@ var require_headers = __commonJS({
         return headers;
       }
       keys() {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         return makeIterator(
           () => [...this[kHeadersSortedMap].values()],
           "Headers",
@@ -11640,7 +11640,7 @@ var require_headers = __commonJS({
         );
       }
       values() {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         return makeIterator(
           () => [...this[kHeadersSortedMap].values()],
           "Headers",
@@ -11648,7 +11648,7 @@ var require_headers = __commonJS({
         );
       }
       entries() {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         return makeIterator(
           () => [...this[kHeadersSortedMap].values()],
           "Headers",
@@ -11660,7 +11660,7 @@ var require_headers = __commonJS({
        * @param {unknown} thisArg
        */
       forEach(callbackFn, thisArg = globalThis) {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         webidl.argumentLengthCheck(arguments, 1, { header: "Headers.forEach" });
         if (typeof callbackFn !== "function") {
           throw new TypeError(
@@ -11672,7 +11672,7 @@ var require_headers = __commonJS({
         }
       }
       [Symbol.for("nodejs.util.inspect.custom")]() {
-        webidl.brandCheck(this, Headers);
+        webidl.brandCheck(this, _Headers);
         return this[kHeadersList];
       }
     };
@@ -11747,11 +11747,11 @@ var require_response = __commonJS({
     var { types } = require("util");
     var ReadableStream = globalThis.ReadableStream || require("stream/web").ReadableStream;
     var textEncoder = new TextEncoder("utf-8");
-    var Response = class {
+    var Response = class _Response {
       // Creates network error Response.
       static error() {
         const relevantRealm = { settingsObject: {} };
-        const responseObject = new Response();
+        const responseObject = new _Response();
         responseObject[kState] = makeNetworkError();
         responseObject[kRealm] = relevantRealm;
         responseObject[kHeaders][kHeadersList] = responseObject[kState].headersList;
@@ -11770,7 +11770,7 @@ var require_response = __commonJS({
         );
         const body = extractBody(bytes);
         const relevantRealm = { settingsObject: {} };
-        const responseObject = new Response();
+        const responseObject = new _Response();
         responseObject[kRealm] = relevantRealm;
         responseObject[kHeaders][kGuard] = "response";
         responseObject[kHeaders][kRealm] = relevantRealm;
@@ -11794,7 +11794,7 @@ var require_response = __commonJS({
         if (!redirectStatusSet.has(status)) {
           throw new RangeError("Invalid status code " + status);
         }
-        const responseObject = new Response();
+        const responseObject = new _Response();
         responseObject[kRealm] = relevantRealm;
         responseObject[kHeaders][kGuard] = "immutable";
         responseObject[kHeaders][kRealm] = relevantRealm;
@@ -11824,12 +11824,12 @@ var require_response = __commonJS({
       }
       // Returns response’s type, e.g., "cors".
       get type() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kState].type;
       }
       // Returns response’s URL, if it has one; otherwise the empty string.
       get url() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         const urlList = this[kState].urlList;
         const url = urlList[urlList.length - 1] ?? null;
         if (url === null) {
@@ -11839,40 +11839,40 @@ var require_response = __commonJS({
       }
       // Returns whether response was obtained through a redirect.
       get redirected() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kState].urlList.length > 1;
       }
       // Returns response’s status.
       get status() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kState].status;
       }
       // Returns whether response’s status is an ok status.
       get ok() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kState].status >= 200 && this[kState].status <= 299;
       }
       // Returns response’s status message.
       get statusText() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kState].statusText;
       }
       // Returns response’s headers as Headers.
       get headers() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kHeaders];
       }
       get body() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return this[kState].body ? this[kState].body.stream : null;
       }
       get bodyUsed() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         return !!this[kState].body && util.isDisturbed(this[kState].body.stream);
       }
       // Returns a clone of response.
       clone() {
-        webidl.brandCheck(this, Response);
+        webidl.brandCheck(this, _Response);
         if (this.bodyUsed || this.body && this.body.locked) {
           throw webidl.errors.exception({
             header: "Response.clone",
@@ -11880,7 +11880,7 @@ var require_response = __commonJS({
           });
         }
         const clonedResponse = cloneResponse(this[kState]);
-        const clonedResponseObject = new Response();
+        const clonedResponseObject = new _Response();
         clonedResponseObject[kState] = clonedResponse;
         clonedResponseObject[kRealm] = this[kRealm];
         clonedResponseObject[kHeaders][kHeadersList] = clonedResponse.headersList;
@@ -12132,7 +12132,7 @@ var require_request2 = __commonJS({
     var requestFinalizer = new FinalizationRegistry(({ signal, abort }) => {
       signal.removeEventListener("abort", abort);
     });
-    var Request = class {
+    var Request = class _Request {
       // https://fetch.spec.whatwg.org/#dom-request
       constructor(input, init = {}) {
         if (input === kInit) {
@@ -12169,7 +12169,7 @@ var require_request2 = __commonJS({
           request = makeRequest({ urlList: [parsedURL] });
           fallbackMode = "cors";
         } else {
-          assert(input instanceof Request);
+          assert(input instanceof _Request);
           request = input[kState];
           signal = input[kSignal];
         }
@@ -12368,7 +12368,7 @@ var require_request2 = __commonJS({
             fillHeaders(this[kHeaders], headers);
           }
         }
-        const inputBody = input instanceof Request ? input[kState].body : null;
+        const inputBody = input instanceof _Request ? input[kState].body : null;
         if ((init.body != null || inputBody != null) && (request.method === "GET" || request.method === "HEAD")) {
           throw new TypeError("Request with GET/HEAD method cannot have body.");
         }
@@ -12417,25 +12417,25 @@ var require_request2 = __commonJS({
       }
       // Returns request’s HTTP method, which is "GET" by default.
       get method() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].method;
       }
       // Returns the URL of request as a string.
       get url() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return URLSerializer(this[kState].url);
       }
       // Returns a Headers object consisting of the headers associated with request.
       // Note that headers added in the network layer by the user agent will not
       // be accounted for in this object, e.g., the "Host" header.
       get headers() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kHeaders];
       }
       // Returns the kind of resource requested by request, e.g., "document"
       // or "script".
       get destination() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].destination;
       }
       // Returns the referrer of request. Its value can be a same-origin URL if
@@ -12444,7 +12444,7 @@ var require_request2 = __commonJS({
       // during fetching to determine the value of the `Referer` header of the
       // request being made.
       get referrer() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         if (this[kState].referrer === "no-referrer") {
           return "";
         }
@@ -12457,14 +12457,14 @@ var require_request2 = __commonJS({
       // This is used during fetching to compute the value of the request’s
       // referrer.
       get referrerPolicy() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].referrerPolicy;
       }
       // Returns the mode associated with request, which is a string indicating
       // whether the request will use CORS, or will be restricted to same-origin
       // URLs.
       get mode() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].mode;
       }
       // Returns the credentials mode associated with request,
@@ -12477,7 +12477,7 @@ var require_request2 = __commonJS({
       // which is a string indicating how the request will
       // interact with the browser’s cache when fetching.
       get cache() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].cache;
       }
       // Returns the redirect mode associated with request,
@@ -12485,61 +12485,61 @@ var require_request2 = __commonJS({
       // request will be handled during fetching. A request
       // will follow redirects by default.
       get redirect() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].redirect;
       }
       // Returns request’s subresource integrity metadata, which is a
       // cryptographic hash of the resource being fetched. Its value
       // consists of multiple hashes separated by whitespace. [SRI]
       get integrity() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].integrity;
       }
       // Returns a boolean indicating whether or not request can outlive the
       // global in which it was created.
       get keepalive() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].keepalive;
       }
       // Returns a boolean indicating whether or not request is for a reload
       // navigation.
       get isReloadNavigation() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].reloadNavigation;
       }
       // Returns a boolean indicating whether or not request is for a history
       // navigation (a.k.a. back-foward navigation).
       get isHistoryNavigation() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].historyNavigation;
       }
       // Returns the signal associated with request, which is an AbortSignal
       // object indicating whether or not request has been aborted, and its
       // abort event handler.
       get signal() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kSignal];
       }
       get body() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return this[kState].body ? this[kState].body.stream : null;
       }
       get bodyUsed() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return !!this[kState].body && util.isDisturbed(this[kState].body.stream);
       }
       get duplex() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         return "half";
       }
       // Returns a clone of request.
       clone() {
-        webidl.brandCheck(this, Request);
+        webidl.brandCheck(this, _Request);
         if (this.bodyUsed || this.body?.locked) {
           throw new TypeError("unusable");
         }
         const clonedRequest = cloneRequest(this[kState]);
-        const clonedRequestObject = new Request(kInit);
+        const clonedRequestObject = new _Request(kInit);
         clonedRequestObject[kState] = clonedRequest;
         clonedRequestObject[kRealm] = this[kRealm];
         clonedRequestObject[kHeaders] = new Headers();
@@ -13789,7 +13789,7 @@ var require_progressevent = __commonJS({
     "use strict";
     var { webidl } = require_webidl();
     var kState = Symbol("ProgressEvent state");
-    var ProgressEvent = class extends Event {
+    var ProgressEvent = class _ProgressEvent extends Event {
       constructor(type, eventInitDict = {}) {
         type = webidl.converters.DOMString(type);
         eventInitDict = webidl.converters.ProgressEventInit(eventInitDict ?? {});
@@ -13801,15 +13801,15 @@ var require_progressevent = __commonJS({
         };
       }
       get lengthComputable() {
-        webidl.brandCheck(this, ProgressEvent);
+        webidl.brandCheck(this, _ProgressEvent);
         return this[kState].lengthComputable;
       }
       get loaded() {
-        webidl.brandCheck(this, ProgressEvent);
+        webidl.brandCheck(this, _ProgressEvent);
         return this[kState].loaded;
       }
       get total() {
-        webidl.brandCheck(this, ProgressEvent);
+        webidl.brandCheck(this, _ProgressEvent);
         return this[kState].total;
       }
     };
@@ -14341,7 +14341,7 @@ var require_filereader = __commonJS({
     } = require_symbols3();
     var { webidl } = require_webidl();
     var { kEnumerableProperty } = require_util();
-    var FileReader = class extends EventTarget {
+    var FileReader = class _FileReader extends EventTarget {
       constructor() {
         super();
         this[kState] = "empty";
@@ -14361,7 +14361,7 @@ var require_filereader = __commonJS({
        * @param {import('buffer').Blob} blob
        */
       readAsArrayBuffer(blob) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         webidl.argumentLengthCheck(arguments, 1, { header: "FileReader.readAsArrayBuffer" });
         blob = webidl.converters.Blob(blob, { strict: false });
         readOperation(this, blob, "ArrayBuffer");
@@ -14371,7 +14371,7 @@ var require_filereader = __commonJS({
        * @param {import('buffer').Blob} blob
        */
       readAsBinaryString(blob) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         webidl.argumentLengthCheck(arguments, 1, { header: "FileReader.readAsBinaryString" });
         blob = webidl.converters.Blob(blob, { strict: false });
         readOperation(this, blob, "BinaryString");
@@ -14382,7 +14382,7 @@ var require_filereader = __commonJS({
        * @param {string?} encoding
        */
       readAsText(blob, encoding = void 0) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         webidl.argumentLengthCheck(arguments, 1, { header: "FileReader.readAsText" });
         blob = webidl.converters.Blob(blob, { strict: false });
         if (encoding !== void 0) {
@@ -14395,7 +14395,7 @@ var require_filereader = __commonJS({
        * @param {import('buffer').Blob} blob
        */
       readAsDataURL(blob) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         webidl.argumentLengthCheck(arguments, 1, { header: "FileReader.readAsDataURL" });
         blob = webidl.converters.Blob(blob, { strict: false });
         readOperation(this, blob, "DataURL");
@@ -14422,7 +14422,7 @@ var require_filereader = __commonJS({
        * @see https://w3c.github.io/FileAPI/#dom-filereader-readystate
        */
       get readyState() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         switch (this[kState]) {
           case "empty":
             return this.EMPTY;
@@ -14436,22 +14436,22 @@ var require_filereader = __commonJS({
        * @see https://w3c.github.io/FileAPI/#dom-filereader-result
        */
       get result() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kResult];
       }
       /**
        * @see https://w3c.github.io/FileAPI/#dom-filereader-error
        */
       get error() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kError];
       }
       get onloadend() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kEvents].loadend;
       }
       set onloadend(fn) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         if (this[kEvents].loadend) {
           this.removeEventListener("loadend", this[kEvents].loadend);
         }
@@ -14463,11 +14463,11 @@ var require_filereader = __commonJS({
         }
       }
       get onerror() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kEvents].error;
       }
       set onerror(fn) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         if (this[kEvents].error) {
           this.removeEventListener("error", this[kEvents].error);
         }
@@ -14479,11 +14479,11 @@ var require_filereader = __commonJS({
         }
       }
       get onloadstart() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kEvents].loadstart;
       }
       set onloadstart(fn) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         if (this[kEvents].loadstart) {
           this.removeEventListener("loadstart", this[kEvents].loadstart);
         }
@@ -14495,11 +14495,11 @@ var require_filereader = __commonJS({
         }
       }
       get onprogress() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kEvents].progress;
       }
       set onprogress(fn) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         if (this[kEvents].progress) {
           this.removeEventListener("progress", this[kEvents].progress);
         }
@@ -14511,11 +14511,11 @@ var require_filereader = __commonJS({
         }
       }
       get onload() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kEvents].load;
       }
       set onload(fn) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         if (this[kEvents].load) {
           this.removeEventListener("load", this[kEvents].load);
         }
@@ -14527,11 +14527,11 @@ var require_filereader = __commonJS({
         }
       }
       get onabort() {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         return this[kEvents].abort;
       }
       set onabort(fn) {
-        webidl.brandCheck(this, FileReader);
+        webidl.brandCheck(this, _FileReader);
         if (this[kEvents].abort) {
           this.removeEventListener("abort", this[kEvents].abort);
         }
@@ -14641,7 +14641,7 @@ var require_cache = __commonJS({
     var { urlIsHttpHttpsScheme, createDeferredPromise, readAllBytes } = require_util2();
     var assert = require("assert");
     var { getGlobalDispatcher } = require_global2();
-    var Cache = class {
+    var Cache = class _Cache {
       /**
        * @see https://w3c.github.io/ServiceWorker/#dfn-relevant-request-response-list
        * @type {requestResponseList}
@@ -14654,7 +14654,7 @@ var require_cache = __commonJS({
         this.#relevantRequestResponseList = arguments[1];
       }
       async match(request, options = {}) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         webidl.argumentLengthCheck(arguments, 1, { header: "Cache.match" });
         request = webidl.converters.RequestInfo(request);
         options = webidl.converters.CacheQueryOptions(options);
@@ -14665,7 +14665,7 @@ var require_cache = __commonJS({
         return p[0];
       }
       async matchAll(request = void 0, options = {}) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         if (request !== void 0)
           request = webidl.converters.RequestInfo(request);
         options = webidl.converters.CacheQueryOptions(options);
@@ -14704,7 +14704,7 @@ var require_cache = __commonJS({
         return Object.freeze(responseList);
       }
       async add(request) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         webidl.argumentLengthCheck(arguments, 1, { header: "Cache.add" });
         request = webidl.converters.RequestInfo(request);
         const requests = [request];
@@ -14712,7 +14712,7 @@ var require_cache = __commonJS({
         return await responseArrayPromise;
       }
       async addAll(requests) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         webidl.argumentLengthCheck(arguments, 1, { header: "Cache.addAll" });
         requests = webidl.converters["sequence<RequestInfo>"](requests);
         const responsePromises = [];
@@ -14810,7 +14810,7 @@ var require_cache = __commonJS({
         return cacheJobPromise.promise;
       }
       async put(request, response) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         webidl.argumentLengthCheck(arguments, 2, { header: "Cache.put" });
         request = webidl.converters.RequestInfo(request);
         response = webidl.converters.Response(response);
@@ -14890,7 +14890,7 @@ var require_cache = __commonJS({
         return cacheJobPromise.promise;
       }
       async delete(request, options = {}) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         webidl.argumentLengthCheck(arguments, 1, { header: "Cache.delete" });
         request = webidl.converters.RequestInfo(request);
         options = webidl.converters.CacheQueryOptions(options);
@@ -14935,7 +14935,7 @@ var require_cache = __commonJS({
        * @returns {readonly Request[]}
        */
       async keys(request = void 0, options = {}) {
-        webidl.brandCheck(this, Cache);
+        webidl.brandCheck(this, _Cache);
         if (request !== void 0)
           request = webidl.converters.RequestInfo(request);
         options = webidl.converters.CacheQueryOptions(options);
@@ -15167,7 +15167,7 @@ var require_cachestorage = __commonJS({
     var { Cache } = require_cache();
     var { webidl } = require_webidl();
     var { kEnumerableProperty } = require_util();
-    var CacheStorage = class {
+    var CacheStorage = class _CacheStorage {
       /**
        * @see https://w3c.github.io/ServiceWorker/#dfn-relevant-name-to-cache-map
        * @type {Map<string, import('./cache').requestResponseList}
@@ -15179,7 +15179,7 @@ var require_cachestorage = __commonJS({
         }
       }
       async match(request, options = {}) {
-        webidl.brandCheck(this, CacheStorage);
+        webidl.brandCheck(this, _CacheStorage);
         webidl.argumentLengthCheck(arguments, 1, { header: "CacheStorage.match" });
         request = webidl.converters.RequestInfo(request);
         options = webidl.converters.MultiCacheQueryOptions(options);
@@ -15205,7 +15205,7 @@ var require_cachestorage = __commonJS({
        * @returns {Promise<boolean>}
        */
       async has(cacheName) {
-        webidl.brandCheck(this, CacheStorage);
+        webidl.brandCheck(this, _CacheStorage);
         webidl.argumentLengthCheck(arguments, 1, { header: "CacheStorage.has" });
         cacheName = webidl.converters.DOMString(cacheName);
         return this.#caches.has(cacheName);
@@ -15216,7 +15216,7 @@ var require_cachestorage = __commonJS({
        * @returns {Promise<Cache>}
        */
       async open(cacheName) {
-        webidl.brandCheck(this, CacheStorage);
+        webidl.brandCheck(this, _CacheStorage);
         webidl.argumentLengthCheck(arguments, 1, { header: "CacheStorage.open" });
         cacheName = webidl.converters.DOMString(cacheName);
         if (this.#caches.has(cacheName)) {
@@ -15233,7 +15233,7 @@ var require_cachestorage = __commonJS({
        * @returns {Promise<boolean>}
        */
       async delete(cacheName) {
-        webidl.brandCheck(this, CacheStorage);
+        webidl.brandCheck(this, _CacheStorage);
         webidl.argumentLengthCheck(arguments, 1, { header: "CacheStorage.delete" });
         cacheName = webidl.converters.DOMString(cacheName);
         return this.#caches.delete(cacheName);
@@ -15243,7 +15243,7 @@ var require_cachestorage = __commonJS({
        * @returns {string[]}
        */
       async keys() {
-        webidl.brandCheck(this, CacheStorage);
+        webidl.brandCheck(this, _CacheStorage);
         const keys = this.#caches.keys();
         return [...keys];
       }
@@ -15773,7 +15773,7 @@ var require_events = __commonJS({
     var { webidl } = require_webidl();
     var { kEnumerableProperty } = require_util();
     var { MessagePort } = require("worker_threads");
-    var MessageEvent = class extends Event {
+    var MessageEvent = class _MessageEvent extends Event {
       #eventInit;
       constructor(type, eventInitDict = {}) {
         webidl.argumentLengthCheck(arguments, 1, { header: "MessageEvent constructor" });
@@ -15783,32 +15783,32 @@ var require_events = __commonJS({
         this.#eventInit = eventInitDict;
       }
       get data() {
-        webidl.brandCheck(this, MessageEvent);
+        webidl.brandCheck(this, _MessageEvent);
         return this.#eventInit.data;
       }
       get origin() {
-        webidl.brandCheck(this, MessageEvent);
+        webidl.brandCheck(this, _MessageEvent);
         return this.#eventInit.origin;
       }
       get lastEventId() {
-        webidl.brandCheck(this, MessageEvent);
+        webidl.brandCheck(this, _MessageEvent);
         return this.#eventInit.lastEventId;
       }
       get source() {
-        webidl.brandCheck(this, MessageEvent);
+        webidl.brandCheck(this, _MessageEvent);
         return this.#eventInit.source;
       }
       get ports() {
-        webidl.brandCheck(this, MessageEvent);
+        webidl.brandCheck(this, _MessageEvent);
         if (!Object.isFrozen(this.#eventInit.ports)) {
           Object.freeze(this.#eventInit.ports);
         }
         return this.#eventInit.ports;
       }
       initMessageEvent(type, bubbles = false, cancelable = false, data = null, origin = "", lastEventId = "", source = null, ports = []) {
-        webidl.brandCheck(this, MessageEvent);
+        webidl.brandCheck(this, _MessageEvent);
         webidl.argumentLengthCheck(arguments, 1, { header: "MessageEvent.initMessageEvent" });
-        return new MessageEvent(type, {
+        return new _MessageEvent(type, {
           bubbles,
           cancelable,
           data,
@@ -15819,7 +15819,7 @@ var require_events = __commonJS({
         });
       }
     };
-    var CloseEvent = class extends Event {
+    var CloseEvent = class _CloseEvent extends Event {
       #eventInit;
       constructor(type, eventInitDict = {}) {
         webidl.argumentLengthCheck(arguments, 1, { header: "CloseEvent constructor" });
@@ -15829,19 +15829,19 @@ var require_events = __commonJS({
         this.#eventInit = eventInitDict;
       }
       get wasClean() {
-        webidl.brandCheck(this, CloseEvent);
+        webidl.brandCheck(this, _CloseEvent);
         return this.#eventInit.wasClean;
       }
       get code() {
-        webidl.brandCheck(this, CloseEvent);
+        webidl.brandCheck(this, _CloseEvent);
         return this.#eventInit.code;
       }
       get reason() {
-        webidl.brandCheck(this, CloseEvent);
+        webidl.brandCheck(this, _CloseEvent);
         return this.#eventInit.reason;
       }
     };
-    var ErrorEvent = class extends Event {
+    var ErrorEvent = class _ErrorEvent extends Event {
       #eventInit;
       constructor(type, eventInitDict) {
         webidl.argumentLengthCheck(arguments, 1, { header: "ErrorEvent constructor" });
@@ -15851,23 +15851,23 @@ var require_events = __commonJS({
         this.#eventInit = eventInitDict;
       }
       get message() {
-        webidl.brandCheck(this, ErrorEvent);
+        webidl.brandCheck(this, _ErrorEvent);
         return this.#eventInit.message;
       }
       get filename() {
-        webidl.brandCheck(this, ErrorEvent);
+        webidl.brandCheck(this, _ErrorEvent);
         return this.#eventInit.filename;
       }
       get lineno() {
-        webidl.brandCheck(this, ErrorEvent);
+        webidl.brandCheck(this, _ErrorEvent);
         return this.#eventInit.lineno;
       }
       get colno() {
-        webidl.brandCheck(this, ErrorEvent);
+        webidl.brandCheck(this, _ErrorEvent);
         return this.#eventInit.colno;
       }
       get error() {
-        webidl.brandCheck(this, ErrorEvent);
+        webidl.brandCheck(this, _ErrorEvent);
         return this.#eventInit.error;
       }
     };
@@ -16566,7 +16566,7 @@ var require_websocket = __commonJS({
     var { getGlobalDispatcher } = require_global2();
     var { types } = require("util");
     var experimentalWarned = false;
-    var WebSocket = class extends EventTarget {
+    var WebSocket = class _WebSocket extends EventTarget {
       #events = {
         open: null,
         error: null,
@@ -16630,7 +16630,7 @@ var require_websocket = __commonJS({
           (response) => this.#onConnectionEstablished(response),
           options
         );
-        this[kReadyState] = WebSocket.CONNECTING;
+        this[kReadyState] = _WebSocket.CONNECTING;
         this[kBinaryType] = "blob";
       }
       /**
@@ -16639,7 +16639,7 @@ var require_websocket = __commonJS({
        * @param {string|undefined} reason
        */
       close(code = void 0, reason = void 0) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         if (code !== void 0) {
           code = webidl.converters["unsigned short"](code, { clamp: true });
         }
@@ -16661,10 +16661,10 @@ var require_websocket = __commonJS({
             );
           }
         }
-        if (this[kReadyState] === WebSocket.CLOSING || this[kReadyState] === WebSocket.CLOSED) {
+        if (this[kReadyState] === _WebSocket.CLOSING || this[kReadyState] === _WebSocket.CLOSED) {
         } else if (!isEstablished(this)) {
           failWebsocketConnection(this, "Connection was closed before it was established.");
-          this[kReadyState] = WebSocket.CLOSING;
+          this[kReadyState] = _WebSocket.CLOSING;
         } else if (!isClosing(this)) {
           const frame = new WebsocketFrameSend();
           if (code !== void 0 && reason === void 0) {
@@ -16685,7 +16685,7 @@ var require_websocket = __commonJS({
           });
           this[kReadyState] = states.CLOSING;
         } else {
-          this[kReadyState] = WebSocket.CLOSING;
+          this[kReadyState] = _WebSocket.CLOSING;
         }
       }
       /**
@@ -16693,10 +16693,10 @@ var require_websocket = __commonJS({
        * @param {NodeJS.TypedArray|ArrayBuffer|Blob|string} data
        */
       send(data) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         webidl.argumentLengthCheck(arguments, 1, { header: "WebSocket.send" });
         data = webidl.converters.WebSocketSendData(data);
-        if (this[kReadyState] === WebSocket.CONNECTING) {
+        if (this[kReadyState] === _WebSocket.CONNECTING) {
           throw new DOMException2("Sent before connected.", "InvalidStateError");
         }
         if (!isEstablished(this) || isClosing(this)) {
@@ -16741,31 +16741,31 @@ var require_websocket = __commonJS({
         }
       }
       get readyState() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this[kReadyState];
       }
       get bufferedAmount() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#bufferedAmount;
       }
       get url() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return URLSerializer(this[kWebSocketURL]);
       }
       get extensions() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#extensions;
       }
       get protocol() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#protocol;
       }
       get onopen() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#events.open;
       }
       set onopen(fn) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         if (this.#events.open) {
           this.removeEventListener("open", this.#events.open);
         }
@@ -16777,11 +16777,11 @@ var require_websocket = __commonJS({
         }
       }
       get onerror() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#events.error;
       }
       set onerror(fn) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         if (this.#events.error) {
           this.removeEventListener("error", this.#events.error);
         }
@@ -16793,11 +16793,11 @@ var require_websocket = __commonJS({
         }
       }
       get onclose() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#events.close;
       }
       set onclose(fn) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         if (this.#events.close) {
           this.removeEventListener("close", this.#events.close);
         }
@@ -16809,11 +16809,11 @@ var require_websocket = __commonJS({
         }
       }
       get onmessage() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this.#events.message;
       }
       set onmessage(fn) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         if (this.#events.message) {
           this.removeEventListener("message", this.#events.message);
         }
@@ -16825,11 +16825,11 @@ var require_websocket = __commonJS({
         }
       }
       get binaryType() {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         return this[kBinaryType];
       }
       set binaryType(type) {
-        webidl.brandCheck(this, WebSocket);
+        webidl.brandCheck(this, _WebSocket);
         if (type !== "blob" && type !== "arraybuffer") {
           this[kBinaryType] = "blob";
         } else {
@@ -17211,12 +17211,12 @@ var require_lib = __commonJS({
     var RetryableHttpVerbs = ["OPTIONS", "GET", "DELETE", "HEAD"];
     var ExponentialBackoffCeiling = 10;
     var ExponentialBackoffTimeSlice = 5;
-    var HttpClientError = class extends Error {
+    var HttpClientError = class _HttpClientError extends Error {
       constructor(message, statusCode) {
         super(message);
         this.name = "HttpClientError";
         this.statusCode = statusCode;
-        Object.setPrototypeOf(this, HttpClientError.prototype);
+        Object.setPrototypeOf(this, _HttpClientError.prototype);
       }
     };
     exports.HttpClientError = HttpClientError;
@@ -17849,13 +17849,13 @@ var require_oidc_utils = __commonJS({
     var http_client_1 = require_lib();
     var auth_1 = require_auth();
     var core_1 = require_core();
-    var OidcClient = class {
+    var OidcClient = class _OidcClient {
       static createHttpClient(allowRetry = true, maxRetry = 10) {
         const requestOptions = {
           allowRetries: allowRetry,
           maxRetries: maxRetry
         };
-        return new http_client_1.HttpClient("actions/oidc-client", [new auth_1.BearerCredentialHandler(OidcClient.getRequestToken())], requestOptions);
+        return new http_client_1.HttpClient("actions/oidc-client", [new auth_1.BearerCredentialHandler(_OidcClient.getRequestToken())], requestOptions);
       }
       static getRequestToken() {
         const token = process.env["ACTIONS_ID_TOKEN_REQUEST_TOKEN"];
@@ -17874,7 +17874,7 @@ var require_oidc_utils = __commonJS({
       static getCall(id_token_url) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-          const httpclient = OidcClient.createHttpClient();
+          const httpclient = _OidcClient.createHttpClient();
           const res = yield httpclient.getJson(id_token_url).catch((error) => {
             throw new Error(`Failed to get ID Token. 
  
@@ -17892,13 +17892,13 @@ var require_oidc_utils = __commonJS({
       static getIDToken(audience) {
         return __awaiter(this, void 0, void 0, function* () {
           try {
-            let id_token_url = OidcClient.getIDTokenUrl();
+            let id_token_url = _OidcClient.getIDTokenUrl();
             if (audience) {
               const encodedAudience = encodeURIComponent(audience);
               id_token_url = `${id_token_url}&audience=${encodedAudience}`;
             }
             core_1.debug(`ID token url is ${id_token_url}`);
-            const id_token = yield OidcClient.getCall(id_token_url);
+            const id_token = yield _OidcClient.getCall(id_token_url);
             core_1.setSecret(id_token);
             return id_token;
           } catch (error) {
