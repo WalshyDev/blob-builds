@@ -2,6 +2,7 @@ on:
   push:
     paths:
       - 'site/**'
+      - '.github/workflows/site.yml'
 
 jobs:
   build:
