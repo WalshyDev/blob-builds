@@ -31,7 +31,6 @@ export async function setup(ctx: Ctx, next: Next): Promise<Response | void> {
 	const analytics = new Analytics();
 	analytics.set({
 		url: ctx.req.url,
-		path: ctx.req.path,
 		method: ctx.req.method,
 	});
 
@@ -50,6 +49,7 @@ export async function writeAnalytics(ctx: Ctx, next: Next): Promise<Response | v
 	const analytics = getStore().analytics;
 
 	analytics.set({
+		path: ctx.req.routePath,
 		statusCode: ctx.res.status,
 		responseTime: Date.now() - ctx.get('requestStartTime'),
 	});
