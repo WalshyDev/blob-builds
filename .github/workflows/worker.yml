@@ -1,0 +1,88 @@
+on:
+  push:
+    paths:
+      - 'worker/**'
+      - '.github/workflows/worker.yml'
+
+jobs:
+  main:
+    name: Lint, build & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      # We lint from root which is a bit awkward since we need to install root too
+      # TODO: Improve
+      - name: Lint
+        working-directory: .
+        run: npm ci && npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test migrations
+        run: npm run migrate:local
+
+      - name: Test
+        run: npm test
+
+  deploy-dev:
+    name: Deploy dev
+    needs: main
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Migrations
+        run: npm run migrate:dev
+
+      - name: Deploy dev
+        run: npm run deploy:dev
+
+  deploy-prod:
+    name: Deploy prod
+    needs: main
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Migrations
+        run: npm run migrate:production
+
+      - name: Deploy prod
+        run: npm run deploy:prod
