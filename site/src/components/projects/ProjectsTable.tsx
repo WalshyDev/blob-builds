@@ -4,7 +4,7 @@ import Link from '~/components/Link';
 import Constants from '~/utils/constants';
 import { Pages } from '~/utils/routes';
 import { classNames } from '~/utils/utils';
-import type { ProjectList } from 'worker/src/store/ProjectStore';
+import type { ProjectList } from '../../../../worker/src/store/ProjectStore';
 
 interface ProjectsByOwner {
 	name: string;
@@ -38,7 +38,6 @@ interface Props {
 
 export function ProjectsTable({ projectList }: Props) {
 	const projectsByOwner = projectListToProjectsByOwner(projectList);
-	console.log(projectsByOwner);
 
 	return (
 		<div className="mt-8 overflow-x-auto inline-block min-w-full align-middle">

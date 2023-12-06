@@ -232,7 +232,7 @@ function toBuildResponse(
 		dependencies: build.dependencies,
 		releaseNotes: build.releaseNotes,
 		commitHash: build.commitHash,
-		commitLink: build.commitHash !== undefined && project.repoLink !== undefined
+		commitLink: build.commitHash !== null && project.repoLink !== null
 			? `${project.repoLink}/commit/${build.commitHash}`
 			: undefined,
 	};

@@ -1,4 +1,5 @@
 import { DownloadButton } from '~/components/DownloadButton';
+import Link from '~/components/Link';
 import { Pages } from '~/utils/routes';
 import { classNames } from '~/utils/utils';
 
@@ -53,6 +54,9 @@ export function BuildsTable({ builds, project }: Props) {
 											{build.releaseNotes && (
 												<>
 													<br />
+													{build.commitHash && build.commitLink && (
+														<Link href={build.commitLink}>{build.commitHash?.slice(0, 8)}</Link>
+													)}{' '}
 													{build.releaseNotes}
 												</>
 											)}
