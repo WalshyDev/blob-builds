@@ -51,7 +51,7 @@ export async function writeAnalytics(ctx: Ctx, next: Next): Promise<Response | v
 	const analytics = getStore().analytics;
 
 	analytics.set({
-		path: ctx.req.routePath,
+		path: ctx.req.routePath === '/*' ? ctx.req.path : ctx.req.routePath,
 		project: projectName,
 		releaseChannel,
 
