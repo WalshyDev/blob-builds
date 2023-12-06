@@ -18,6 +18,7 @@ export const projects = sqliteTable('projects', {
 	userId: integer('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
 	description: text('description').notNull(),
+	repoLink: text('repo_link'),
 }, (table) => ({
 	projectsNameIdx: index('projects_name_idx').on(table.name),
 }));
@@ -56,6 +57,7 @@ export const builds = sqliteTable('builds', {
 	supportedVersions: text('supported_versions').notNull(),
 	dependencies: text('dependencies', { mode: 'json' }).notNull().$type<string[]>(),
 	releaseNotes: text('release_notes').notNull(),
+	commitHash: text('commit_hash'),
 }, (table) => ({
 	pk: primaryKey({ columns: [table.buildId, table.releaseChannelId] }),
 }));

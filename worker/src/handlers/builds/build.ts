@@ -14,7 +14,7 @@ import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
-import type { Build, BuildWithReleaseChannel } from '~/store/schema';
+import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
 
 // GET /api/builds/:projectName
 export async function getAllProjectBuilds(ctx: Ctx) {
@@ -38,7 +38,7 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 		res[releaseChannel.name] = [];
 	}
 	for (const build of builds) {
-		res[build.releaseChannel].push(toBuildResponse(build, projectName));
+		res[build.releaseChannel].push(toBuildResponse(build, project));
 	}
 
 	return success('Success', res);
@@ -48,6 +48,10 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 export async function getProjectLatestBuild(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
+	const project = await ProjectStore.getProjectByName(projectName);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
 	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
 	if (builds === undefined || builds.length === 0) {
 		return errors.BuildNotFound.toResponse(ctx);
@@ -55,7 +59,7 @@ export async function getProjectLatestBuild(ctx: Context) {
 
 	const res: { [releaseChannel: string]: BuildResponse } = {};
 	for (const build of builds) {
-		res[build.releaseChannel] = toBuildResponse(build, projectName, undefined, true);
+		res[build.releaseChannel] = toBuildResponse(build, project, undefined, true);
 	}
 
 	return success('Success', res);
@@ -66,12 +70,16 @@ export async function getLatestBuildForReleaseChannel(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 	const releaseChannel = ctx.req.param('releaseChannel');
 
+	const project = await ProjectStore.getProjectByName(projectName);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
 	const build = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannel);
 	if (build === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	return success('Success', toBuildResponse(build, projectName, releaseChannel, true));
+	return success('Success', toBuildResponse(build, project, releaseChannel, true));
 }
 
 // GET /api/builds/:projectName/:releaseChannel/:version
@@ -85,12 +93,16 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 		return errors.InvalidBuildId.toResponse(ctx);
 	}
 
+	const project = await ProjectStore.getProjectByName(projectName);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
 	const build = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannel, buildId);
 	if (build === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	return success('Success', toBuildResponse(build, projectName, releaseChannel));
+	return success('Success', toBuildResponse(build, project, releaseChannel));
 }
 
 // POST /api/builds/:projectName/:releaseChannel/upload
@@ -185,9 +197,10 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		releaseChannelId: releaseChannel.releaseChannelId,
 		projectId: project.projectId,
 		fileHash,
-		supportedVersions: metadata.supported_versions ?? releaseChannel.supportedVersions,
+		supportedVersions: metadata.supported_versions ?? metadata.supportedVersions ?? releaseChannel.supportedVersions,
 		dependencies: metadata.dependencies ?? releaseChannel.dependencies,
-		releaseNotes: metadata.release_notes ?? '',
+		releaseNotes: metadata.release_notes ?? metadata.releaseNotes ?? '',
+		commitHash: metadata.commitHash,
 	});
 
 	return success('Success');
@@ -195,17 +208,19 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 
 function toBuildResponse(
 	build: Build | BuildWithReleaseChannel,
-	projectName: string,
+	project: Project,
 	releaseChannel?: string,
 	latest: boolean = false,
 ): BuildResponse {
 	const version = latest ? 'latest' : String(build.buildId);
 	const downloadPath = Pages.downloadSpecificBuild.toUrl({
-		projectName, releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel, version,
+		projectName: project.name,
+		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
+		version,
 	});
 
 	return {
-		projectName,
+		projectName: project.name,
 		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		buildId: build.buildId,
 		build_id: build.buildId, // TODO: Remove - here to keep compatibility for auto-updater
@@ -216,5 +231,9 @@ function toBuildResponse(
 		supportedVersions: build.supportedVersions,
 		dependencies: build.dependencies,
 		releaseNotes: build.releaseNotes,
+		commitHash: build.commitHash,
+		commitLink: build.commitHash !== undefined && project.repoLink !== undefined
+			? `${project.repoLink}/commit/${build.commitHash}`
+			: undefined,
 	};
 }

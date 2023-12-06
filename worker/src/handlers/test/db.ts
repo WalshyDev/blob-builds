@@ -17,9 +17,10 @@ export const dbQuerySchema = z.object({
 
 	project: z.object({
 		projectId: z.number(),
+		userId: z.number(),
 		name: z.string(),
 		description: z.string(),
-		userId: z.number(),
+		repoLink: z.string().nullable().optional(),
 	}).optional(),
 
 	releaseChannel: z.object({

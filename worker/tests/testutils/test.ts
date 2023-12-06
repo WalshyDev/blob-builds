@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import path from 'node:path';
 import JSZip from 'jszip';
 import { randomInt } from 'tests/testutils/rand';
 import { expect } from 'vitest';
@@ -13,6 +14,8 @@ export async function setupWorker() {
 		vars: {
 			ENVIRONMENT: 'test',
 		},
+		persist: true,
+		persistTo: path.resolve('.wrangler/state/unit-test'),
 
 		updateCheck: false,
 		experimental: {
@@ -65,9 +68,10 @@ export async function createMockProject(
 	const randId = randomInt();
 	const projectToCreate: InsertProject = {
 		projectId: project?.projectId ?? randId,
+		userId: project?.userId ?? user.userId,
 		name: project?.name ?? `test-project-${randId}`,
 		description: project?.description ?? 'test project',
-		userId: project?.userId ?? user.userId,
+		repoLink: project?.repoLink ?? null,
 	};
 
 	const createdProject = await populateDb<Project>(worker, {

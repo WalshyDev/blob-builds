@@ -27,6 +27,7 @@ export async function getProject(ctx: Context) {
 export const newProjectSchema = z.object({
 	name: z.string().min(3).max(64),
 	description: z.string().min(6).max(2000).optional(),
+	repoLink: z.string().url().optional(),
 	releaseChannels: z.array(z.object({
 		name: z.string(),
 		supportedVersions: z.string(),
@@ -57,6 +58,7 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 		userId,
 		name: body.name,
 		description: body.description ?? 'A new project',
+		repoLink: body.repoLink,
 	});
 	if (project === undefined) {
 		return errors.InternalError.toResponse(ctx);
@@ -79,6 +81,8 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 		release_channels: channels,
 	});
 }
+
+// TODO: PATCH /api/projects/:projectName
 
 export const projectSettingsSchema = z.object({
 	overwritePluginYml: z.boolean().optional(),

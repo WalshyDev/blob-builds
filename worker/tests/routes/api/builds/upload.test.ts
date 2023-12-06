@@ -10,6 +10,7 @@ import { describe, test, expect, beforeAll } from 'vitest';
 import { UnstableDevWorker } from 'wrangler';
 import * as errors from '~/api/errors';
 import { Build, Project, ReleaseChannel, User } from '~/store/schema';
+import { UploadMetadata } from '~/utils/validator/uploadValidator';
 
 describe('Test uploads', () => {
 	let worker: UnstableDevWorker;
@@ -40,6 +41,8 @@ describe('Test uploads', () => {
 					headers: {
 						Authorization: `Bearer ${user.apiToken}`,
 					},
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-expect-error
 					body: formData,
 				},
 			);
@@ -67,6 +70,8 @@ describe('Test uploads', () => {
 					headers: {
 						Authorization: `Bearer ${user.apiToken}`,
 					},
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-expect-error
 					body: formData,
 				},
 			);
@@ -94,6 +99,8 @@ describe('Test uploads', () => {
 					headers: {
 						Authorization: `Bearer ${user.apiToken}`,
 					},
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-expect-error
 					body: formData,
 				},
 			);
@@ -124,6 +131,8 @@ describe('Test uploads', () => {
 					headers: {
 						Authorization: `Bearer ${user.apiToken}`,
 					},
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-expect-error
 					body: formData,
 				},
 			);
@@ -154,6 +163,8 @@ describe('Test uploads', () => {
 					headers: {
 						Authorization: `Bearer ${user.apiToken}`,
 					},
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-expect-error
 					body: formData,
 				},
 			);
@@ -184,6 +195,8 @@ describe('Test uploads', () => {
 					headers: {
 						Authorization: `Bearer ${user.apiToken}`,
 					},
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-expect-error
 					body: formData,
 				},
 			);
@@ -201,13 +214,118 @@ describe('Test uploads', () => {
 		});
 	});
 
+	describe('Git info', () => {
+		test('Commit hash too short', async () => {
+			const res = await uploadFile(
+				worker,
+				user,
+				project.name,
+				devReleaseChannel.name,
+				{ metadata: { commitHash: 'abc' } },
+			);
+
+			expect(res.status).toBe(400);
+
+			const json = await res.json() as ApiResponse;
+			expect(json.success).toBe(false);
+			if (json.success === true) {
+				throw new Error('Expected success to be false');
+			}
+
+			expect(json.code).toBe(errors.InvalidJson('').getCode());
+			expect(json.error).toBe(errors.InvalidJson('commitHash needs to be at least 7 characters').getErrorMessage());
+		});
+
+		test('Commit hash too long', async () => {
+			const res = await uploadFile(
+				worker,
+				user,
+				project.name,
+				devReleaseChannel.name,
+				{ metadata: { commitHash: 'a'.repeat(65) } },
+			);
+
+			expect(res.status).toBe(400);
+
+			const json = await res.json() as ApiResponse;
+			expect(json.success).toBe(false);
+			if (json.success === true) {
+				throw new Error('Expected success to be false');
+			}
+
+			expect(json.code).toBe(errors.InvalidJson('').getCode());
+			expect(json.error).toBe(errors.InvalidJson('commitHash needs to be at most 64 characters').getErrorMessage());
+		});
+
+		test('Commit hash needs to be hex', async () => {
+			const res = await uploadFile(
+				worker,
+				user,
+				project.name,
+				devReleaseChannel.name,
+				{ metadata: { commitHash: 'commit hash goes here' } },
+			);
+
+			expect(res.status).toBe(400);
+
+			const json = await res.json() as ApiResponse;
+			expect(json.success).toBe(false);
+			if (json.success === true) {
+				throw new Error('Expected success to be false');
+			}
+
+			expect(json.code).toBe(errors.InvalidJson('').getCode());
+			expect(json.error).toBe(
+				errors.InvalidJson('commitHash doesn\'t look like a valid commit hash').getErrorMessage(),
+			);
+		});
+
+		test('Can upload a build with commit hash', async () => {
+			const { project, releaseChannels } = await createMockProject(
+				worker,
+				user,
+				{ repoLink: 'https://github.com/Example/Example' },
+				[{ name: 'dev' }],
+			);
+			const devChannel = releaseChannels[0];
+			const res = await uploadFile(
+				worker,
+				user,
+				project.name,
+				devChannel.name,
+				{ metadata: { commitHash: '356be0960e2c5be0f1c3bed92abc1aefbaa8c834311e2e4e64955efe0b7d67aa' } },
+			);
+
+			expect(res.status).toBe(200);
+
+			const json = await res.json() as ApiResponse;
+			expect(json.success).toBe(true);
+			if (json.success === false) {
+				throw new Error('Expected success to be true');
+			}
+
+			// Confirm build exists
+			const builds = await getBuilds<{ dev: BuildResponse[] }>(worker, project);
+			expect(builds.dev).toBeDefined();
+
+			const build = builds.dev[0];
+			expect(build.buildId).toBe(1);
+			expect(build.commitHash).toBe('356be0960e2c5be0f1c3bed92abc1aefbaa8c834311e2e4e64955efe0b7d67aa');
+			expect(build.commitLink).toBe(
+				'https://github.com/Example/Example/commit/356be0960e2c5be0f1c3bed92abc1aefbaa8c834311e2e4e64955efe0b7d67aa',
+			);
+		});
+	});
+
 	describe('Test plugin.yml', () => {
 		test('No plugin.yml', async () => {
 			const jarFile = await createMockJarFile({ pluginYml: null });
 
 			const res = await uploadFile(worker, user, project.name, devReleaseChannel.name, {
 				blob: jarFile.blob,
-				checksum: jarFile.hash,
+				metadata: {
+					checksum: jarFile.hash,
+				},
 			});
 
 			expect(res.status).toBe(400);
@@ -227,7 +345,9 @@ describe('Test uploads', () => {
 
 			const res = await uploadFile(worker, user, project.name, devReleaseChannel.name, {
 				blob: jarFile.blob,
-				checksum: jarFile.hash,
+				metadata: {
+					checksum: jarFile.hash,
+				},
 			});
 
 			expect(res.status).toBe(400);
@@ -334,7 +454,10 @@ describe('Test uploads', () => {
 
 	describe('Valid uploads', () => {
 		test('Can upload', async () => {
-			const res = await uploadFile(worker, user, project.name, devReleaseChannel.name);
+			const { project, releaseChannels } = await createMockProject(worker, user, undefined, [{ name: 'dev' }]);
+			const devChannel = releaseChannels[0];
+
+			const res = await uploadFile(worker, user, project.name, devChannel.name);
 			expect(res.status).toBe(200);
 
 			const json = await res.json() as ApiResponse;
@@ -494,7 +617,7 @@ describe('Test uploads', () => {
 interface UploadOptions {
 	blob?: Blob;
 	fileName?: string;
-	checksum?: string;
+	metadata?: UploadMetadata;
 }
 
 async function uploadFile(
@@ -508,20 +631,30 @@ async function uploadFile(
 	const mockJarFile = await createMockJarFile(jarOpts);
 
 	const blob = opts?.blob ?? mockJarFile.blob;
-	const checksum = opts?.checksum ?? mockJarFile.hash;
+	const checksum = opts?.metadata.checksum ?? mockJarFile.hash;
 	const fileName = opts?.fileName ?? 'test.jar';
+
+	if (!opts?.metadata?.checksum) {
+		opts = {
+			...opts,
+			metadata: {
+				...opts?.metadata,
+				checksum,
+			},
+		};
+	}
 
 	const formData = new FormData();
 	formData.append('file', blob, fileName);
-	formData.append('metadata', JSON.stringify({
-		checksum,
-	}));
+	formData.append('metadata', JSON.stringify(opts.metadata));
 
 	return worker.fetch(`https://worker.local/api/builds/${projectName}/${releaseChannel}/upload`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${user.apiToken}`,
 		},
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-expect-error
 		body: formData,
 	});
 }

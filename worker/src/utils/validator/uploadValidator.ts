@@ -4,9 +4,16 @@ import { Ctx } from '~/types/hono';
 
 const uploadSchema = z.object({
 	checksum: z.string().length(64),
-	supported_versions: z.string().optional(),
+	supported_versions: z.string().optional(), // Deprecated: Remove when possible
+	supportedVersions: z.string().optional(),
 	dependencies: z.array(z.string()).optional(),
-	release_notes: z.string().optional(),
+	release_notes: z.string().optional(), // Deprecated: Remove when possible
+	releaseNotes: z.string().optional(),
+	commitHash: z.string()
+		.min(7, 'commitHash needs to be at least 7 characters')
+		.max(64, 'commitHash needs to be at most 64 characters')
+		.regex(/[a-f0-9]{7,64}/g, 'commitHash doesn\'t look like a valid commit hash')
+		.optional(),
 });
 
 export type UploadMetadata = z.infer<typeof uploadSchema>;

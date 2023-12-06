@@ -25,6 +25,8 @@ interface BuildResponse {
 	supportedVersions: string;
 	dependencies: string[];
 	releaseNotes: string;
+	commitHash?: string;
+	commitLink?: string;
 }
 
 interface BuildList {
