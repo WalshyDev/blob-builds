@@ -1,0 +1,39 @@
+on:
+  push:
+    paths:
+      - 'gh-action/**'
+      - '.github/workflows/gh-action.yml'
+
+jobs:
+  build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gh-action
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      # We lint from root which is a bit awkward since we need to install root too
+      # TODO: Improve
+      - name: Lint
+        working-directory: .
+        run: npm ci && npm run lint
+
+      - name: Hash file
+        run: |
+          echo "CURRENT_HASH=$(sha256sum dist/index.js)" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify dist was built
+        run: echo "$CURRENT_HASH" | sha256sum -c

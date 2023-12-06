@@ -13,6 +13,7 @@
     "fast-xml-parser": "4.3.2"
   },
   "devDependencies": {
-    "@types/node": "20.9.2"
+    "@types/node": "20.9.2",
+    "esbuild": "0.19.8"
   }
 }

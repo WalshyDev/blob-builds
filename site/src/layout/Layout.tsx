@@ -1,5 +1,5 @@
-import NavBar from 'src/layout/NavBar';
 import Footer from '~/layout/Footer';
+import NavBar from '~/layout/NavBar';
 import type { PropsWithChildren } from 'react';
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {

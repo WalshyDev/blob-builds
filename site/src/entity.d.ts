@@ -23,8 +23,8 @@ interface BuildResponse {
 	fileDownloadUrl: string;
 	file_download_url: string; // TODO: Remove - here to keep compatibility for auto-updater
 	supportedVersions: string;
-  dependencies: string[];
-  releaseNotes: string;
+	dependencies: string[];
+	releaseNotes: string;
 }
 
 interface BuildList {

@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+/.cache
+/public/build
+
+/functions/\[\[path\]\].js
+/functions/\[\[path\]\].js.map
+/functions/metafile.js.json
+/functions/metafile.server.json
+/functions/version.txt
+.dev.vars
