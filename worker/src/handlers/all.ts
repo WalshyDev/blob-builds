@@ -46,10 +46,15 @@ export async function writeAnalytics(ctx: Ctx, next: Next): Promise<Response | v
 	// We want to run after everything
 	await next();
 
+	const { projectName, releaseChannel } = ctx.req.param();
+
 	const analytics = getStore().analytics;
 
 	analytics.set({
 		path: ctx.req.routePath,
+		project: projectName,
+		releaseChannel,
+
 		statusCode: ctx.res.status,
 		responseTime: Date.now() - ctx.get('requestStartTime'),
 	});
