@@ -20214,6 +20214,12 @@ async function getFileFromPomXml() {
   };
 }
 
+// src/git.ts
+function getGitInfo() {
+  const commitHash = process.env.GITHUB_SHA;
+  return { commitHash };
+}
+
 // src/index.ts
 async function main() {
   const project = (0, import_core2.getInput)("project", { required: true });
@@ -20241,13 +20247,15 @@ async function main() {
   if (file === void 0) {
     (0, import_core2.setFailed)("Failed to read file, file may not exist.");
   }
+  const gitInfo = getGitInfo();
   const sha256 = (0, import_node_crypto.createHash)("sha256").update(file).digest("hex");
   const formFile = new File([new Blob([file])], fileName, { type: "application/java-archive" });
   const formData = new FormData();
   formData.append("file", formFile);
   formData.append("metadata", JSON.stringify({
     checksum: sha256,
-    release_notes: releaseNotes === "" ? void 0 : releaseNotes
+    releaseNotes: releaseNotes === "" ? void 0 : releaseNotes,
+    commitHash: gitInfo.commitHash
   }));
   const res = await fetch(`https://blob.build/api/builds/${project}/${releaseChannel}/upload`, {
     method: "POST",

@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { getInput, setFailed } from '@actions/core';
 import { getFileFromPomXml } from './fileReader';
+import { getGitInfo } from './git';
 
 async function main() {
 	const project = getInput('project', { required: true });
@@ -34,6 +35,9 @@ async function main() {
 		setFailed('Failed to read file, file may not exist.');
 	}
 
+	// Grab git info if we can
+	const gitInfo = getGitInfo();
+
 	// Hash the file
 	const sha256 = createHash('sha256').update(file).digest('hex');
 
@@ -44,7 +48,8 @@ async function main() {
 	formData.append('file', formFile);
 	formData.append('metadata', JSON.stringify({
 		checksum: sha256,
-		release_notes: releaseNotes === '' ? undefined : releaseNotes,
+		releaseNotes: releaseNotes === '' ? undefined : releaseNotes,
+		commitHash: gitInfo.commitHash,
 	}));
 
 	const res = await fetch(`https://blob.build/api/builds/${project}/${releaseChannel}/upload`, {
