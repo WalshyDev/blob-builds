@@ -19,7 +19,7 @@ interface BuildResponse {
 	releaseChannel: string;
 	buildId: number;
 	build_id: number; // TODO: Remove - here to keep compatibility for auto-updater
-	fileHash: string;
+	checksum: string;
 	fileDownloadUrl: string;
 	file_download_url: string; // TODO: Remove - here to keep compatibility for auto-updater
 	supportedVersions: string;

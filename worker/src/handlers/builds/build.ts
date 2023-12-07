@@ -224,7 +224,7 @@ function toBuildResponse(
 		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		buildId: build.buildId,
 		build_id: build.buildId, // TODO: Remove - here to keep compatibility for auto-updater
-		fileHash: build.fileHash,
+		checksum: build.fileHash,
 		fileDownloadUrl: `${Constants.DOMAIN}${downloadPath}`,
 		// TODO: Remove - here to keep compatibility for auto-updater
 		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
