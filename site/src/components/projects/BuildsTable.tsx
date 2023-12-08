@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { DownloadButton } from '~/components/DownloadButton';
 import Link from '~/components/Link';
 import { Pages } from '~/utils/routes';
@@ -27,7 +28,7 @@ export function BuildsTable({ builds, project }: Props) {
 				<tbody>
 					{Object.keys(builds).map((releaseChannel) => {
 						return (
-							<>
+							<Fragment key={`${project}-${releaseChannel}-frag`}>
 								<tr
 									key={`${project}-${releaseChannel}`}
 									className={classNames(
@@ -42,7 +43,7 @@ export function BuildsTable({ builds, project }: Props) {
 								</tr>
 								{builds[releaseChannel].map((build) =>
 									<tr
-										key={`${project}-${build.buildId}`}
+										key={`${project}-${build.releaseChannel}-${build.buildId}`}
 										className={classNames(
 											'border-t-2 border-table-border',
 											'bg-table-secondary-row hover:bg-table-hover',
@@ -81,7 +82,7 @@ export function BuildsTable({ builds, project }: Props) {
 										</td>
 									</tr>,
 								)}
-							</>
+							</Fragment>
 						);
 					})}
 				</tbody>

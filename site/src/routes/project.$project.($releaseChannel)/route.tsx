@@ -23,7 +23,7 @@ export const loader: LoaderFunction<BuildList | { error: string }> = async ({ co
 	return json({ error: builds.error });
 };
 
-export default function Resource() {
+export default function ProjectBuilds() {
 	const params = useParams();
 	const builds = useLoaderData<BuildList>();
 
