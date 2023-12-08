@@ -5,7 +5,7 @@ import * as errors from '~/api/errors';
 import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
-import { InsertReleaseChannel } from '~/store/schema';
+import { InsertReleaseChannel, Project } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 
 // GET /api/projects
@@ -22,6 +22,31 @@ export async function getProject(ctx: Context) {
 	const project = await ProjectStore.getProjectByName(projectName);
 
 	return success('Success', project);
+}
+
+export const patchProjectSchema: z.ZodType<Partial<Omit<Project, 'userId' | 'projectId'>>> = z.object({
+	name: z.string().min(3).max(64).optional(),
+	description: z.string().min(6).max(2000).optional(),
+	repoLink: z.string().url().optional(),
+});
+
+type PatchProjectBody = z.infer<typeof patchProjectSchema>;
+
+// PATCH /api/projects/:projectName
+export async function patchProject(ctx: Ctx, body: PatchProjectBody) {
+	const userId = ctx.get('userId');
+	const projectName = ctx.req.param('projectName');
+
+	// Get project
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
+
+	// Update project
+	const updatedProject = await ProjectStore.updateProject(project.projectId, body);
+
+	return success('Project updated!', updatedProject);
 }
 
 export const newProjectSchema = z.object({

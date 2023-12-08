@@ -66,6 +66,15 @@ class _ProjectStore {
 			.returning()
 			.get();
 	}
+
+	updateProject(projectId: number, project: Partial<InsertProject>): Promise<Project> {
+		return getDb()
+			.update(projects)
+			.set(project)
+			.where(eq(projects.projectId, project.projectId))
+			.returning()
+			.get();
+	}
 }
 
 const ProjectStore = new _ProjectStore();
