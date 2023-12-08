@@ -1,4 +1,5 @@
 {
+	"name": "blob-builds-site",
 	"private": true,
 	"sideEffects": false,
 	"scripts": {

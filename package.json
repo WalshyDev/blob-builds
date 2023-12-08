@@ -3,12 +3,18 @@
 	"version": "1.0.0",
 	"private": true,
 	"license": "MIT",
+	"workspaces": [
+		"site",
+		"worker"
+	],
 	"scripts": {
+		"dev": "turbo dev",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx **/src/",
 		"lint:fix": "eslint --ext .js,.jsx,.ts,.tsx --fix **/src/"
 	},
 	"devDependencies": {
+		"@blobdevelopment/eslint-config": "0.1.0",
 		"eslint": "8.55.0",
-		"@blobdevelopment/eslint-config": "0.1.0"
+		"turbo": "1.11.1"
 	}
 }
