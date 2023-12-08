@@ -85,7 +85,7 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 				)}
 			>
 				<td className="whitespace-nowrap py-2 pl-4 pr-3 font-medium sm:pl-3">
-					<Link href={`project/${project}`}>{project}</Link>
+					<Link href={Pages.projectBuilds.toUrl({ projectName: project })}>{project}</Link>
 				</td>
 				<td></td>
 			</tr>
@@ -99,7 +99,11 @@ export function ProjectRow({ project, releaseChannels }: ProjectRowProps) {
 					)}
 				>
 					<td className="whitespace-nowrap py-2 pl-8 pr-3 font-medium">
-						↳ {releaseChannel}
+						↳ <Link href={
+							Pages.projectReleaseChannelBuilds.toUrl({ projectName: project, releaseChannel })
+						}>
+							{releaseChannel}
+						</Link>
 					</td>
 
 					<td className="relative whitespace-nowrap py-2 pl-3 pr-4 text-right font-medium sm:pr-3">

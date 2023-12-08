@@ -19,6 +19,19 @@ class _BuildStore {
 			.all();
 	}
 
+	getProjectBuildsForReleaseChannel(projectId: number, releaseChannelId: number): Promise<Build[]> {
+		return getDb().select()
+			.from(builds)
+			.where(
+				and(
+					eq(builds.projectId, projectId),
+					eq(builds.releaseChannelId, releaseChannelId),
+				),
+			)
+			.orderBy(desc(builds.buildId))
+			.all();
+	}
+
 	// Get latest build for a project and release channel
 	getLatestBuildForReleaseChannel(projectName: string, releaseChannel: string): Promise<Build> {
 		return getDb().select({ ...selectStar(builds) })

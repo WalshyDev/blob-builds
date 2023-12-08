@@ -4,6 +4,7 @@ interface Env {
 
 interface BlobParams {
 	project?: string;
+	releaseChannel?: string;
 }
 
 interface DataFunctionArgs {

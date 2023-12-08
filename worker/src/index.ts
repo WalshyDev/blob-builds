@@ -8,6 +8,7 @@ import {
 	postUploadBuild,
 	getAllProjectBuilds,
 	getProjectBuildVersion,
+	getAllProjectBuildsForReleaseChannel,
 } from '~/handlers/builds/build';
 import { getDownloadBuild } from '~/handlers/builds/download';
 import {
@@ -71,6 +72,10 @@ app.patch(
 app.get(
 	'/api/builds/:projectName',
 	getAllProjectBuilds,
+);
+app.get(
+	'/api/builds/:projectName/:releaseChannel',
+	getAllProjectBuildsForReleaseChannel,
 );
 app.get(
 	'/api/builds/:projectName/latest',
