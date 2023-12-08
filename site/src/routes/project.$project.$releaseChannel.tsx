@@ -4,7 +4,11 @@ import { getAllBuildsPerProject } from '~/api/api';
 import { BuildsTable } from '~/components/projects/BuildsTable';
 
 export const loader: LoaderFunction<BuildList | { error: string }> = async ({ context, params }) => {
-	const builds = await getAllBuildsPerProject(context, params.project!);
+	if (!params.project) {
+		return json({ error: 'No project provided' });
+	}
+
+	const builds = await getAllBuildsPerProject(context, params.project, params.releaseChannel);
 	if (builds.success) {
 		const buildList = builds.data ?? {};
 		for (const channel of Object.keys(buildList)) {
