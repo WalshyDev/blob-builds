@@ -53,13 +53,13 @@ export function InvalidUpload(errorMessage: string) {
 export const InvalidAuthHeader = new ApiError({
 	code: 2000,
 	errorMessage: 'Invalid authorization header',
-	statusCode: StatusCode.BAD_REQUEST,
+	statusCode: StatusCode.UNAUTHORIZED,
 });
 
 export const InvalidApiToken = new ApiError({
 	code: 2001,
 	errorMessage: 'Invalid API token',
-	statusCode: StatusCode.BAD_REQUEST,
+	statusCode: StatusCode.UNAUTHORIZED,
 });
 
 // Project
