@@ -6,7 +6,7 @@ import {
 	createMockUser,
 	setupWorker,
 } from 'tests/testutils/test';
-import { describe, test, expect, beforeAll } from 'vitest';
+import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { UnstableDevWorker } from 'wrangler';
 import * as errors from '~/api/errors';
 import { Build, Project, ReleaseChannel, User } from '~/store/schema';
@@ -28,6 +28,10 @@ describe('Test uploads', () => {
 		project = created.project;
 		devReleaseChannel = created.releaseChannels[0];
 		releaseReleaseChannel = created.releaseChannels[1];
+	});
+
+	afterAll(async () => {
+		await worker.stop();
 	});
 
 	describe('Invalid form data', () => {
@@ -441,6 +445,8 @@ describe('Test uploads', () => {
 
 			// Download the jar and verify version changed in the plugin.yml
 			const downloadRes = await worker.fetch(`https://worker.local/dl/${project.name}/${rc.name}/latest`);
+			expect(downloadRes.status).toBe(200);
+
 			const jar = await downloadRes.arrayBuffer();
 
 			const jsZip = new JSZip();

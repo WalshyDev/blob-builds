@@ -9,8 +9,8 @@ export function getFileName(project: Project, releaseChannel: ReleaseChannel, bu
 		.replace('$project', project.name)
 		.replace('$releaseChannel', releaseChannel.name)
 		.replace('$buildId', String(build.buildId))
-		.replace('$commitHash', build.commitHash)
-		.replace('$shortCommitHash', build.commitHash.slice(0, 8));
+		.replace('$commitHash', build.commitHash ?? '')
+		.replace('$shortCommitHash', build.commitHash === null ? '' : build.commitHash.slice(0, 8));
 }
 
 // TODO: Move all existing files off the case sensitive file path and all to lowercase
