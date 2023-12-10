@@ -40,7 +40,7 @@ export default function Developers() {
 			<Code language='bash'>
 				{
 					`
-$ curl https://blob.build/api/projects/<PROJECT_NAME>/new -s \\
+$ curl https://blob.build/api/projects/:projectName/new -s \\
 	-X POST \\
 	-H 'Authorization: Bearer <API_TOKEN>' \\
 	-H 'Content-Type: application/json' \\
@@ -84,7 +84,7 @@ $ curl https://blob.build/api/projects/<PROJECT_NAME>/new -s \\
 			<Code language='bash'>
 				{
 					`
-$ curl https://blob.build/api/projects/new -s \\
+$ curl https://blob.build/api/projects/:projectName/new -s \\
 	-X POST \\
 	-H 'Authorization: Bearer <API_TOKEN>' \\
 	-H 'Content-Type: application/json' \\
