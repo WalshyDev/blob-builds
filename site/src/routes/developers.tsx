@@ -33,14 +33,14 @@ export default function Developers() {
 
 			<H3>New project</H3>
 			<p>
-				To upload a new project, you need to send a <code>POST</code> to <code>/api/projects/new</code>.
+				To upload a new project, you need to send a <code>POST</code> to <code>/api/projects/:projectName/new</code>.
 				<br />
 				Here is an example:
 			</p>
 			<Code language='bash'>
 				{
 					`
-$ curl https://blob.build/api/projects/new -s \\
+$ curl https://blob.build/api/projects/:projectName/new -s \\
 	-X POST \\
 	-H 'Authorization: Bearer <API_TOKEN>' \\
 	-H 'Content-Type: application/json' \\
@@ -84,7 +84,7 @@ $ curl https://blob.build/api/projects/new -s \\
 			<Code language='bash'>
 				{
 					`
-$ curl https://blob.build/api/projects/new -s \\
+$ curl https://blob.build/api/projects/:projectName/new -s \\
 	-X POST \\
 	-H 'Authorization: Bearer <API_TOKEN>' \\
 	-H 'Content-Type: application/json' \\
