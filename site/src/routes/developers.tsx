@@ -33,7 +33,7 @@ export default function Developers() {
 
 			<H3>New project</H3>
 			<p>
-				To upload a new project, you need to send a <code>POST</code> to <code>/api/projects/new</code>.
+				To upload a new project, you need to send a <code>POST</code> to <code>/api/projects/:projectName/new</code>.
 				<br />
 				Here is an example:
 			</p>
