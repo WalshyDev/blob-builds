@@ -5,7 +5,7 @@ import * as errors from '~/api/errors';
 import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
-import { InsertReleaseChannel } from '~/store/schema';
+import { InsertReleaseChannel, Project } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 
 // GET /api/projects
@@ -24,10 +24,63 @@ export async function getProject(ctx: Context) {
 	return success('Success', project);
 }
 
+export const patchProjectSchema: z.ZodType<Partial<Omit<Project, 'userId' | 'projectId'>>> = z.object({
+	name: z.string()
+		.min(3, 'name needs to be at least 3 characters')
+		.max(64, 'name needs to be at most 64 characters')
+		.regex(/^[a-zA-Z0-9_-]+$/, 'name needs to be alphanumeric with only a dash or underscore')
+		.optional(),
+	description: z.string()
+		.min(6, 'description needs to be at least 6 characters')
+		.max(2000, 'description needs to be at most 2000 characters')
+		.optional(),
+	repoLink: z.string()
+		.url()
+		.regex(
+			/^https:\/\/(github|gitlab).com\/[a-zA-Z0-9_-]{1,64}\/[a-zA-Z0-9_-]{1,64}$/,
+			'repoLink needs to be a valid GitHub or GitLab repository link',
+		)
+		.optional(),
+});
+
+type PatchProjectBody = z.infer<typeof patchProjectSchema>;
+
+// PATCH /api/projects/:projectName
+export async function patchProject(ctx: Ctx, body: PatchProjectBody) {
+	const userId = ctx.get('userId');
+	const projectName = ctx.req.param('projectName');
+
+	if (Object.keys(body).length === 0) {
+		return errors.NothingToUpdate.toResponse(ctx);
+	}
+
+	// Get project
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
+
+	// Update project
+	const updatedProject = await ProjectStore.updateProject(project.projectId, body);
+
+	return success('Project updated!', updatedProject);
+}
+
 export const newProjectSchema = z.object({
-	name: z.string().min(3).max(64),
-	description: z.string().min(6).max(2000).optional(),
-	repoLink: z.string().url().optional(),
+	name: z.string()
+		.min(3, 'name needs to be at least 3 characters')
+		.max(64, 'name needs to be at most 64 characters')
+		.regex(/^[a-zA-Z0-9_-]+$/, 'name needs to be alphanumeric with only a dash or underscore'),
+	description: z.string()
+		.min(6, 'description needs to be at least 6 characters')
+		.max(2000, 'description needs to be at most 2000 characters'),
+	repoLink: z.string()
+		.url()
+		.regex(
+			/^https:\/\/(github|gitlab).com\/[a-zA-Z0-9_-]{1,64}\/[a-zA-Z0-9_-]{1,64}$/,
+			'repoLink needs to be a valid GitHub or GitLab repository link',
+		)
+		.optional(),
 	releaseChannels: z.array(z.object({
 		name: z.string(),
 		supportedVersions: z.string(),

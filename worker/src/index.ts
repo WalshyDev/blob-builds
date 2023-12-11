@@ -18,6 +18,8 @@ import {
 	newProjectSchema,
 	patchProjectSettings,
 	postNewProject,
+	patchProjectSchema,
+	patchProject,
 } from '~/handlers/projects/project';
 import { dbQueryHandler, dbQuerySchema } from '~/handlers/test/db';
 import { testOnlyMiddleware } from '~/handlers/test/middleware';
@@ -40,6 +42,11 @@ app.get(
 app.get(
 	'/api/projects/:projectName',
 	getProject,
+);
+app.patch(
+	'/api/projects/:projectName',
+	auth,
+	jsonValidator(patchProjectSchema, patchProject),
 );
 // Deprecated, use `/api/builds/:projectName/latest` instead
 app.get(
