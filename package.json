@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"workspaces": [
 		"site",
-		"worker"
+		"worker",
+		"docs"
 	],
 	"scripts": {
 		"dev": "turbo dev",
