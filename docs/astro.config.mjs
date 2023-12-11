@@ -22,6 +22,10 @@ export default defineConfig({
 					label: 'Project',
 					autogenerate: { directory: 'project' },
 				},
+				{
+					label: 'Upload',
+					autogenerate: { directory: 'upload' },
+				},
 			],
 		}),
 	],
