@@ -71,7 +71,7 @@ class _ProjectStore {
 		return getDb()
 			.update(projects)
 			.set(project)
-			.where(eq(projects.projectId, project.projectId))
+			.where(eq(projects.projectId, projectId))
 			.returning()
 			.get();
 	}

@@ -18,7 +18,7 @@ export default function jsonValidator<T>(schema: z.ZodType<T, z.ZodTypeDef>, con
 		if (parsed.success === true) {
 			return controller(ctx, parsed.data);
 		} else {
-			return errors.InvalidJson(parsed.error.toString()).toResponse(ctx);
+			return errors.InvalidJson(parsed.error.errors[0].message).toResponse(ctx);
 		}
 	};
 }

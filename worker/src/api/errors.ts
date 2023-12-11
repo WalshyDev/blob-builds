@@ -49,6 +49,12 @@ export function InvalidUpload(errorMessage: string) {
 	});
 }
 
+export const NothingToUpdate = new ApiError({
+	code: 1005,
+	errorMessage: 'Nothing to update',
+	statusCode: StatusCode.BAD_REQUEST,
+});
+
 // Auth
 export const InvalidAuthHeader = new ApiError({
 	code: 2000,
