@@ -1,5 +1,8 @@
 interface Env {
 	API: Fetcher;
+
+	CF_PAGES_BRANCH: string;
+	CF_PAGES_URL: string;
 }
 
 interface BlobParams {
