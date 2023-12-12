@@ -1,6 +1,6 @@
 const navigation = [
 	{ name: 'Projects', href: '/' },
-	{ name: 'Developers', href: '/developers' },
+	{ name: 'Developers', href: '/docs' },
 ];
 
 export default function NavBar() {
