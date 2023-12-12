@@ -4,13 +4,19 @@ export const onRequest: PagesFunction<Env> = ({ request, env }) => {
 	try {
 		console.log('Requesting docs');
 
+		// Always point to the Pages site
+		const url = new URL(request.url);
+		url.hostname = API_DOCS;
+		url.pathname = url.pathname.replace('/docs', '');
+
+		request = new Request(url, request);
+
 		// See if this is a preview URL and if so, use the preview hostname
 		if (env.CF_PAGES_URL && env.CF_PAGES_BRANCH !== 'main') {
 			const branchAlias = generateBranchAlias(env.CF_PAGES_BRANCH);
 
-			const url = new URL(request.url);
+			// Change the hostname to the preview hostname
 			url.hostname = `${branchAlias}.${API_DOCS}`;
-			url.pathname = url.pathname.replace('/docs', '');
 
 			request = new Request(url, request);
 			request.headers.set('x-host', url.hostname);
