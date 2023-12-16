@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS `projects_new` (
 	`repo_link` text,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON UPDATE no action ON DELETE no action
 );
-DROP INDEX IF EXISTS `projects_name_idx`;
 CREATE INDEX IF NOT EXISTS `projects_name_idx` ON `projects_new` (`name`);--> statement-breakpoint
 
 -- Copy data over
@@ -24,6 +23,7 @@ ALTER TABLE projects RENAME TO projects_old;
 -- SQLite will follow renames for references, which is nice... but not when doing this trick
 -- So we're gonna drop _old, rename _new to _old and then finally back to `projects`
 -- This tricks updating the references
+DROP INDEX IF EXISTS `projects_name_idx`;
 DROP TABLE projects_old;
 ALTER TABLE projects_new RENAME TO projects_old;
 
