@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `projects_new` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON UPDATE no action ON DELETE no action
 );
 DROP INDEX IF EXISTS `projects_name_idx`;
-CREATE INDEX IF NOT EXISTS `projects_name_idx` ON `projects` (`name`);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS `projects_name_idx` ON `projects_new` (`name`);--> statement-breakpoint
 
 -- Copy data over
 INSERT INTO projects_new SELECT * FROM projects;
