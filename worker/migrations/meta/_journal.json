@@ -29,6 +29,13 @@
       "when": 1701881653031,
       "tag": "0003_steep_mimic",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1702404379200,
+      "tag": "0004_red_winter_soldier",
+      "breakpoints": true
     }
   ]
 }
