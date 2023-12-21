@@ -44,7 +44,7 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 	return success('Success', res);
 }
 
-// GET /api/builds/:projectName
+// GET /api/builds/:projectName/:releaseChannel
 export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 	const releaseChannelName = ctx.req.param('releaseChannel');
@@ -65,7 +65,7 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	const res: { [releaseChannel: string]: BuildResponse[] } = {};
 	res[releaseChannel.name] = [];
 	for (const build of builds) {
-		res[releaseChannel.name].push(toBuildResponse(build, project));
+		res[releaseChannel.name].push(toBuildResponse(build, project, releaseChannel.name));
 	}
 
 	return success('Success', res);
