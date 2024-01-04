@@ -15,7 +15,7 @@ export type InsertUser = typeof users.$inferInsert;
 
 export const projects = sqliteTable('projects', {
 	projectId: integer('project_id').primaryKey({ autoIncrement: true }),
-	userId: integer('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
+	userId: integer('user_id').notNull().references(() => users.userId),
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
 	description: text('description').notNull(),
 	repoLink: text('repo_link'),
