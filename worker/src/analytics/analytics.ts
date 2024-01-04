@@ -8,6 +8,7 @@ export interface Data {
 	method: string;         // blob3
 	project: string;        // blob4
 	releaseChannel: string; // blob5
+	userAgent: string;      // blob6
 
 	// Doubles
 	version: never;         // double1 - configured below
