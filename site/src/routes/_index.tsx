@@ -4,8 +4,8 @@ import { getProjects } from '~/api/api';
 import { ProjectsTable } from '~/components/projects/ProjectsTable';
 import type { ProjectList} from 'worker/src/store/ProjectStore';
 
-export const loader: LoaderFunction<ProjectList | { error: string }> = async ({ context }) => {
-	const projects = await getProjects(context);
+export const loader: LoaderFunction<ProjectList | { error: string }> = async (args) => {
+	const projects = await getProjects(args);
 	if (projects.success) {
 		return json(projects.data);
 	}

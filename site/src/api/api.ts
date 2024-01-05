@@ -1,23 +1,34 @@
 import { ProjectList } from '../../../worker/src/store/ProjectStore';
 
-export function getProjects(env: Env) {
-	return _fetch<ProjectList>(env, '/api/projects');
+export function getProjects(args: DataFunctionArgs) {
+	return _fetch<ProjectList>(args, '/api/projects');
 }
 
-export function getAllBuildsPerProject(env: Env, project: string, releaseChannel?: string) {
+export function getAllBuildsPerProject(args: DataFunctionArgs, project: string, releaseChannel?: string) {
 	if (releaseChannel) {
-		return getAllBuildsPerProjectAndReleaseChannel(env, project, releaseChannel);
+		return getAllBuildsPerProjectAndReleaseChannel(args, project, releaseChannel);
 	}
-	return _fetch<BuildList>(env, `/api/builds/${project}`);
+	return _fetch<BuildList>(args, `/api/builds/${project}`);
 }
 
-export function getAllBuildsPerProjectAndReleaseChannel(env: Env, project: string, releaseChannel: string) {
-	return _fetch<BuildList>(env, `/api/builds/${project}/${releaseChannel}`);
+export function getAllBuildsPerProjectAndReleaseChannel(
+	args: DataFunctionArgs,
+	project: string,
+	releaseChannel: string,
+) {
+	return _fetch<BuildList>(args, `/api/builds/${project}/${releaseChannel}`);
 }
 
-export function _fetch<T = unknown>(env: Env, path: string, init?: RequestInit): Promise<ApiResponse<T>> {
+export function _fetch<T = unknown>(args: DataFunctionArgs, path: string, init?: RequestInit): Promise<ApiResponse<T>> {
 	// TODO: handle auth
+	const { context, request } = args;
 
 	console.log(`fetching ${path}`);
-	return env.API.fetch(`https://api.local${path}`, init).then(res => res.json());
+	return context.API.fetch(`https://api.local${path}`, {
+		...init,
+		headers: {
+			...init?.headers,
+			...Object.fromEntries(request.headers),
+		},
+	}).then(res => res.json());
 }

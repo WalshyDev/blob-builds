@@ -3,12 +3,12 @@ import { useLoaderData, useParams } from '@remix-run/react';
 import { getAllBuildsPerProject } from '~/api/api';
 import { BuildsTable } from '~/components/projects/BuildsTable';
 
-export const loader: LoaderFunction<BuildList | { error: string }> = async ({ context, params }) => {
-	if (!params.project) {
+export const loader: LoaderFunction<BuildList | { error: string }> = async (args) => {
+	if (!args.params.project) {
 		return json({ error: 'No project provided' });
 	}
 
-	const builds = await getAllBuildsPerProject(context, params.project, params.releaseChannel);
+	const builds = await getAllBuildsPerProject(args, args.params.project, args.params.releaseChannel);
 	if (builds.success) {
 		const buildList = builds.data ?? {};
 		for (const channel of Object.keys(buildList)) {
