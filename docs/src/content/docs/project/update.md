@@ -1,7 +1,11 @@
 ---
 title: Update project
 description: How to update a project.
+sidebar:
+  order: 3
 ---
+
+`PATCH https://blob.build/api/projects/:projectName`
 
 ## Schema
 

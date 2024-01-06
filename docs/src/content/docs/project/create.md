@@ -1,7 +1,11 @@
 ---
 title: Create project
 description: How to create a project.
+sidebar:
+  order: 2
 ---
+
+`POST https://blob.build/api/projects/:projectName/new`
 
 ## Schema
 
