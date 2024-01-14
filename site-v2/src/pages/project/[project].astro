@@ -1,0 +1,22 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import ProjectCard from '~/components/projects/ProjectCard';
+
+// const res = await fetch('/api/projects').then((res) => res.json());
+const project = {
+	name: 'Slimefun4',
+	description: 'A unique Spigot/Paper plugin that looks and feels like a modpack. '
+		+ `We've been giving you backpacks, jetpacks, reactors and much more since 2013.`,
+	github: 'https://github.com/Slimefun/Slimefun4',
+	wiki: 'https://github.com/Slimefun/Slimefun4/wiki',
+	downloads: 3000,
+	supportedVersions: '1.16+',
+	dependencies: ['China', 'Panda', 'Paper']
+} as Project;
+---
+
+<Layout>
+	<main>
+		<ProjectCard project={project} />
+	</main>
+</Layout>

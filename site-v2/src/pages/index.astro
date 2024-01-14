@@ -1,0 +1,45 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import { ProjectList } from '~/components/projects/ProjectGroup';
+
+// const res = await fetch('/api/projects').then((res) => res.json());
+const projects = {
+	Slimefun: [
+		{
+			name: 'Slimefun4',
+			description: 'A unique Spigot/Paper plugin that looks and feels like a modpack. '
+				+ `We've been giving you backpacks, jetpacks, reactors and much more since 2013.`,
+			github: 'https://github.com/Slimefun/Slimefun4',
+			wiki: 'https://github.com/Slimefun/Slimefun4/wiki',
+			downloads: 3000,
+			supportedVersions: '1.16+',
+			dependencies: ['China', 'Panda', 'Paper']
+		}
+	],
+	Walshy: [
+		{
+			name: 'SFMobDrops',
+			description: '',
+			github: 'https://github.com/WalshyDev/SFMobDrops',
+			downloads: 20,
+			supportedVersions: '1.16+',
+			dependencies: ['Paper', 'Slimefun'],
+		},
+		{
+			name: 'HardcoreSlimefun',
+			description: `Hardcore Slimefun is an addon designed to make Slimefun as hard as possible `
+				+ `for those who don't like a true challenge (or server owners who want to be nice to their players!). `
+				+ `Features include research loss, research failures and android malfunctions with more to come!`,
+			downloads: 10,
+			supportedVersions: '1.16+',
+			dependencies: ['Slimefun']
+		}
+	]
+} as ProjectList;
+---
+
+<Layout>
+	<main>
+		<ProjectList projects={projects} />
+	</main>
+</Layout>
