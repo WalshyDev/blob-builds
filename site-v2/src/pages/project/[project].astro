@@ -1,6 +1,8 @@
 ---
 import Layout from '~/layouts/Layout.astro';
-import ProjectCard from '~/components/projects/ProjectCard';
+import ReleaseChannels from '~/components/projects/ReleaseChannels';
+import Project from '~/components/projects/Project';
+import BuildList from '~/components/projects/builds/BuildList.astro';
 
 // const res = await fetch('/api/projects').then((res) => res.json());
 const project = {
@@ -11,12 +13,24 @@ const project = {
 	wiki: 'https://github.com/Slimefun/Slimefun4/wiki',
 	downloads: 3000,
 	supportedVersions: '1.16+',
-	dependencies: ['China', 'Panda', 'Paper']
+	dependencies: ['China', 'Panda', 'Paper'],
+	repoLink: 'https://github.com/Slimefun4',
 } as Project;
+
+const selectedChannel = 'Dev';
 ---
 
 <Layout>
-	<main>
-		<ProjectCard project={project} />
+	<main class='md:w-4/5 md:m-auto'>
+		<Project project={project} />
+
+		<ReleaseChannels
+			project={project}
+			selected={selectedChannel}
+			defaultReleaseChannel='Dev'
+			releaseChannels={['Dev', 'RC']}
+		/>
+
+		<BuildList project={project} releaseChannel={selectedChannel} />
 	</main>
 </Layout>

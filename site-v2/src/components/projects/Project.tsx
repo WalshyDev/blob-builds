@@ -1,0 +1,39 @@
+import Button from '~/components/html/Button';
+import { H1 } from '~/components/html/Headings';
+import { ExternalLink } from '~/components/html/Link';
+import External from '~/components/icons/External';
+import ProjectInfo from '~/components/projects/ProjectInfo';
+
+interface Props {
+	project: Project;
+}
+
+export default function Project({ project }: Props) {
+	return (
+		<>
+			<H1 className='text-primary'>{project.name}</H1>
+			<div className='grid grid-cols-10'>
+				<div className='col-span-8'>
+					<p className='my-4'>
+						{project.description}
+					</p>
+
+					<div className='my-4 space-x-4'>
+						{project.github && <ExternalLink href={project.github} inheritColor showIcon={false}>
+							<Button>
+								GitHub <External />
+							</Button>
+						</ExternalLink>}
+						{project.wiki && <ExternalLink href={project.wiki} inheritColor showIcon={false}>
+							<Button>
+								Wiki <External />
+							</Button>
+						</ExternalLink>}
+					</div>
+				</div>
+
+				<ProjectInfo project={project} className='col-span-2' />
+			</div>
+		</>
+	);
+}

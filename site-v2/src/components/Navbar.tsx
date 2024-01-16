@@ -2,6 +2,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { Fragment } from 'react';
+import { H1 } from '~/components/html/Headings';
 
 const navigation = [
 	{ name: 'Projects', href: '/', current: true },
@@ -44,9 +45,9 @@ export default function Navbar() {
 										/>
 									</div>
 								*/}
-								<h1 className='text-2xl text-gray-300'>
+								<H1 className='text-primary'>
 									<a href='/'>Blob Builds</a>
-								</h1>
+								</H1>
 								<div className="hidden sm:ml-6 sm:block">
 									<div className="flex space-x-4">
 										{navigation.map((item) => (
@@ -54,7 +55,7 @@ export default function Navbar() {
 												key={item.name}
 												href={item.href}
 												className={clsx(
-													item.current ? 'bg-zinc-900 text-white' : 'text-gray-300 hover:bg-zinc-700 hover:text-white',
+													item.current ? 'bg-zinc-900 text-primary' : 'text-default hover:bg-zinc-700 hover:text-white',
 													'rounded-md px-3 py-2 text-sm font-medium',
 												)}
 												aria-current={item.current ? 'page' : undefined}
@@ -73,7 +74,7 @@ export default function Navbar() {
 									: <a
 										href='/login'
 										className={clsx(
-											'text-gray-300 hover:bg-zinc-700 hover:text-white',
+											'text-primary hover:bg-zinc-700 hover:text-white',
 											'rounded-md px-3 py-2 text-sm font-medium',
 										)}
 									>

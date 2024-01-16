@@ -1,0 +1,101 @@
+---
+import BuildCard from '~/components/projects/builds/BuildCard';
+
+const builds = [
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1126,
+			"checksum": "9b308ff04ba97b4728ccab259c2d6348eb86ce5927b1d52a975b326e9f928908",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1126",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Fix another bug with interaction fix and add more interaction tests (Slimefun#4090)",
+			"commitHash": "59b41d51839c6de01274d412683c70b30ab35229",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/59b41d51839c6de01274d412683c70b30ab35229"
+	},
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1125,
+			"checksum": "3233de590f10f67f487e602f4178b610a606e72068d88d3a8309b3b534a673b8",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1125",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Fix error when right clicking air",
+			"commitHash": "de031bb9ba317b7877238140e074174db9ab84f4",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/de031bb9ba317b7877238140e074174db9ab84f4"
+	},
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1124,
+			"checksum": "3995e2a97bef088b6f6e61add21f22a52505626670271ce7dbc5f2a048c1e5d7",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1124",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Fixes #4087 - users able to dupe items from the inventory just after a block is broken",
+			"commitHash": "bfd1e8c2d2774f8e5d1369f86011dff5ea5814ac",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/bfd1e8c2d2774f8e5d1369f86011dff5ea5814ac"
+	},
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1123,
+			"checksum": "147981f06b8cf8bc6f1c0ef4e12da3dfcfb7bdef96fb0d2416c7ffab926f8d06",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1123",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Fix new backpacks not correctly having their ID set.",
+			"commitHash": "0848c418f41418f7a82abaf30c7cb65a2089b70a",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/0848c418f41418f7a82abaf30c7cb65a2089b70a"
+	},
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1122,
+			"checksum": "7adfef818b22956e8b3d587ccdf80accafe68fc9c861b769fc4101429e22381c",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1122",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Updated dough",
+			"commitHash": "9c8fc84ade0a6a9bcabf7c707e4fbe6eacecf540",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/9c8fc84ade0a6a9bcabf7c707e4fbe6eacecf540"
+	},
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1121,
+			"checksum": "a4caf497ed294e18911e193af302c61570c01a88a3b9415455222e2dca50d17c",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1121",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Fixed servers crashing due to sensitiveblocks change",
+			"commitHash": "e0c94902f8152277f01e4ada3ecba00c1ced3e31",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/e0c94902f8152277f01e4ada3ecba00c1ced3e31"
+	},
+	{
+			"projectName": "Slimefun4",
+			"releaseChannel": "Dev",
+			"buildId": 1120,
+			"checksum": "2863b8e68abb904505d7843ac9a198c697670c4860dac267ca28ef7b264594d6",
+			"fileDownloadUrl": "https://blob.build/dl/Slimefun4/Dev/1120",
+			"supportedVersions": "1.16+",
+			"dependencies": [],
+			"releaseNotes": "Fix steps of the Storage Rewrite - please report any issues with player data!",
+			"commitHash": "2e564e34912467f1e049f4c4eba32fa273caa04d",
+			"commitLink": "https://github.com/Slimefun/Slimefun4/commit/2e564e34912467f1e049f4c4eba32fa273caa04d"
+	},
+];
+
+interface Props {
+	project: Project;
+	releaseChannel: string;
+}
+
+const { project, releaseChannel } = Astro.props;
+---
+
+<div>
+	{builds.map((build) => <BuildCard project={project} build={build} />)}
+</div>
