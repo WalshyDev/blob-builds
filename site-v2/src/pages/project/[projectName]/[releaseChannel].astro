@@ -1,0 +1,7 @@
+---
+import ProjectPage from '~/components/projects/ProjectPage.astro';
+
+const { projectName, releaseChannel } = Astro.params;
+---
+
+<ProjectPage projectName={projectName} releaseChannel={releaseChannel} />

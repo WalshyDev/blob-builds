@@ -3,9 +3,9 @@ import Depedency from '~/components/Dependency';
 import HighlightedSpan from '~/components/html/HighlightedSpan';
 import type { ReactNode } from 'react';
 
-const sideInfo: { [name: string]: (project: Project) => ReactNode } = {
-	'Downloads': (project) => project.downloads.toLocaleString(),
-	'Supported versions': (project) => project.supportedVersions,
+const sideInfo: { [name: string]: (project: Project, releaseChannel: ReleaseChannel) => ReactNode } = {
+	// 'Downloads': (project) => project.downloads.toLocaleString(),
+	'Supported versions': (_, releaseChannel) => releaseChannel.supportedVersions,
 };
 
 interface Props {
@@ -14,22 +14,26 @@ interface Props {
 }
 
 export default function ProjectInfo({ project, className }: Props) {
+	const releaseChannel = project.defaultReleaseChannel;
+
 	return (
 		<div className={clsx(className, 'border-l pl-4 border-l-slate-600')}>
 			{/* Highlighted detailed */}
 			{Object.entries(sideInfo).map(([name, toValue]) =>
 				<HighlightedSpan key={`info-${project.name}-${name}`} prefix={name} className='block'>
-					{toValue(project)}
+					{toValue(project, releaseChannel)} {/* TODO */}
 				</HighlightedSpan>,
 			)}
 
 			{/* Dependencies */}
-			<div className='mt-1'>
-				Dependencies
-				{project.dependencies && project.dependencies.map((dependency) =>
-					<Depedency key={`dep-${project.name}-${dependency}`} name={dependency} />,
-				)}
-			</div>
+			{releaseChannel.dependencies && releaseChannel.dependencies.length > 0 &&
+				<div className='mt-1'>
+					Dependencies
+					{releaseChannel.dependencies && releaseChannel.dependencies.map((dependency) =>
+						<Depedency key={`dep-${project.name}-${dependency}`} name={dependency} />,
+					)}
+				</div>
+			}
 		</div>
 	);
 }

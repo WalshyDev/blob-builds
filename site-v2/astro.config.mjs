@@ -7,5 +7,15 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
 	output: 'server',
 	integrations: [tailwind(), react()],
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		runtime: {
+			mode: 'local',
+			type: 'pages',
+			bindings: {
+				// API: {
+				// 	type: 'service',
+				// },
+			},
+		},
+	}),
 });

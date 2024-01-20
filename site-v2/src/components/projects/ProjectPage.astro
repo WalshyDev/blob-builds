@@ -1,0 +1,40 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import ReleaseChannels from '~/components/projects/ReleaseChannels';
+import Project from '~/components/projects/Project';
+import BuildList from '~/components/projects/builds/BuildList.astro';
+import { getProject } from '~/api/api';
+
+let { projectName, releaseChannel } = Astro.props as { projectName: string; releaseChannel?: string };
+
+if (releaseChannel === undefined) {
+	releaseChannel = 'Dev';
+}
+
+let project: Project | null;
+
+const res = await getProject(Astro.locals, projectName);
+if (res.success) {
+	project = res.data;
+} else {
+	console.error(`Failed to fetch project: ${res.error}`);
+	project = null;
+}
+---
+
+<Layout>
+	<main class='md:w-4/5 md:m-auto'>
+		{!res.success || project === null ? <h2>Project not found</h2> :
+			<Project project={project} />
+
+			<ReleaseChannels
+				project={project}
+				selected={releaseChannel}
+				defaultReleaseChannel='Dev'
+				releaseChannels={['Dev', 'RC']}
+			/>
+
+			<BuildList project={project} releaseChannel={releaseChannel} />
+		}
+	</main>
+</Layout>

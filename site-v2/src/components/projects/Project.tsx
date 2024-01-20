@@ -19,12 +19,12 @@ export default function Project({ project }: Props) {
 					</p>
 
 					<div className='my-4 space-x-4'>
-						{project.github && <ExternalLink href={project.github} inheritColor showIcon={false}>
+						{project.repoLink && <ExternalLink href={project.repoLink} inheritColor showIcon={false}>
 							<Button>
-								GitHub <External />
+								Repository <External />
 							</Button>
 						</ExternalLink>}
-						{project.wiki && <ExternalLink href={project.wiki} inheritColor showIcon={false}>
+						{project.wikiLink && <ExternalLink href={project.wikiLink} inheritColor showIcon={false}>
 							<Button>
 								Wiki <External />
 							</Button>
