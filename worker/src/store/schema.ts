@@ -19,6 +19,10 @@ export const projects = sqliteTable('projects', {
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
 	description: text('description').notNull(),
 	repoLink: text('repo_link'),
+	wikiLink: text('wiki_link'),
+	// TODO: Would be good to make this non-null in the future
+	defaultReleaseChannel: integer('default_release_channel')
+		.references(() => releaseChannels.releaseChannelId),
 }, (table) => ({
 	projectsNameIdx: index('projects_name_idx').on(table.name),
 }));
@@ -40,7 +44,7 @@ export const releaseChannels = sqliteTable('release_channels', {
 	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
 	supportedVersions: text('supported_versions').notNull(),
 	dependencies: text('dependencies', { mode: 'json' }).notNull().$type<string[]>(),
-	fileNaming: text('file_naming').notNull(),
+	fileNaming: text('file_naming', { mode: 'text' }).notNull(),
 }, (table) => ({
 	releaseChannelsNameIdx: index('release_channels_name_idx').on(table.name),
 }));

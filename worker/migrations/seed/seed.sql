@@ -12,16 +12,22 @@ INSERT INTO projects (user_id, name, description) VALUES (3, 'LuckyPandas','Luck
 INSERT INTO projects (user_id, name, description) VALUES (5, 'Test','Test description');
 
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(1, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar');
+	(1, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar'); -- Slimefun
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(1, 'RC', '1.14.x-1.20.x', json('[]'), '$project.jar');
+	(1, 'RC', '1.14.x-1.20.x', json('[]'), '$project.jar'); -- Slimefun
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(2, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar');
+	(2, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar'); -- LiteXpansion
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(3, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar');
+	(3, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar'); -- HardcoreSlimefun
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(4, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar');
+	(4, 'Dev', '1.14.x-1.20.x', json('["Paper"]'), '$project.jar'); -- HeadLimiter
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(5, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar');
+	(5, 'Dev', '1.14.x-1.20.x', json('[]'), '$project.jar'); -- LuckyPandas
 INSERT INTO release_channels (project_id, name, supported_versions, dependencies, file_naming) VALUES
-	(6, 'Dev', '1.14.x-1.20.x', json('[]'), '$project-$releaseChannel.jar');
+	(6, 'Dev', '1.14.x-1.20.x', json('[]'), '$project-$releaseChannel.jar'); -- Test
+
+UPDATE projects SET default_release_channel = 1 WHERE project_id = 1;
+UPDATE projects SET default_release_channel = 3 WHERE project_id = 2;
+UPDATE projects SET default_release_channel = 4 WHERE project_id = 3;
+UPDATE projects SET default_release_channel = 5 WHERE project_id = 4;
+UPDATE projects SET default_release_channel = 6 WHERE project_id = 5;

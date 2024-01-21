@@ -16,6 +16,10 @@ interface Props {
 export default function ProjectInfo({ project, className }: Props) {
 	const releaseChannel = project.defaultReleaseChannel;
 
+	if (releaseChannel === null) {
+		return null;
+	}
+
 	return (
 		<div className={clsx(className, 'border-l pl-4 border-l-slate-600')}>
 			{/* Highlighted detailed */}

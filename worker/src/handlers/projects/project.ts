@@ -2,17 +2,23 @@ import { Context } from 'hono';
 import { z } from 'zod';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
+import { toProjectResponse } from '~/api/response';
 import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
-import { InsertReleaseChannel, Project } from '~/store/schema';
+import { InsertReleaseChannel, Project, ReleaseChannel } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 
 // GET /api/projects
 export async function getProjects() {
-	const projects = await ProjectStore.getProjectListByUser();
+	const projects = await ProjectStore.getProjects();
 
-	return success('Success', projects);
+	const projectResponses: ProjectResponse[] = [];
+	for (const project of projects) {
+		projectResponses.push(toProjectResponse(project, project.defaultReleaseChannel));
+	}
+
+	return success('Success', projectResponses);
 }
 
 // GET /api/projects/:projectName
@@ -20,8 +26,17 @@ export async function getProject(ctx: Context) {
 	const projectName = ctx.req.param('projectName');
 
 	const project = await ProjectStore.getProjectByName(projectName);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
 
-	return success('Success', project);
+	const defaultReleaseChannel = project.defaultReleaseChannel;
+	let releaseChannel: ReleaseChannel | undefined;
+	if (defaultReleaseChannel !== null) {
+		releaseChannel = await ReleaseChannelStore.getReleaseChannelById(defaultReleaseChannel);
+	}
+
+	return success('Success', toProjectResponse(project, releaseChannel));
 }
 
 export const patchProjectSchema: z.ZodType<Partial<Omit<Project, 'userId' | 'projectId'>>> = z.object({
@@ -40,6 +55,9 @@ export const patchProjectSchema: z.ZodType<Partial<Omit<Project, 'userId' | 'pro
 			/^https:\/\/(github|gitlab).com\/[a-zA-Z0-9_-]{1,64}\/[a-zA-Z0-9_-]{1,64}$/,
 			'repoLink needs to be a valid GitHub or GitLab repository link',
 		)
+		.optional(),
+	wikiLink: z.string()
+		.url()
 		.optional(),
 });
 
@@ -134,8 +152,6 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 		release_channels: channels,
 	});
 }
-
-// TODO: PATCH /api/projects/:projectName
 
 export const projectSettingsSchema = z.object({
 	overwritePluginYml: z.boolean().optional(),

@@ -1,13 +1,27 @@
-import { and, eq, sql } from 'drizzle-orm';
-import { projects, users } from '~/store/schema';
+import { and, eq, inArray, sql } from 'drizzle-orm';
+import { projects, releaseChannels, users } from '~/store/schema';
 import { getDb } from '~/utils/storage';
-import type { InsertProject, Project } from '~/store/schema';
+import type { InsertProject, Project, ReleaseChannel } from '~/store/schema';
 
 export type ProjectList = SingleProjectList[];
 type SingleProjectList = {
 	name: string;
 	owner: string;
 	releaseChannels: string[];
+};
+
+export type ProjectListAbc = SingleProjectListAbc[];
+type SingleProjectListAbc = {
+	owner: string;
+	name: string;
+	description: string;
+	repoLink: string | null;
+	wikiLink: string | null;
+	defaultReleaseChannel: {
+		name: string;
+		supportedVersions: string;
+		dependencies: string;
+	};
 };
 
 class _ProjectStore {
@@ -24,6 +38,47 @@ class _ProjectStore {
 			.from(projects)
 			.leftJoin(users, eq(users.userId, projects.userId))
 			.all();
+	}
+
+	// TODO: This sucks
+	async getProjects(): Promise<ProjectListAbc> {
+		// Get all projects with the owner name
+		const projs: ({ owner: string } & Project)[] = await getDb()
+			.select({
+				...projects,
+				owner: sql<string>`${users.name} as owner_name`,
+			})
+			.from(projects)
+			.leftJoin(users, eq(users.userId, projects.userId))
+			.all();
+
+		const list: ProjectListAbc = [];
+		for (const project of projs) {
+			list.push(project);
+		}
+
+		// Fill in all the default release channel info where possible
+		const releaseChannelIds = projs.filter((p) => p.defaultReleaseChannel !== null)
+			.map(p => p.defaultReleaseChannel);
+
+		let projectReleaseChannels: ReleaseChannel[] = [];
+
+		if (releaseChannelIds.length > 0) {
+			projectReleaseChannels = await getDb()
+				.select()
+				.from(releaseChannels)
+				.where(inArray(releaseChannels.releaseChannelId, releaseChannelIds))
+				.all();
+		}
+
+		for (const releaseChannels of projectReleaseChannels) {
+			const project = projs.find(p => p.projectId === releaseChannels.projectId);
+			if (project !== undefined) {
+				project.defaultReleaseChannel = releaseChannels;
+			}
+		}
+
+		return list;
 	}
 
 	getProject(projectName: string, userId: number): Promise<Project> {

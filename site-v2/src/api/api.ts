@@ -1,3 +1,7 @@
+export function getProjects(locals: App.Locals) {
+	return _fetch<Project[]>(locals, '/projects');
+}
+
 export function getProject(locals: App.Locals, projectName: string) {
 	return _fetch<Project>(locals, `/projects/${projectName}`);
 }
@@ -15,8 +19,8 @@ export function _fetch<T = unknown>(
 	path: string,
 	requestInit?: RequestInit,
 ): Promise<ApiResponse<T>> {
-	const apiUrl = locals.runtime.env.API_URL ?? 'https://blob.build/api';
-	const url = `${apiUrl}${path}`;
+	const apiUrl = locals.runtime.env.API_URL ?? 'https://blob.build';
+	const url = `${apiUrl}/api${path}`;
 
 	console.log(`[API] Fetching ${url}`);
 

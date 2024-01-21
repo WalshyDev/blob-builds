@@ -4,6 +4,7 @@ interface Env {
 
 interface Project {
 	name: string;
+	owner: string;
 	description: string;
 	downloads?: number; // TODO: not implemented yet
 	repoLink?: string;
@@ -12,7 +13,7 @@ interface Project {
 }
 
 interface ProjectList {
-	[owner: string]: Project[];
+	[owner: string]: (Project & { owner: string })[];
 }
 
 interface ReleaseChannel {
