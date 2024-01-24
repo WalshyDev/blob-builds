@@ -4,7 +4,7 @@
 	"private": true,
 	"license": "MIT",
 	"workspaces": [
-		"site-v2",
+		"site",
 		"worker",
 		"docs"
 	],
