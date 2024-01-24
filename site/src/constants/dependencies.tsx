@@ -6,7 +6,7 @@ export const DEPENDENCIES: DependencyMap = Object.freeze({
 		icon: <Paper width={12} />,
 	},
 	'slimefun': {
-		link: 'https://',
+		link: '/project/Slimefun4',
 		icon: <img src='/icons/slimefun.png' className='inline' width={16} />,
 	},
 });

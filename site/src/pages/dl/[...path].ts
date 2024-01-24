@@ -7,7 +7,8 @@ export async function GET({ request, locals }: APIContext) {
 		// Point to API
 		// TODO: I should either enforce API_URL or move this to a const
 		// (ideally not even need to point to workers.dev but shit is broke)
-		url.hostname = locals.runtime.env.API_URL.replace('https://', '')
+		// API_URL currently is a URL not a host... i need to make this not jank like soon
+		url.hostname = locals.runtime.env.API_URL.replace('https://', '').replace('http://', '')
 			?? 'blob-builds-api-production.walshydev.workers.dev';
 
 		console.log('Requesting dl - fetching ' + url.toString());
