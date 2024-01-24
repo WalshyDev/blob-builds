@@ -88,6 +88,12 @@ export const ReleaseChannelNotFound = new ApiError({
 	statusCode: StatusCode.NOT_FOUND,
 });
 
+export const NoReleaseChannels = new ApiError({
+	code: 5001,
+	errorMessage: 'No release channels specified',
+	statusCode: StatusCode.BAD_REQUEST,
+});
+
 // Build errors
 export const BuildNotFound = new ApiError({
 	code: 6000,

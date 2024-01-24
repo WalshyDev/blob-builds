@@ -3,13 +3,9 @@ import Layout from '~/layouts/Layout.astro';
 import ReleaseChannels from '~/components/projects/ReleaseChannels';
 import Project from '~/components/projects/Project';
 import BuildList from '~/components/projects/builds/BuildList.astro';
-import { getProject } from '~/api/api';
+import { getAllProjectBuilds, getProject, type ProjectBuilds } from '~/api/api';
 
 let { projectName, releaseChannel } = Astro.props as { projectName: string; releaseChannel?: string };
-
-if (releaseChannel === undefined) {
-	releaseChannel = 'Dev';
-}
 
 let project: Project | null;
 
@@ -20,6 +16,26 @@ if (res.success) {
 	console.error(`Failed to fetch project: ${res.error}`);
 	project = null;
 }
+
+if (releaseChannel === undefined) {
+	if (project?.defaultReleaseChannel !== undefined) {
+		releaseChannel = project.defaultReleaseChannel.name;
+	} else {
+		// Worst case, fall back to Dev
+		releaseChannel = 'Dev';
+	}
+}
+
+let builds: ProjectBuilds = {};
+if (project !== null) {
+	const buildsRes = await getAllProjectBuilds(Astro.locals, project.name);
+	if (buildsRes.success && buildsRes.data !== null) {
+		builds = buildsRes.data;
+	}
+}
+
+const releaseChannels = Object.keys(builds);
+const buildsForChannel = builds[releaseChannel] ?? [];
 ---
 
 <Layout>
@@ -30,11 +46,11 @@ if (res.success) {
 			<ReleaseChannels
 				project={project}
 				selected={releaseChannel}
-				defaultReleaseChannel='Dev'
-				releaseChannels={['Dev', 'RC']}
+				defaultReleaseChannel={project.defaultReleaseChannel?.name ?? 'Dev'}
+				releaseChannels={releaseChannels ?? []}
 			/>
 
-			<BuildList project={project} releaseChannel={releaseChannel} />
+			<BuildList project={project} builds={buildsForChannel} releaseChannel={releaseChannel} />
 		}
 	</main>
 </Layout>

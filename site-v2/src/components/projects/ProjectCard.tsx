@@ -25,10 +25,10 @@ export default function ProjectCard({ project }: Props) {
 				</p>
 
 				<div className='mt-2 space-x-4'>
-					{project.github && <Button>
+					{project.repoLink && <Button>
 						GitHub <External />
 					</Button>}
-					{project.wiki && <Button>
+					{project.wikiLink && <Button>
 						Wiki <External />
 					</Button>}
 					<ButtonLink href={`/project/${project.name}`} style='primary'>

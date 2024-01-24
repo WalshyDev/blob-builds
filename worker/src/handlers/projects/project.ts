@@ -124,6 +124,11 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 		return errors.ProjectAlreadyExists.toResponse(ctx);
 	}
 
+	// Verify we have at least one release channel
+	if (body.releaseChannels.length === 0) {
+		return errors.NoReleaseChannels.toResponse(ctx);
+	}
+
 	// Create a new project
 	const project = await ProjectStore.insertNewProject({
 		userId,
@@ -144,8 +149,13 @@ export async function postNewProject(ctx: Ctx, body: Body) {
 		fileNaming: channel.fileNaming,
 	}));
 
-	await ReleaseChannelStore.insertNewReleaseChannel(channels);
+	const createdChannels = await ReleaseChannelStore.insertNewReleaseChannel(channels);
 	await ProjectSettingStore.newProject(project.projectId);
+
+	await ProjectStore.updateProject(
+		project.projectId,
+		{ defaultReleaseChannel: createdChannels[0].releaseChannelId },
+	);
 
 	return success('Project created!', {
 		project,

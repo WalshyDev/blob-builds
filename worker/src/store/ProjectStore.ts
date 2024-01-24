@@ -10,19 +10,16 @@ type SingleProjectList = {
 	releaseChannels: string[];
 };
 
-export type ProjectListAbc = SingleProjectListAbc[];
-type SingleProjectListAbc = {
+export type ProjectListNew = SingleProjectListNew[];
+export type SingleProjectListNew = {
 	owner: string;
-	name: string;
-	description: string;
-	repoLink: string | null;
-	wikiLink: string | null;
+	releaseChannels: string[];
 	defaultReleaseChannel: {
 		name: string;
 		supportedVersions: string;
 		dependencies: string;
 	};
-};
+} & Project;
 
 class _ProjectStore {
 
@@ -41,18 +38,21 @@ class _ProjectStore {
 	}
 
 	// TODO: This sucks
-	async getProjects(): Promise<ProjectListAbc> {
+	async getProjects(): Promise<ProjectListNew> {
 		// Get all projects with the owner name
 		const projs: ({ owner: string } & Project)[] = await getDb()
 			.select({
 				...projects,
 				owner: sql<string>`${users.name} as owner_name`,
+				releaseChannels: sql<string[]>`
+					(SELECT json_group_array(name) FROM release_channels WHERE release_channels.project_id = projects.project_id)
+				`.mapWith((channels: string) => JSON.parse(channels)),
 			})
 			.from(projects)
 			.leftJoin(users, eq(users.userId, projects.userId))
 			.all();
 
-		const list: ProjectListAbc = [];
+		const list: ProjectListNew = [];
 		for (const project of projs) {
 			list.push(project);
 		}

@@ -1,22 +1,13 @@
 ---
 import BuildCard from '~/components/projects/builds/BuildCard';
-import { getProjectBuilds } from '~/api/api';
 
 interface Props {
 	project: Project;
-	releaseChannel: string;
+	builds: Build[];
+	releaseChannel?: string;
 }
 
-const { project, releaseChannel } = Astro.props;
-
-let builds: Build[] = [];
-
-const res = await getProjectBuilds(Astro.locals, project.name, releaseChannel);
-if (res.success && res.data[releaseChannel] !== undefined) {
-	builds = res.data[releaseChannel]!;
-}
-
-console.log(res);
+const { project, builds } = Astro.props;
 ---
 
 <div>

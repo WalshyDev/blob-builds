@@ -6,8 +6,12 @@ export function getProject(locals: App.Locals, projectName: string) {
 	return _fetch<Project>(locals, `/projects/${projectName}`);
 }
 
-interface ProjectBuilds {
+export interface ProjectBuilds {
 	[releaseChannel: string]: Build[];
+}
+
+export function getAllProjectBuilds(locals: App.Locals, projectName: string) {
+	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}`);
 }
 
 export function getProjectBuilds(locals: App.Locals, projectName: string, releaseChannel: string) {

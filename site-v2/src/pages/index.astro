@@ -5,6 +5,7 @@ import { getProjects } from '~/api/api';
 
 let projects: Project[] = [];
 
+// The project given in this list has 2 special properties "owner" and "releaseChannels"
 const res = await getProjects(Astro.locals);
 if (res.success) {
 	projects = res.data;
@@ -14,11 +15,11 @@ if (res.success) {
 
 const projectList: ProjectList = {};
 for (const proj of projects) {
-	const existing = projectList[proj.owner];
+	const existing = projectList[proj.owner!];
 	if (existing  !== undefined) {
 		existing.push(proj);
 	} else {
-		projectList[proj.owner] = [proj];
+		projectList[proj.owner!] = [proj];
 	}
 }
 ---
