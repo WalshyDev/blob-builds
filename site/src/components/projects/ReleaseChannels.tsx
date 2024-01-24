@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 
-const link = (project: Project, channel: string) => `/project/${project.name}/${channel}`;
+const link = (project: ProjectResponse, channel: string) => `/project/${project.name}/${channel}`;
 
 interface Props {
-	project: Project;
+	project: ProjectResponse;
 	selected: string;
 	defaultReleaseChannel: string;
 	releaseChannels: string[];

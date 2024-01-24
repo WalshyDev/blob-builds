@@ -5,7 +5,7 @@ import External from '~/components/icons/External';
 import ProjectInfo from '~/components/projects/ProjectInfo';
 
 interface Props {
-	project: Project;
+	project: ProjectResponse;
 }
 
 export default function Project({ project }: Props) {

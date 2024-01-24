@@ -1,13 +1,13 @@
 export function getProjects(locals: App.Locals) {
-	return _fetch<Project[]>(locals, '/projects');
+	return _fetch<ProjectResponse[]>(locals, '/projects');
 }
 
 export function getProject(locals: App.Locals, projectName: string) {
-	return _fetch<Project>(locals, `/projects/${projectName}`);
+	return _fetch<ProjectResponse>(locals, `/projects/${projectName}`);
 }
 
 export interface ProjectBuilds {
-	[releaseChannel: string]: Build[];
+	[releaseChannel: string]: BuildResponse[];
 }
 
 export function getAllProjectBuilds(locals: App.Locals, projectName: string) {

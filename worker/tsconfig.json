@@ -4,7 +4,7 @@
     "module": "esnext",
 		"moduleResolution": "node",
     "lib": ["esnext"],
-    "types": ["@cloudflare/workers-types/experimental", "@types/node", "../site/src/entity.d.ts"],
+    "types": ["@cloudflare/workers-types/experimental", "@types/node", "../site/src/types.d.ts"],
 		"baseUrl": "./",
 		"outDir": "./dist",
 		"allowSyntheticDefaultImports": true,

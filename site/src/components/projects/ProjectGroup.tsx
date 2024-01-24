@@ -2,7 +2,7 @@ import ProjectCard from '~/components/projects/ProjectCard';
 
 interface Props {
 	owner: string;
-	projects: Project[];
+	projects: ProjectResponse[];
 }
 
 export function ProjectGroup({ owner, projects }: Props) {

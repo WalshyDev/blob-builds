@@ -4,8 +4,8 @@ import HighlightedSpan from '~/components/html/HighlightedSpan';
 import Link from '~/components/html/Link';
 
 interface Props {
-	project: Project;
-	build: Build;
+	project: ProjectResponse;
+	build: BuildResponse;
 }
 
 export default function BuildCard({ build }: Props) {

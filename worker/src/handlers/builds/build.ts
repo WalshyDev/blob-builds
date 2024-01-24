@@ -4,14 +4,13 @@ import JSZip from 'jszip';
 import { parse, stringify } from 'yaml';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
-import Constants from '~/shared/utils/constants';
-import { Pages } from '~/shared/utils/routes';
 import BuildStore from '~/store/BuildStore';
 import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
+import Constants from '~/utils/constants';
 import { sha256 } from '~/utils/crypto';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
@@ -240,19 +239,23 @@ function toBuildResponse(
 	latest: boolean = false,
 ): BuildResponse {
 	const version = latest ? 'latest' : String(build.buildId);
-	const downloadPath = Pages.downloadSpecificBuild.toUrl({
-		projectName: project.name,
-		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
+	const downloadPath = downloadUrl(
+		project.name,
+		(build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		version,
-	});
+	);
 
 	return {
 		projectName: project.name,
 		releaseChannel: (build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		buildId: build.buildId,
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		build_id: build.buildId, // TODO: Remove - here to keep compatibility for auto-updater
 		checksum: build.fileHash,
 		fileDownloadUrl: `${Constants.DOMAIN}${downloadPath}`,
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		// TODO: Remove - here to keep compatibility for auto-updater
 		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
 		supportedVersions: build.supportedVersions,
@@ -263,4 +266,8 @@ function toBuildResponse(
 			? `${project.repoLink}/commit/${build.commitHash}`
 			: undefined,
 	};
+}
+
+function downloadUrl(projectName: string, releaseChannel: string, version: string) {
+	return `/dl/${projectName}/${releaseChannel}/${version}`;
 }

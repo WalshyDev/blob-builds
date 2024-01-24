@@ -29,7 +29,7 @@ sidebar:
 $ curl -X GET https://blob.build/api/projects \
 	-H "Content-Type: application/json"
 ```
-```
+```json
 {
 	"success": true,
 	"message": "Success",

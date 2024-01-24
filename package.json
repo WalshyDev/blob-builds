@@ -10,6 +10,7 @@
 	],
 	"scripts": {
 		"dev": "turbo dev",
+		"build": "turbo build",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx **/src/",
 		"lint:fix": "eslint --ext .js,.jsx,.ts,.tsx --fix **/src/"
 	},

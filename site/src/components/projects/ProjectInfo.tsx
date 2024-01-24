@@ -3,13 +3,13 @@ import Depedency from '~/components/Dependency';
 import HighlightedSpan from '~/components/html/HighlightedSpan';
 import type { ReactNode } from 'react';
 
-const sideInfo: { [name: string]: (project: Project, releaseChannel: ReleaseChannel) => ReactNode } = {
+const sideInfo: { [name: string]: (project: ProjectResponse, releaseChannel: ReleaseChannel) => ReactNode } = {
 	// 'Downloads': (project) => project.downloads.toLocaleString(),
 	'Supported versions': (_, releaseChannel) => releaseChannel.supportedVersions,
 };
 
 interface Props {
-	project: Project;
+	project: ProjectResponse;
 	className?: string;
 }
 

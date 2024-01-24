@@ -7,7 +7,7 @@ import { getAllProjectBuilds, getProject, type ProjectBuilds } from '~/api/api';
 
 let { projectName, releaseChannel } = Astro.props as { projectName: string; releaseChannel?: string };
 
-let project: Project | null;
+let project: ProjectResponse | null;
 
 const res = await getProject(Astro.locals, projectName);
 if (res.success) {

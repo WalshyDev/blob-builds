@@ -5,7 +5,7 @@ interface Env {
 	CF_PAGES_BRANCH?: string;
 }
 
-interface Project {
+interface ProjectResponse {
 	name: string;
 	owner?: string;
 	description: string;
@@ -17,7 +17,7 @@ interface Project {
 }
 
 interface ProjectList {
-	[owner: string]: Project[];
+	[owner: string]: ProjectResponse[];
 }
 
 interface ReleaseChannel {
@@ -26,7 +26,10 @@ interface ReleaseChannel {
 	dependencies: string[];
 }
 
-interface Build {
+interface BuildResponse {
+	projectName?: string;
+	releaseChannel?: string;
+
 	buildId: number;
 	checksum: string;
 	fileDownloadUrl: string;
