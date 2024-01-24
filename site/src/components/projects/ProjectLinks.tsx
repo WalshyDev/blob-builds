@@ -10,7 +10,7 @@ interface Props {
 
 export default function ProjectLinks({ project, download }: Props) {
 	return (
-		<div className='my-4 space-x-4'>
+		<div className='my-4 space-x-2 md:space-x-4'>
 			{project.repoLink && <ExternalLink href={project.repoLink} inheritColor showIcon={false}>
 				<Button>
 					Repository <External />

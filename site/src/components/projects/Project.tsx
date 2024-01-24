@@ -10,8 +10,8 @@ export default function Project({ project }: Props) {
 	return (
 		<>
 			<H1 className='text-primary'>{project.name}</H1>
-			<div className='grid grid-cols-10'>
-				<div className='col-span-8'>
+			<div className='md:grid md:grid-cols-10'>
+				<div className='md:col-span-8'>
 					<p className='my-4'>
 						{project.description}
 					</p>
@@ -19,7 +19,7 @@ export default function Project({ project }: Props) {
 					<ProjectLinks project={project} />
 				</div>
 
-				<ProjectInfo project={project} className='col-span-2' />
+				<ProjectInfo project={project} className='md:col-span-2 my-2 md:my-0' />
 			</div>
 		</>
 	);

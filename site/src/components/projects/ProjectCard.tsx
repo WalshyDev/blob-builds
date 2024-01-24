@@ -12,9 +12,9 @@ export default function ProjectCard({ project }: Props) {
 		<div className={clsx(
 			'w-4/5 p-4 m-auto mb-4',
 			'bg-zinc-800 hover:bg-zinc-700 border rounded border-zinc-700',
-			'grid grid-cols-10',
+			'md:grid md:grid-cols-10',
 		)}>
-			<div className='col-span-8'>
+			<div className='md:col-span-8'>
 				<Link href={`/project/${project.name}`}>
 					<span className='text-xl text-gray-200'>
 						{project.name}

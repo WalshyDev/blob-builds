@@ -39,7 +39,7 @@ const buildsForChannel = builds[releaseChannel] ?? [];
 ---
 
 <Layout>
-	<main class='md:w-4/5 md:m-auto'>
+	<main class='w-4/5 m-auto'>
 		{!res.success || project === null ? <h2>Project not found</h2> :
 			<Project project={project} />
 
