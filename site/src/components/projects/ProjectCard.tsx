@@ -15,7 +15,7 @@ export default function ProjectCard({ project }: Props) {
 			'grid grid-cols-10',
 		)}>
 			<div className='col-span-8'>
-				<Link href={`/projects/${project.name}`}>
+				<Link href={`/project/${project.name}`}>
 					<span className='text-xl text-gray-200'>
 						{project.name}
 					</span>
