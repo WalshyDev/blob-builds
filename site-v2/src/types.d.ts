@@ -1,5 +1,8 @@
 interface Env {
 	API_URL: string;
+
+	CF_PAGES_URL?: string;
+	CF_PAGES_BRANCH?: string;
 }
 
 interface Project {
