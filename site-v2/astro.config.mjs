@@ -1,3 +1,4 @@
+import { env } from 'node:process';
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
@@ -12,6 +13,10 @@ export default defineConfig({
 			mode: 'local',
 			type: 'pages',
 			bindings: {
+				API_URL: {
+					type: 'env',
+					value: env.API_URL,
+				},
 				// API: {
 				// 	type: 'service',
 				// },
