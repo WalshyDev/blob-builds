@@ -1,24 +1,26 @@
-import { PropsWithChildren } from 'react';
-import { classNames } from '~/utils/utils';
+import clsx from 'clsx';
+import type { PropsWithChildren } from 'react';
 
-interface HeaderProps extends PropsWithChildren {
-	className?: string;
+type H1Props = PropsWithChildren & React.HTMLAttributes<HTMLHeadingElement>;
+
+export function H1({ children, ...props }: H1Props) {
+	return <h1 className={clsx('text-2xl', props.className)}>{children}</h1>;
 }
 
-const sharedStyles = 'my-4 text-stone-600 dark:text-slate-200';
+type H2Props = PropsWithChildren & React.HTMLAttributes<HTMLHeadingElement>;
 
-export function H1({ className, children }: HeaderProps) {
-	return <h1 className={classNames('text-4xl', sharedStyles, className)}>{children}</h1>;
+export function H2({ children, ...props }: H2Props) {
+	return <h2 className={clsx('text-xl', props.className)}>{children}</h2>;
 }
 
-export function H2({ className, children }: HeaderProps) {
-	return <h2 className={classNames('text-3xl', sharedStyles, className)}>{children}</h2>;
+type H3Props = PropsWithChildren & React.HTMLAttributes<HTMLHeadingElement>;
+
+export function H3({ children, ...props }: H3Props) {
+	return <h3 className={clsx('text-lg', props.className)}>{children}</h3>;
 }
 
-export function H3({ className, children }: HeaderProps) {
-	return <h3 className={classNames('text-2xl', sharedStyles, className)}>{children}</h3>;
-}
+type H4Props = PropsWithChildren & React.HTMLAttributes<HTMLHeadingElement>;
 
-export function H4({ className, children }: HeaderProps) {
-	return <h4 className={classNames('text-xl', sharedStyles, className)}>{children}</h4>;
+export function H4({ children, ...props }: H4Props) {
+	return <h4 className={clsx('text-md', props.className)}>{children}</h4>;
 }
