@@ -1,0 +1,19 @@
+---
+import Navbar from '~/components/Navbar';
+---
+
+<!doctype html>
+<html lang='en'>
+	<head>
+		<title>Blob Builds</title>
+		<meta charset='UTF-8' />
+		<meta name='description' content="The place to download a bunch of Minecraft plugins, primarily for Slimefun and it's addons." />
+		<meta name='viewport' content='width=device-width' />
+		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+	</head>
+	<body class='w-full h-full bg-zinc-900 text-gray-400'>
+		<Navbar client:load /> <!-- Load with JS if possible so the mobile menu works -->
+
+		<slot />
+	</body>
+</html>

@@ -1,34 +1,45 @@
-import { ProjectList } from '../../../worker/src/store/ProjectStore';
-
-export function getProjects(args: DataFunctionArgs) {
-	return _fetch<ProjectList>(args, '/api/projects');
+export function getProjects(locals: App.Locals) {
+	return _fetch<ProjectResponse[]>(locals, '/projects');
 }
 
-export function getAllBuildsPerProject(args: DataFunctionArgs, project: string, releaseChannel?: string) {
-	if (releaseChannel) {
-		return getAllBuildsPerProjectAndReleaseChannel(args, project, releaseChannel);
-	}
-	return _fetch<BuildList>(args, `/api/builds/${project}`);
+export function getProject(locals: App.Locals, projectName: string) {
+	return _fetch<ProjectResponse>(locals, `/projects/${projectName}`);
 }
 
-export function getAllBuildsPerProjectAndReleaseChannel(
-	args: DataFunctionArgs,
-	project: string,
-	releaseChannel: string,
-) {
-	return _fetch<BuildList>(args, `/api/builds/${project}/${releaseChannel}`);
+export interface ProjectBuilds {
+	[releaseChannel: string]: BuildResponse[];
 }
 
-export function _fetch<T = unknown>(args: DataFunctionArgs, path: string, init?: RequestInit): Promise<ApiResponse<T>> {
-	// TODO: handle auth
-	const { context, request } = args;
+export function getAllProjectBuilds(locals: App.Locals, projectName: string) {
+	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}`);
+}
 
-	console.log(`fetching ${path}`);
-	return context.API.fetch(`https://api.local${path}`, {
-		...init,
-		headers: {
-			...init?.headers,
-			...Object.fromEntries(request.headers),
-		},
-	}).then(res => res.json());
+export function getProjectBuilds(locals: App.Locals, projectName: string, releaseChannel: string) {
+	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}/${releaseChannel}`);
+}
+
+export function _fetch<T = unknown>(
+	locals: App.Locals,
+	path: string,
+	requestInit?: RequestInit,
+): Promise<ApiResponse<T>> {
+	const apiUrl = locals.runtime.env.API_URL ?? 'https://blob.build';
+	const url = `${apiUrl}/api${path}`;
+
+	console.log(`[API] Fetching ${url}`);
+
+	return fetch(url, requestInit).then((res) => res.json() as Promise<ApiResponse<T>>);
+}
+
+type ApiResponse<T = unknown> = ApiResponseSuccess<T> | ApiResponseError;
+
+interface ApiResponseSuccess<T = unknown> {
+	success: true;
+	data: T;
+}
+
+interface ApiResponseError {
+	success: false;
+	code: number;
+	error: string;
 }

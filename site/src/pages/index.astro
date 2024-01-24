@@ -1,0 +1,31 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import { ProjectList } from '~/components/projects/ProjectGroup';
+import { getProjects } from '~/api/api';
+
+let projects: ProjectResponse[] = [];
+
+// The project given in this list has 2 special properties "owner" and "releaseChannels"
+const res = await getProjects(Astro.locals);
+if (res.success) {
+	projects = res.data;
+} else {
+	console.error(res.error);
+}
+
+const projectList: ProjectList = {};
+for (const proj of projects) {
+	const existing = projectList[proj.owner!];
+	if (existing  !== undefined) {
+		existing.push(proj);
+	} else {
+		projectList[proj.owner!] = [proj];
+	}
+}
+---
+
+<Layout>
+	<main>
+		<ProjectList projects={projectList} />
+	</main>
+</Layout>

@@ -1,0 +1,15 @@
+---
+import BuildCard from '~/components/projects/builds/BuildCard';
+
+interface Props {
+	project: ProjectResponse;
+	builds: BuildResponse[];
+	releaseChannel?: string;
+}
+
+const { project, builds } = Astro.props;
+---
+
+<div>
+	{builds.map((build) => <BuildCard project={project} build={build} />)}
+</div>

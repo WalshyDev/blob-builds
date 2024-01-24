@@ -23,7 +23,7 @@ sidebar:
 $ curl -X GET https://blob.build/api/projects/Slimefun4 \
 	-H "Content-Type: application/json"
 ```
-```
+```json
 {
 	"success": true,
 	"message": "Success",
