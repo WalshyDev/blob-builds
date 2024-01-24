@@ -1,8 +1,6 @@
-import Button from '~/components/html/Button';
 import { H1 } from '~/components/html/Headings';
-import { ExternalLink } from '~/components/html/Link';
-import External from '~/components/icons/External';
 import ProjectInfo from '~/components/projects/ProjectInfo';
+import ProjectLinks from '~/components/projects/ProjectLinks';
 
 interface Props {
 	project: ProjectResponse;
@@ -18,18 +16,7 @@ export default function Project({ project }: Props) {
 						{project.description}
 					</p>
 
-					<div className='my-4 space-x-4'>
-						{project.repoLink && <ExternalLink href={project.repoLink} inheritColor showIcon={false}>
-							<Button>
-								Repository <External />
-							</Button>
-						</ExternalLink>}
-						{project.wikiLink && <ExternalLink href={project.wikiLink} inheritColor showIcon={false}>
-							<Button>
-								Wiki <External />
-							</Button>
-						</ExternalLink>}
-					</div>
+					<ProjectLinks project={project} />
 				</div>
 
 				<ProjectInfo project={project} className='col-span-2' />

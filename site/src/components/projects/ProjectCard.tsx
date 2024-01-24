@@ -1,8 +1,7 @@
 import clsx from 'clsx';
-import Button from '~/components/html/Button';
-import ButtonLink from '~/components/html/ButtonLink';
-import External from '~/components/icons/External';
+import Link from '~/components/html/Link';
 import ProjectInfo from '~/components/projects/ProjectInfo';
+import ProjectLinks from '~/components/projects/ProjectLinks';
 
 interface Props {
 	project: ProjectResponse;
@@ -16,25 +15,17 @@ export default function ProjectCard({ project }: Props) {
 			'grid grid-cols-10',
 		)}>
 			<div className='col-span-8'>
-				<span className='text-xl text-gray-200'>
-					{project.name}
-				</span>
+				<Link href={`/projects/${project.name}`}>
+					<span className='text-xl text-gray-200'>
+						{project.name}
+					</span>
+				</Link>
 
 				<p className='mt-2'>
 					{project.description}
 				</p>
 
-				<div className='mt-2 space-x-4'>
-					{project.repoLink && <Button>
-						GitHub <External />
-					</Button>}
-					{project.wikiLink && <Button>
-						Wiki <External />
-					</Button>}
-					<ButtonLink href={`/project/${project.name}`} style='primary'>
-						Download
-					</ButtonLink>
-				</div>
+				<ProjectLinks project={project} download />
 			</div>
 
 			<ProjectInfo project={project} className='col-span-2' />
