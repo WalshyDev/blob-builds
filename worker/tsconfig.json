@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+		"strict": true,
+		"skipLibCheck": true,
     "target": "esnext",
     "module": "esnext",
 		"moduleResolution": "node",
@@ -12,5 +14,6 @@
 			"~/*": ["./src/*"],
 			"~/shared/*": ["../site/src/*"]
 		}
-  }
+  },
+	"include": ["./src/**/*"]
 }

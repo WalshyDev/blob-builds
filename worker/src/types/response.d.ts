@@ -6,7 +6,7 @@ interface ProjectResponse {
   repoLink: string | null;
   wikiLink: string | null;
 	releaseChannels: string[];
-  defaultReleaseChannel: ReleaseChannelResponse;
+  defaultReleaseChannel: ReleaseChannelResponse | null;
 }
 
 interface ReleaseChannelResponse {

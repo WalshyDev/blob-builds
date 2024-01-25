@@ -40,7 +40,7 @@ class _BuildStore {
 			.all();
 	}
 
-	countBuildsForReleaseChannel(projectId: number, releaseChannelId: number): Promise<{ count: number }> {
+	countBuildsForReleaseChannel(projectId: number, releaseChannelId: number): Promise<{ count: number } | undefined> {
 		return getDb()
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(builds)
@@ -54,7 +54,7 @@ class _BuildStore {
 	}
 
 	// Get latest build for a project and release channel
-	getLatestBuildForReleaseChannel(projectName: string, releaseChannel: string): Promise<Build> {
+	getLatestBuildForReleaseChannel(projectName: string, releaseChannel: string): Promise<Build | undefined> {
 		return getDb().select({ ...selectStar(builds) })
 			.from(builds)
 			.leftJoin(projects, eq(projects.projectId, builds.projectId))
@@ -107,7 +107,11 @@ class _BuildStore {
 	}
 
 	// Get build for a project and release channel
-	getSpecificBuildForReleaseChannel(projectName: string, releaseChannel: string, buildId: number): Promise<Build> {
+	getSpecificBuildForReleaseChannel(
+		projectName: string,
+		releaseChannel: string,
+		buildId: number,
+	): Promise<Build | undefined> {
 		return getDb().select({ ...selectStar(builds) })
 			.from(builds)
 			.leftJoin(projects, eq(projects.projectId, builds.projectId))
@@ -122,7 +126,7 @@ class _BuildStore {
 			.get();
 	}
 
-	getBuildById(projectId: number, releaseChannelId: number, buildId: number): Promise<Build> {
+	getBuildById(projectId: number, releaseChannelId: number, buildId: number): Promise<Build | undefined> {
 		return getDb()
 			.select()
 			.from(builds)
@@ -134,7 +138,10 @@ class _BuildStore {
 			.get();
 	}
 
-	getLastBuildId(projectId: number, releaseChannelId: number): Promise<{ buildId: number }> {
+	getLastBuildId(
+		projectId: number,
+		releaseChannelId: number,
+	): Promise<{ buildId: number } | undefined> {
 		return getDb().select({ buildId: builds.buildId })
 			.from(builds)
 			.where(and(

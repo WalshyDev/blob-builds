@@ -53,7 +53,7 @@ export type ReleaseChannel = typeof releaseChannels.$inferSelect;
 export type InsertReleaseChannel = typeof releaseChannels.$inferInsert;
 
 export const builds = sqliteTable('builds', {
-	buildId: integer('build_id'),
+	buildId: integer('build_id').notNull(),
 	releaseChannelId: integer('release_channel_id').notNull()
 		.references(() => releaseChannels.releaseChannelId, { onDelete: 'cascade' }),
 	projectId: integer('project_id').notNull().references(() => projects.projectId, { onDelete: 'cascade' }),

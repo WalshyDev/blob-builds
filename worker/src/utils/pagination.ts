@@ -24,7 +24,7 @@ export function getPagination(ctx: Ctx): Pagination {
 	}
 
 	if (url.searchParams.has('per_page') || url.searchParams.has('perPage')) {
-		const perPage = parseInt(url.searchParams.get('per_page') || url.searchParams.get('perPage'));
+		const perPage = parseInt(url.searchParams.get('per_page') ?? url.searchParams.get('perPage') ?? '1');
 		if (!isNaN(perPage) && perPage > 0) {
 			pagination.perPage = perPage;
 		}

@@ -4,7 +4,7 @@ import { getDb } from '~/utils/storage';
 
 class _ProjectSettingStore {
 
-	async getSettings(projectId: number, createIfNotExists = true): Promise<ProjectSettings> {
+	async getSettings(projectId: number, createIfNotExists = true): Promise<ProjectSettings | undefined> {
 		let settings = await getDb()
 			.select()
 			.from(projectSettings)

@@ -5,7 +5,7 @@ export function toProjectResponse(
 	proj: Project | SingleProjectListNew,
 	releaseChannel?: ReleaseChannel,
 ): ProjectResponse {
-	let releaseChannelResponse: ReleaseChannelResponse = null;
+	let releaseChannelResponse: ReleaseChannelResponse | null = null;
 	if (releaseChannel !== undefined && releaseChannel !== null && typeof releaseChannel === 'object') {
 		releaseChannelResponse = {
 			name: releaseChannel.name,

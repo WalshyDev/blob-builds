@@ -74,7 +74,9 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	}
 
 	const total = await BuildStore.countBuildsForReleaseChannel(project.projectId, releaseChannel.releaseChannelId);
-	pagination.total = total.count;
+	if (total !== undefined) {
+		pagination.total = total.count;
+	}
 
 	return success('Success', res, pagination);
 }
@@ -124,7 +126,7 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 	const version = ctx.req.param('version');
 
 	const buildId = getBuildId(version);
-	if (buildId === undefined) {
+	if (buildId === null) {
 		return errors.InvalidBuildId.toResponse(ctx);
 	}
 
@@ -270,7 +272,7 @@ function toBuildResponse(
 		supportedVersions: build.supportedVersions,
 		dependencies: build.dependencies,
 		releaseNotes: build.releaseNotes,
-		commitHash: build.commitHash,
+		commitHash: build.commitHash ?? undefined,
 		commitLink: build.commitHash !== null && project.repoLink !== null
 			? `${project.repoLink}/commit/${build.commitHash}`
 			: undefined,

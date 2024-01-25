@@ -24,19 +24,21 @@ export async function getDownloadBuild(ctx: Ctx) {
 	let build: Build;
 	if (version !== undefined && version !== '') {
 		const buildId = getBuildId(version);
-		if (buildId === undefined) {
+		if (buildId === null) {
 			return errors.InvalidBuildId.toResponse(ctx);
 		}
 
-		build = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannelName, buildId);
-		if (build === undefined) {
+		const specificBuild = await BuildStore.getSpecificBuildForReleaseChannel(projectName, releaseChannelName, buildId);
+		if (specificBuild === undefined) {
 			return errors.BuildNotFound.toResponse(ctx);
 		}
+		build = specificBuild;
 	} else {
-		build = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannelName);
-		if (build === undefined) {
+		const latestBuild = await BuildStore.getLatestBuildForReleaseChannel(projectName, releaseChannelName);
+		if (latestBuild === undefined) {
 			return errors.BuildNotFound.toResponse(ctx);
 		}
+		build = latestBuild;
 	}
 
 	const filePath = getFilePath(projectName, releaseChannelName, build.fileHash);

@@ -125,8 +125,8 @@ app.post(
 	uploadValidator(postRewriteBuild, rewriteBuildSchema),
 );
 
-app.onError((err, ctx) => errors.InternalError.withError(err).toResponse(ctx as Ctx));
-app.notFound((ctx) => errors.RouteNotFound.toResponse(ctx as Ctx));
+app.onError((err, ctx) => errors.InternalError.withError(err).toResponse(ctx as unknown as Ctx));
+app.notFound((ctx) => errors.RouteNotFound.toResponse(ctx as unknown as Ctx));
 
 // Test only
 app.use('/__test/*', testOnlyMiddleware);

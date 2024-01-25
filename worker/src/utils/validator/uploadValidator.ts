@@ -1,4 +1,4 @@
-import { ZodType, z } from 'zod';
+import { ZodType, ZodObjectDef, z } from 'zod';
 import * as errors from '~/api/errors';
 import { Ctx } from '~/types/hono';
 
@@ -20,7 +20,7 @@ export type UploadMetadata = z.infer<typeof uploadSchema>;
 
 export type Handler<T> = (ctx: Ctx, file: File, metadata: T) => Response | Promise<Response>;
 
-type ZodSchema = ZodType<unknown, unknown, unknown>;
+type ZodSchema = ZodType<unknown, ZodObjectDef, unknown>;
 
 export default function uploadValidator(
 	controller: Handler<z.infer<ZodSchema>>,
