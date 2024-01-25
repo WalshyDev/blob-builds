@@ -82,7 +82,14 @@ class _ProjectStore {
 	}
 
 	getProject(projectName: string, userId: number): Promise<Project> {
-		return getDb().select().from(projects)
+		return getDb()
+			.select({
+				...projects,
+				releaseChannels: sql<string[]>`
+					(SELECT json_group_array(name) FROM release_channels WHERE release_channels.project_id = projects.project_id)
+				`.mapWith((channels: string) => JSON.parse(channels)),
+			})
+			.from(projects)
 			.where(and(
 				eq(projects.name, projectName),
 				eq(projects.userId, userId),
@@ -91,7 +98,14 @@ class _ProjectStore {
 	}
 
 	getProjectByName(projectName: string): Promise<Project> {
-		return getDb().select().from(projects)
+		return getDb()
+			.select({
+				...projects,
+				releaseChannels: sql<string[]>`
+					(SELECT json_group_array(name) FROM release_channels WHERE release_channels.project_id = projects.project_id)
+				`.mapWith((channels: string) => JSON.parse(channels)),
+			})
+			.from(projects)
 			.where(eq(projects.name, projectName))
 			.get();
 	}

@@ -23,6 +23,7 @@ if (res.success) {
 	console.error(`Failed to fetch project: ${res.error}`);
 	project = null;
 }
+console.log(project);
 
 if (releaseChannel === undefined) {
 	if (project?.defaultReleaseChannel !== undefined) {
@@ -45,8 +46,10 @@ if (project !== null) {
 	}
 }
 
-const releaseChannels = Object.keys(builds);
+const releaseChannels = project?.releaseChannels;
 const buildsForChannel = builds[releaseChannel] ?? [];
+
+console.log('releaseChannels', releaseChannels);
 ---
 
 <Layout>

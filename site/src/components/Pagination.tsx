@@ -8,7 +8,6 @@ interface Props {
 }
 
 export function Pagination({ currentPage, totalPages }: Props) {
-	console.log('pagination!', { currentPage, totalPages });
 	return (
 		<div className='my-4 table mx-auto space-x-4'>
 
