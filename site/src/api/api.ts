@@ -10,12 +10,23 @@ export interface ProjectBuilds {
 	[releaseChannel: string]: BuildResponse[];
 }
 
-export function getAllProjectBuilds(locals: App.Locals, projectName: string) {
-	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}`);
+export function getAllProjectBuilds(
+	locals: App.Locals,
+	projectName: string,
+	page = 1,
+	perPage = 100,
+) {
+	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}?page=${page}&per_page=${perPage}`);
 }
 
-export function getProjectBuilds(locals: App.Locals, projectName: string, releaseChannel: string) {
-	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}/${releaseChannel}`);
+export function getProjectBuilds(
+	locals: App.Locals,
+	projectName: string,
+	releaseChannel: string,
+	page = 1,
+	perPage = 100,
+) {
+	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}/${releaseChannel}?page=${page}&per_page=${perPage}`);
 }
 
 export function _fetch<T = unknown>(
@@ -36,6 +47,7 @@ type ApiResponse<T = unknown> = ApiResponseSuccess<T> | ApiResponseError;
 interface ApiResponseSuccess<T = unknown> {
 	success: true;
 	data: T;
+	pagination?: Pagination;
 }
 
 interface ApiResponseError {

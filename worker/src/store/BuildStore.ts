@@ -1,6 +1,7 @@
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc, and, sql } from 'drizzle-orm';
 import { selectStar } from '~/store/_db';
 import { Build, BuildWithReleaseChannel, InsertBuild, builds, projects, releaseChannels } from '~/store/schema';
+import { Pagination } from '~/utils/pagination';
 import { getDb } from '~/utils/storage';
 
 class _BuildStore {
@@ -19,8 +20,13 @@ class _BuildStore {
 			.all();
 	}
 
-	getProjectBuildsForReleaseChannel(projectId: number, releaseChannelId: number): Promise<Build[]> {
-		return getDb().select()
+	getProjectBuildsForReleaseChannel(
+		projectId: number,
+		releaseChannelId: number,
+		pagination: Pagination,
+	): Promise<Build[]> {
+		return getDb()
+			.select()
 			.from(builds)
 			.where(
 				and(
@@ -29,7 +35,22 @@ class _BuildStore {
 				),
 			)
 			.orderBy(desc(builds.buildId))
+			.offset(pagination.page * pagination.perPage - pagination.perPage)
+			.limit(pagination.perPage)
 			.all();
+	}
+
+	countBuildsForReleaseChannel(projectId: number, releaseChannelId: number): Promise<{ count: number }> {
+		return getDb()
+			.select({ count: sql<number>`COUNT(*)` })
+			.from(builds)
+			.where(
+				and(
+					eq(builds.projectId, projectId),
+					eq(builds.releaseChannelId, releaseChannelId),
+				),
+			)
+			.get();
 	}
 
 	// Get latest build for a project and release channel

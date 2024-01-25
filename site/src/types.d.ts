@@ -5,6 +5,12 @@ interface Env {
 	CF_PAGES_BRANCH?: string;
 }
 
+interface Pagination {
+	page: number;
+	perPage: number;
+	total: number;
+}
+
 interface ProjectResponse {
 	name: string;
 	owner?: string;

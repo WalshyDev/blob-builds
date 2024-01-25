@@ -12,6 +12,7 @@ import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import Constants from '~/utils/constants';
 import { sha256 } from '~/utils/crypto';
+import { getPagination } from '~/utils/pagination';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
 
@@ -47,6 +48,7 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
 	const releaseChannelName = ctx.req.param('releaseChannel');
+	const pagination = getPagination(ctx);
 
 	const project = await ProjectStore.getProjectByName(projectName);
 	if (project === undefined) {
@@ -56,7 +58,11 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	if (releaseChannel === undefined) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
-	const builds = await BuildStore.getProjectBuildsForReleaseChannel(project.projectId, releaseChannel.releaseChannelId);
+	const builds = await BuildStore.getProjectBuildsForReleaseChannel(
+		project.projectId,
+		releaseChannel.releaseChannelId,
+		pagination,
+	);
 	if (builds === undefined) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
@@ -67,7 +73,10 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 		res[releaseChannel.name].push(toBuildResponse(build, project, releaseChannel.name));
 	}
 
-	return success('Success', res);
+	const total = await BuildStore.countBuildsForReleaseChannel(project.projectId, releaseChannel.releaseChannelId);
+	pagination.total = total.count;
+
+	return success('Success', res, pagination);
 }
 
 // GET /api/builds/:projectName/latest

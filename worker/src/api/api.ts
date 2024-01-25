@@ -1,8 +1,11 @@
-export function success<T = unknown>(message: string, data: T | null = null) {
+import { Pagination } from '~/utils/pagination';
+
+export function success<T = unknown>(message: string, data: T | null = null, pagination?: Pagination) {
 	return res({
 		success: true,
 		message,
 		data,
+		pagination,
 	});
 }
 

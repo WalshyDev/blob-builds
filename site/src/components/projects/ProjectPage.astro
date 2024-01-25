@@ -3,9 +3,16 @@ import Layout from '~/layouts/Layout.astro';
 import ReleaseChannels from '~/components/projects/ReleaseChannels';
 import Project from '~/components/projects/Project';
 import BuildList from '~/components/projects/builds/BuildList.astro';
-import { getAllProjectBuilds, getProject, type ProjectBuilds } from '~/api/api';
+import { getProject, getProjectBuilds, type ProjectBuilds } from '~/api/api';
+
+const url = new URL(Astro.request.url);
 
 let { projectName, releaseChannel } = Astro.props as { projectName: string; releaseChannel?: string };
+
+let page = 1;
+if (url.searchParams.has('page')) {
+	page = parseInt(url.searchParams.get('page') ?? '1');
+}
 
 let project: ProjectResponse | null;
 
@@ -27,10 +34,14 @@ if (releaseChannel === undefined) {
 }
 
 let builds: ProjectBuilds = {};
+let pagination: Pagination | undefined;
 if (project !== null) {
-	const buildsRes = await getAllProjectBuilds(Astro.locals, project.name);
+	const buildsRes = await getProjectBuilds(Astro.locals, project.name, releaseChannel, page);
 	if (buildsRes.success && buildsRes.data !== null) {
 		builds = buildsRes.data;
+		if (buildsRes.pagination !== undefined) {
+			pagination = buildsRes.pagination;
+		}
 	}
 }
 
@@ -50,7 +61,7 @@ const buildsForChannel = builds[releaseChannel] ?? [];
 				releaseChannels={releaseChannels ?? []}
 			/>
 
-			<BuildList project={project} builds={buildsForChannel} releaseChannel={releaseChannel} />
+			<BuildList project={project} builds={buildsForChannel} releaseChannel={releaseChannel} pagination={pagination} />
 		}
 	</main>
 </Layout>
