@@ -19,8 +19,8 @@ database_id = "10f80f6e-c0de-4a67-be02-492636f316a8"
 
 [[env.production.r2_buckets]]
 binding = "R2"
-bucket_name = "blob-builds"
-preview_bucket_name = "blob-builds"
+bucket_name = "blob-builds-eu"
+preview_bucket_name = "blob-builds-eu"
 
 [[env.production.analytics_engine_datasets]]
 binding = "AE"
