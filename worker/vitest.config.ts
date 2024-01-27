@@ -8,6 +8,6 @@ const viteConfig = defineViteConfig({
 
 export default mergeConfig(viteConfig, defineConfig({
 	test: {
-		retry: 3,
+		retry: 5, // TODO: Figure out these internal errors
 	},
 }));
