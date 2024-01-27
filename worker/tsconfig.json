@@ -15,5 +15,5 @@
 			"~/shared/*": ["../site/src/*"]
 		}
   },
-	"include": ["./src/**/*"]
+	"include": ["./src/**/*", "./tests/**/*"]
 }
