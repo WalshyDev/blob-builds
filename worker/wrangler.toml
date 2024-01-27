@@ -1,9 +1,12 @@
 name = "blob-builds-api"
 main = "src/index.ts"
+account_id = "4e599df4216133509abaac54b109a647"
 compatibility_date = "2023-11-21"
 compatibility_flags = ["nodejs_compat"]
-account_id = "4e599df4216133509abaac54b109a647"
 logpush = true
+
+[placement]
+mode = "smart"
 
 [env.production]
 [env.production.vars]
