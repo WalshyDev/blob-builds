@@ -1,4 +1,3 @@
-import { downloadUrl } from '~/handlers/builds/build';
 import { Build, Project, User } from '~/store/schema';
 import { Ctx } from '~/types/hono';
 
@@ -25,6 +24,10 @@ const messages = [
 	'Did someone say <repo>?\nNo?\nWell, here you go anyway...',
 ];
 
+function projectUrl(project: string, releaseChannel: string) {
+	return `https://blob.build/project/${project}/${releaseChannel}`;
+}
+
 export async function postBuildToDiscord(
 	ctx: Ctx,
 	user: User,
@@ -38,9 +41,9 @@ export async function postBuildToDiscord(
 	}
 
 	const message = messages[Math.floor(Math.random() * messages.length)]
-		.replace('<id>', build.buildId.toString())
-		.replace('<repo>', project.name)
-		.replace('<user>', user.name);
+		.replaceAll('<id>', build.buildId.toString())
+		.replaceAll('<repo>', project.name)
+		.replaceAll('<user>', user.name);
 
 	// Post the build to Discord
 	const buildMessage = await fetch(`${ctx.env.BUILDS_WEBHOOK}?wait=true`, {
@@ -52,7 +55,7 @@ export async function postBuildToDiscord(
 			embeds: [{
 				title: `${project.name} Build #${build.buildId}`,
 				type: 'rich',
-				url: downloadUrl(project.name, releaseChannel.name, build.buildId.toString()),
+				url: projectUrl(project.name, releaseChannel.name),
 				description: message,
 				timestamp: new Date().toISOString(),
 				color: 0x00ff00,
