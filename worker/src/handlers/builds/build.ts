@@ -12,6 +12,7 @@ import { Ctx } from '~/types/hono';
 import { getBuildId, getFilePath } from '~/utils/build';
 import Constants from '~/utils/constants';
 import { sha256 } from '~/utils/crypto';
+import { postBuildToDiscord } from '~/utils/discord';
 import { getPagination } from '~/utils/pagination';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
@@ -150,6 +151,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	}
 
 	const userId = ctx.get('userId');
+	const user = ctx.get('user');
 
 	const projectName = ctx.req.param('projectName');
 	const releaseChannelName = ctx.req.param('releaseChannel');
@@ -229,7 +231,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	});
 
 	// Add build to database
-	await BuildStore.insertNewBuild({
+	const build = await BuildStore.insertNewBuild({
 		buildId: nextBuildId,
 		releaseChannelId: releaseChannel.releaseChannelId,
 		projectId: project.projectId,
@@ -239,6 +241,9 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 		releaseNotes: metadata.release_notes ?? metadata.releaseNotes ?? '',
 		commitHash: metadata.commitHash,
 	});
+
+	// Post into Discord #builds
+	ctx.executionCtx.waitUntil(postBuildToDiscord(ctx, user, project, releaseChannel, build));
 
 	return success('Success');
 }
@@ -250,7 +255,7 @@ function toBuildResponse(
 	latest: boolean = false,
 ): BuildResponse {
 	const version = latest ? 'latest' : String(build.buildId);
-	const downloadPath = downloadUrl(
+	const directDownloadUrl = downloadUrl(
 		project.name,
 		(build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		version,
@@ -264,11 +269,11 @@ function toBuildResponse(
 		// @ts-ignore
 		build_id: build.buildId, // TODO: Remove - here to keep compatibility for auto-updater
 		checksum: build.fileHash,
-		fileDownloadUrl: `${Constants.DOMAIN}${downloadPath}`,
+		fileDownloadUrl: `${directDownloadUrl}`,
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		// TODO: Remove - here to keep compatibility for auto-updater
-		file_download_url: `${Constants.DOMAIN}${downloadPath}`,
+		file_download_url: `${directDownloadUrl}`,
 		supportedVersions: build.supportedVersions,
 		dependencies: build.dependencies,
 		releaseNotes: build.releaseNotes,
@@ -279,6 +284,6 @@ function toBuildResponse(
 	};
 }
 
-function downloadUrl(projectName: string, releaseChannel: string, version: string) {
-	return `/dl/${projectName}/${releaseChannel}/${version}`;
+export function downloadUrl(projectName: string, releaseChannel: string, version: string) {
+	return `${Constants.DOMAIN}/dl/${projectName}/${releaseChannel}/${version}`;
 }

@@ -9,6 +9,7 @@ export type Environment = 'test' | 'dev' | 'staging' | 'production';
 export type Env = {
 	ENVIRONMENT: Environment;
 	SENTRY_DSN: string;
+	BUILDS_WEBHOOK: string;
 
 	DB: D1Database;
 	R2: R2Bucket;
