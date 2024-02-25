@@ -53,7 +53,7 @@ export async function postBuildToDiscord(
 		},
 		body: JSON.stringify({
 			embeds: [{
-				title: `${project.name} Build #${build.buildId}`,
+				title: `${project.name} ${releaseChannel.name} Build #${build.buildId}`,
 				type: 'rich',
 				url: projectUrl(project.name, releaseChannel.name),
 				description: message,
