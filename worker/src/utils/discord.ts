@@ -42,7 +42,8 @@ export async function postBuildToDiscord(
 		.replace('<repo>', project.name)
 		.replace('<user>', user.name);
 
-	return fetch(ctx.env.BUILDS_WEBHOOK, {
+	// Post the build to Discord
+	const buildMessage = await fetch(`${ctx.env.BUILDS_WEBHOOK}?wait=true`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -54,10 +55,33 @@ export async function postBuildToDiscord(
 				url: downloadUrl(project.name, releaseChannel.name, build.buildId.toString()),
 				description: message,
 				timestamp: new Date().toISOString(),
-				author: {
-					name: user.name,
+				color: 0x00ff00,
+				footer: {
+					text: user.name,
 				},
 			}] as DiscordEmbed[],
 		}),
+	});
+
+	if (!buildMessage.ok) {
+		console.error('Failed to post build to Discord', buildMessage.status, buildMessage.statusText);
+		console.error(await buildMessage.text());
+		return;
+	}
+
+	if (ctx.env.DISCORD_BOT_TOKEN === undefined) {
+		console.log('No DISCORD_BOT_TOKEN set, skipping Discord notificatiton auto-publish');
+		return;
+	}
+	const json = await buildMessage.json() as WebhookMessage;
+	console.log(`Posted ${json.id} to #${json.channel_id}`);
+
+	// Auto-publish the message
+	await fetch(`https://discord.com/api/v10/channels/${json.channel_id}/messages/${json.id}/crosspost`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bot ${ctx.env.DISCORD_BOT_TOKEN}`,
+		},
 	});
 }

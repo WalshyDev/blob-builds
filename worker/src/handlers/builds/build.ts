@@ -244,6 +244,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 
 	// Post into Discord #builds
 	ctx.executionCtx.waitUntil(postBuildToDiscord(ctx, user, project, releaseChannel, build));
+	// await postBuildToDiscord(ctx, user, project, releaseChannel, build);
 
 	return success('Success');
 }
