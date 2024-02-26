@@ -25,7 +25,7 @@ export default function ProjectCard({ project }: Props) {
 					{project.description}
 				</p>
 
-				<ProjectLinks project={project} download />
+				<ProjectLinks project={project} viewBuilds />
 			</div>
 
 			<ProjectInfo project={project} className='col-span-2' />
