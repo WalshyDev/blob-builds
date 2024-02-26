@@ -45,6 +45,15 @@ export async function postBuildToDiscord(
 		.replaceAll('<repo>', project.name)
 		.replaceAll('<user>', user.name);
 
+	const fields: EmbedField[] = [];
+	if (build.releaseNotes != null && build.releaseNotes.trim() !== '') {
+		fields.push({
+			name: 'Release Notes',
+			value: build.commitHash != null ? `[${build.commitHash.substring(0, 7)}] ` : ''
+				+ build.releaseNotes.substring(0, 200) + (build.releaseNotes.length > 200 ? '...' : ''),
+		});
+	}
+
 	// Post the build to Discord
 	const buildMessage = await fetch(`${ctx.env.BUILDS_WEBHOOK}?wait=true`, {
 		method: 'POST',
@@ -58,7 +67,8 @@ export async function postBuildToDiscord(
 				url: projectUrl(project.name, releaseChannel.name),
 				description: message,
 				timestamp: new Date().toISOString(),
-				color: 0x00ff00,
+				color: 0x00ff00, // Green
+				fields,
 				footer: {
 					text: user.name,
 				},
