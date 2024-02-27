@@ -1,4 +1,4 @@
-import { index, int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { AnySQLiteColumn, index, int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 // TODO: Auth stuff
 export const users = sqliteTable('users', {
@@ -22,7 +22,7 @@ export const projects = sqliteTable('projects', {
 	wikiLink: text('wiki_link'),
 	// TODO: Would be good to make this non-null in the future
 	defaultReleaseChannel: integer('default_release_channel')
-		.references(() => releaseChannels.releaseChannelId),
+		.references((): AnySQLiteColumn => releaseChannels.releaseChannelId),
 }, (table) => ({
 	projectsNameIdx: index('projects_name_idx').on(table.name),
 }));
