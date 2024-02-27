@@ -49,8 +49,13 @@ export async function postBuildToDiscord(
 	if (build.releaseNotes != null && build.releaseNotes.trim() !== '') {
 		fields.push({
 			name: 'Release Notes',
-			value: build.commitHash != null ? `[${build.commitHash.substring(0, 7)}] ` : ''
-				+ build.releaseNotes.substring(0, 200) + (build.releaseNotes.length > 200 ? '...' : ''),
+			value:
+				(build.commitHash != null && project.repoLink != null
+					? `[\`${build.commitHash.substring(0, 7)}\`](${project.repoLink}/commit/${build.commitHash})\n`
+					: ''
+				)
+					+ build.releaseNotes.substring(0, 200)
+					+ (build.releaseNotes.length > 200 ? '...' : ''),
 		});
 	}
 
