@@ -40,22 +40,21 @@ export async function postBuildToDiscord(
 		return;
 	}
 
-	const message = messages[Math.floor(Math.random() * messages.length)]
+	let message = messages[Math.floor(Math.random() * messages.length)]
 		.replaceAll('<id>', build.buildId.toString())
 		.replaceAll('<repo>', project.name)
 		.replaceAll('<user>', user.name);
+
+	if (build.commitHash != null && project.repoLink != null) {
+		message += `\n\nCommit: [\`${build.commitHash.substring(0, 7)}\`](${project.repoLink}/commit/${build.commitHash})`;
+	}
 
 	const fields: EmbedField[] = [];
 	if (build.releaseNotes != null && build.releaseNotes.trim() !== '') {
 		fields.push({
 			name: 'Release Notes',
-			value:
-				(build.commitHash != null && project.repoLink != null
-					? `[\`${build.commitHash.substring(0, 7)}\`](${project.repoLink}/commit/${build.commitHash})\n`
-					: ''
-				)
-					+ build.releaseNotes.substring(0, 200)
-					+ (build.releaseNotes.length > 200 ? '...' : ''),
+			value: build.releaseNotes.substring(0, 1000)
+					+ (build.releaseNotes.length > 1000 ? '...' : ''),
 		});
 	}
 
