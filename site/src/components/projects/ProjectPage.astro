@@ -26,7 +26,7 @@ if (res.success) {
 console.log(project);
 
 if (releaseChannel === undefined) {
-	if (project?.defaultReleaseChannel !== undefined) {
+	if (project?.defaultReleaseChannel !== undefined && project?.defaultReleaseChannel !== null) {
 		releaseChannel = project.defaultReleaseChannel.name;
 	} else {
 		// Worst case, fall back to Dev
