@@ -1,3 +1,4 @@
+import hljs, { type HighlightResult } from 'highlight.js';
 import Markdown from 'react-markdown';
 import ButtonLink from '~/components/html/ButtonLink';
 import { H3 } from '~/components/html/Headings';
@@ -43,7 +44,7 @@ export default function BuildCard({ build }: Props) {
 // log props to see what we can use
 function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 	return <Markdown
-		allowedElements={['ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'p', 'span', 'div']}
+		allowedElements={['ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'p', 'span', 'div', 'pre', 'code']}
 		skipHtml={true}
 		components={{
 			// Style lists
@@ -70,6 +71,21 @@ function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 			h4({ children }) {
 				return <div className='font-bold'>{children}</div>;
 			},
+			code({ className, children }) {
+				if (typeof children !== 'string') {
+					return null;
+				}
+
+				const lang = /language-(\w+)/.exec(className || '');
+
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-expect-error
+				return <Highlight
+					lang={lang === null ? undefined : lang[1]}
+					code={children}
+					className={className ?? undefined}
+				/>;
+			},
 			// We disallow html but for extra measure kill script
 			script() {
 				return null;
@@ -78,4 +94,21 @@ function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 	>
 		{releaseNotes}
 	</Markdown>;
+}
+
+interface HighlightProps {
+	lang?: string;
+	code: string;
+	className?: string;
+}
+
+function Highlight({ lang, code, className }: HighlightProps) {
+	let result: HighlightResult;
+	if (lang) {
+		result = hljs.highlight(lang, code);
+	} else {
+		result = hljs.highlightAuto(code);
+	}
+
+	return <div className={className} dangerouslySetInnerHTML={{ __html: result.value }}></div>;
 }

@@ -5,6 +5,8 @@ import Project from '~/components/projects/Project';
 import BuildList from '~/components/projects/builds/BuildList.astro';
 import { getProject, getProjectBuilds, type ProjectBuilds } from '~/api/api';
 
+import "highlight.js/styles/atom-one-dark.css";
+
 const url = new URL(Astro.request.url);
 
 let { projectName, releaseChannel } = Astro.props as { projectName: string; releaseChannel?: string };
