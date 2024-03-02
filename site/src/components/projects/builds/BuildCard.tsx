@@ -60,16 +60,16 @@ function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 			},
 			// We won't render headers, instead just make them bold
 			h1({ children }) {
-				return <div className='font-bold'>{children}</div>;
+				return <div className='font-bold py-2 text-xl'>{children}</div>;
 			},
 			h2({ children }) {
-				return <div className='font-bold'>{children}</div>;
+				return <div className='font-bold py-2 text-l'>{children}</div>;
 			},
 			h3({ children }) {
-				return <div className='font-bold'>{children}</div>;
+				return <div className='font-bold py-2 text-md'>{children}</div>;
 			},
 			h4({ children }) {
-				return <div className='font-bold'>{children}</div>;
+				return <div className='font-bold py-2 text-s'>{children}</div>;
 			},
 			code({ className, children }) {
 				if (typeof children !== 'string') {
