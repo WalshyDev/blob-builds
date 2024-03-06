@@ -5,3 +5,6 @@ dist/
 .turbo/
 
 .dev.vars
+
+.vscode/
+.idea/

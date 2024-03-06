@@ -20,6 +20,8 @@ import {
 	postNewProject,
 	patchProjectSchema,
 	patchProject,
+	patchProjectReleaseChannelSchema,
+	patchReleaseChannel,
 } from '~/handlers/projects/project';
 import { dbQueryHandler, dbQuerySchema } from '~/handlers/test/db';
 import { testOnlyMiddleware } from '~/handlers/test/middleware';
@@ -73,6 +75,11 @@ app.patch(
 	'/api/projects/:projectName/settings',
 	auth,
 	jsonValidator(projectSettingsSchema, patchProjectSettings),
+);
+app.patch(
+	'/api/projects/:projectName/:releaseChannel',
+	auth,
+	jsonValidator(patchProjectReleaseChannelSchema, patchReleaseChannel),
 );
 
 // Builds

@@ -38,6 +38,15 @@ class _ReleaseChannelStore {
 			.values(Array.isArray(releaseChannel) ? releaseChannel : [releaseChannel])
 			.returning();
 	}
+
+	updateReleaseChannel(releaseChannelId: number, releaseChannel: Partial<InsertReleaseChannel>): Promise<ReleaseChannel> {
+		return getDb()
+			.update(releaseChannels)
+			.set(releaseChannel)
+			.where(eq(releaseChannels.releaseChannelId, releaseChannelId))
+			.returning()
+			.get();
+	}
 }
 
 const ReleaseChannelStore = new _ReleaseChannelStore();
