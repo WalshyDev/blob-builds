@@ -213,6 +213,7 @@ export async function patchReleaseChannel(ctx: Ctx, body: PatchProjectReleaseCha
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
 
-	await ReleaseChannelStore.updateReleaseChannel(releaseChannel.releaseChannelId, body);
-	return success('Release channel updated!', releaseChannel);
+	const updatedReleaseChannel = await ReleaseChannelStore.updateReleaseChannel(releaseChannel.releaseChannelId, body);
+
+	return success('Release channel updated!', updatedReleaseChannel);
 }
