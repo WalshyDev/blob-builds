@@ -5,7 +5,7 @@ import { getDb } from '~/utils/storage';
 class _ReleaseChannelStore {
 
 	// Get release channel
-	getReleaseChannel(releaseChannelName: string, projectId: number): Promise<ReleaseChannel> {
+	getReleaseChannel(releaseChannelName: string, projectId: number): Promise<ReleaseChannel | undefined> {
 		return getDb().select()
 			.from(releaseChannels)
 			.where(and(
@@ -15,7 +15,7 @@ class _ReleaseChannelStore {
 			.get();
 	}
 
-	getReleaseChannelById(releaseChannelId: number): Promise<ReleaseChannel> {
+	getReleaseChannelById(releaseChannelId: number): Promise<ReleaseChannel | undefined> {
 		return getDb()
 			.select()
 			.from(releaseChannels)
@@ -23,7 +23,7 @@ class _ReleaseChannelStore {
 			.get();
 	}
 
-	getReleaseChannelsForProject(projectId: number): Promise<ReleaseChannel[]> {
+	getReleaseChannelsForProject(projectId: number): Promise<ReleaseChannel[] | undefined> {
 		return getDb()
 			.select()
 			.from(releaseChannels)
@@ -36,10 +36,14 @@ class _ReleaseChannelStore {
 		return getDb()
 			.insert(releaseChannels)
 			.values(Array.isArray(releaseChannel) ? releaseChannel : [releaseChannel])
-			.returning();
+			.returning()
+			.get();
 	}
 
-	updateReleaseChannel(releaseChannelId: number, releaseChannel: Partial<InsertReleaseChannel>): Promise<ReleaseChannel> {
+	updateReleaseChannel(
+		releaseChannelId: number,
+		releaseChannel: Partial<InsertReleaseChannel>,
+	): Promise<ReleaseChannel> {
 		return getDb()
 			.update(releaseChannels)
 			.set(releaseChannel)
