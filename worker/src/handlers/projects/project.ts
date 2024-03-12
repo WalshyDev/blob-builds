@@ -112,10 +112,10 @@ export const newProjectSchema = z.object({
 	]),
 });
 
-type Body = z.infer<typeof newProjectSchema>;
+type NewProjectBody = z.infer<typeof newProjectSchema>;
 
 // POST /api/projects/:projectName/new
-export async function postNewProject(ctx: Ctx, body: Body) {
+export async function postNewProject(ctx: Ctx, body: NewProjectBody) {
 	const userId = ctx.get('userId');
 
 	// Verify no existing project with that name exists (for this user)
@@ -184,4 +184,36 @@ export async function patchProjectSettings(ctx: Ctx, body: ProjectSettingsBody) 
 	const updatedSettings = await ProjectSettingStore.updateSettings(project.projectId, body);
 
 	return success('Settings updated!', updatedSettings);
+}
+
+export const patchProjectReleaseChannelSchema = z.object({
+	name: z.string().default('Dev'),
+	supportedVersions: z.string().default('Unknown'),
+	dependencies: z.array(z.string()).default([]),
+	fileNaming: z.string().default('$project.jar'),
+});
+
+type PatchProjectReleaseChannelBody = z.infer<typeof patchProjectReleaseChannelSchema>;
+
+// PATCH /api/projects/:projectName/:releaseChannel
+export async function patchReleaseChannel(ctx: Ctx, body: PatchProjectReleaseChannelBody) {
+	const userId = ctx.get('userId');
+	const projectName = ctx.req.param('projectName');
+
+	// Get project
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
+
+	// Get release channel
+	const releaseChannels = await ReleaseChannelStore.getReleaseChannelsForProject(project.projectId);
+	const releaseChannel = releaseChannels.find(channel => channel.name === ctx.req.param('releaseChannel'));
+	if (releaseChannel === undefined) {
+		return errors.ReleaseChannelNotFound.toResponse(ctx);
+	}
+
+	const updatedReleaseChannel = await ReleaseChannelStore.updateReleaseChannel(releaseChannel.releaseChannelId, body);
+
+	return success('Release channel updated!', updatedReleaseChannel);
 }
