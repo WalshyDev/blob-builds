@@ -208,7 +208,7 @@ export async function patchReleaseChannel(ctx: Ctx, body: PatchProjectReleaseCha
 
 	// Get release channel
 	const releaseChannels = await ReleaseChannelStore.getReleaseChannelsForProject(project.projectId);
-	const releaseChannel = releaseChannels.find(channel => channel.name === ctx.req.param('releaseChannel'));
+	const releaseChannel = releaseChannels?.find(channel => channel.name === ctx.req.param('releaseChannel'));
 	if (releaseChannel === undefined) {
 		return errors.ReleaseChannelNotFound.toResponse(ctx);
 	}
