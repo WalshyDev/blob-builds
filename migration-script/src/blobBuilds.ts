@@ -12,6 +12,10 @@ export async function grabBuilds(project: string, releaseChannel: string): Promi
 	const json = await res.json() as BlobBuilds;
 	if (!json.success || !json.data) throw new Error(`Failed to grab builds: ${json.error}`);
 
+	if (json.data[releaseChannel] === undefined) {
+		throw new Error(`Release channel not found: ${releaseChannel}`);
+	}
+
 	return json.data[releaseChannel];
 }
 
