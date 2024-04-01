@@ -23,7 +23,7 @@ class _ReleaseChannelStore {
 			.get();
 	}
 
-	getReleaseChannelsForProject(projectId: number): Promise<ReleaseChannel[] | undefined> {
+	getReleaseChannelsForProject(projectId: number): Promise<ReleaseChannel[]> {
 		return getDb()
 			.select()
 			.from(releaseChannels)

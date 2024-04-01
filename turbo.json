@@ -8,6 +8,9 @@
 		"build": {
 			"cache": true
 		},
-		"lint": {}
+		"lint": {},
+		"test": {
+			"cache": true
+		}
 	}
 }

@@ -17,6 +17,10 @@ import { getPagination } from '~/utils/pagination';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
 
+export interface GetAllBuildsResponse {
+	[releaseChannel: string]: BuildResponse[];
+}
+
 // GET /api/builds/:projectName
 export async function getAllProjectBuilds(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
@@ -26,15 +30,9 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 	const builds = await BuildStore.getProjectBuilds(projectName);
-	if (builds === undefined) {
-		return errors.BuildNotFound.toResponse(ctx);
-	}
 	const releaseChannels = await ReleaseChannelStore.getReleaseChannelsForProject(project.projectId);
-	if (releaseChannels === undefined) {
-		return errors.ReleaseChannelNotFound.toResponse(ctx);
-	}
 
-	const res: { [releaseChannel: string]: BuildResponse[] } = {};
+	const res: GetAllBuildsResponse = {};
 	for (const releaseChannel of releaseChannels) {
 		res[releaseChannel.name] = [];
 	}
@@ -64,9 +62,6 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 		releaseChannel.releaseChannelId,
 		pagination,
 	);
-	if (builds === undefined) {
-		return errors.BuildNotFound.toResponse(ctx);
-	}
 
 	const res: { [releaseChannel: string]: BuildResponse[] } = {};
 	res[releaseChannel.name] = [];
@@ -91,9 +86,6 @@ export async function getProjectLatestBuild(ctx: Context) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
-	if (builds === undefined || builds.length === 0) {
-		return errors.BuildNotFound.toResponse(ctx);
-	}
 
 	const res: { [releaseChannel: string]: BuildResponse } = {};
 	for (const build of builds) {

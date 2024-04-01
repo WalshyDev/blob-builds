@@ -81,7 +81,7 @@ class _ProjectStore {
 		return list;
 	}
 
-	getProject(projectName: string, userId: number): Promise<Project> {
+	getProject(projectName: string, userId: number): Promise<Project | undefined> {
 		return getDb()
 			.select({
 				...projects,
@@ -97,7 +97,7 @@ class _ProjectStore {
 			.get();
 	}
 
-	getProjectByName(projectName: string): Promise<Project> {
+	getProjectByName(projectName: string): Promise<Project | undefined> {
 		return getDb()
 			.select({
 				...projects,

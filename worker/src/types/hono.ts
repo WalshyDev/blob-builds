@@ -1,6 +1,6 @@
 import { Context } from 'hono';
 import { Toucan } from 'toucan-js';
-
+import type { D1Migration } from '@cloudflare/vitest-pool-workers/config';
 import type { ZodError } from 'zod';
 import type { User } from '~/store/schema';
 
@@ -15,6 +15,9 @@ export type Env = {
 	DB: D1Database;
 	R2: R2Bucket;
 	AE: AnalyticsEngineDataset;
+
+	// TEST ONLY
+	MIGRATIONS: D1Migration[];
 }
 
 export type Variables = {
