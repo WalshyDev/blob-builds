@@ -77,24 +77,6 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	return success('Success', res, pagination);
 }
 
-// GET /api/builds/:projectName/latest
-export async function getProjectLatestBuild(ctx: Context) {
-	const projectName = ctx.req.param('projectName');
-
-	const project = await ProjectStore.getProjectByName(projectName);
-	if (project === undefined) {
-		return errors.ProjectNotFound.toResponse(ctx);
-	}
-	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
-
-	const res: { [releaseChannel: string]: BuildResponse } = {};
-	for (const build of builds) {
-		res[build.releaseChannel] = toBuildResponse(build, project, undefined, true);
-	}
-
-	return success('Success', res);
-}
-
 // GET /api/builds/:projectName/:releaseChannel/latest
 export async function getLatestBuildForReleaseChannel(ctx: Context) {
 	const projectName = ctx.req.param('projectName');

@@ -3,7 +3,6 @@ import * as errors from '~/api/errors';
 import { postRewriteBuild, rewriteBuildSchema } from '~/handlers/admin/migration/migration';
 import { setup, writeAnalytics } from '~/handlers/all';
 import {
-	getProjectLatestBuild,
 	getLatestBuildForReleaseChannel,
 	postUploadBuild,
 	getAllProjectBuilds,
@@ -50,11 +49,6 @@ app.patch(
 	auth,
 	jsonValidator(patchProjectSchema, patchProject),
 );
-// Deprecated, use `/api/builds/:projectName/latest` instead
-app.get(
-	'/api/projects/:projectName/latest',
-	getProjectLatestBuild,
-);
 // Deprecated, use `/api/builds/:projectName/:releaseChannel/latest` instead
 app.get(
 	'/api/projects/:projectName/:releaseChannel/latest',
@@ -90,10 +84,6 @@ app.get(
 app.get(
 	'/api/builds/:projectName/:releaseChannel',
 	getAllProjectBuildsForReleaseChannel,
-);
-app.get(
-	'/api/builds/:projectName/latest',
-	getProjectLatestBuild,
 );
 app.get(
 	'/api/builds/:projectName/:releaseChannel/latest',
