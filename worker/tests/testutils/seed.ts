@@ -5,6 +5,7 @@ import { randomChars } from 'tests/testutils/rand';
 import { Toucan } from 'toucan-js';
 import { Analytics } from '~/analytics/analytics';
 import BuildStore from '~/store/BuildStore';
+import ProjectSettingStore from '~/store/ProjectSettingStore';
 import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { InsertBuild, InsertProject, InsertReleaseChannel, InsertUser, Project, User } from '~/store/schema';
@@ -31,6 +32,16 @@ export async function createUser(env: Env, userOpts?: Partial<InsertUser>): Prom
 	};
 
 	return init(env, async () => await UserStore.insertNewUser(user));
+}
+
+export interface Authn {
+	apiToken: string;
+}
+
+export async function createAuth(user: User): Promise<Authn> {
+	return {
+		apiToken: user.apiToken,
+	};
 }
 
 export async function createProject(
@@ -62,6 +73,7 @@ export async function createProject(
 
 	return init(env, async () => {
 		const createdProject = await ProjectStore.insertNewProject(proj);
+		await ProjectSettingStore.newProject(createdProject.projectId);
 
 		// Set the rc to the default rc
 		if (projOpts?.projectId === undefined) {
@@ -90,7 +102,8 @@ export async function createReleaseChannel(env: Env, project: Project, opts?: Pa
 		fileNaming: opts?.fileNaming ?? '$project.jar',
 	};
 
-	return init(env, async () => await ReleaseChannelStore.insertNewReleaseChannel(rc));
+	// This returns an array, it's a bit dumb so just grab the first value
+	return init(env, async () => (await ReleaseChannelStore.insertNewReleaseChannel(rc))[0]);
 }
 
 export async function createBuild(env: Env, project: Project, jar: SeededJar, buildOpts?: Partial<InsertBuild>) {
@@ -116,10 +129,11 @@ export interface SeededJarOptions {
 	mainFile?: string | null;
 }
 
-interface SeededJar {
+export interface SeededJar {
 	bytes: ArrayBuffer;
 	blob: Blob;
 	hash: string;
+	name: string;
 }
 
 export async function createJarFile(opts?: SeededJarOptions): Promise<SeededJar> {
@@ -143,6 +157,12 @@ export async function createJarFile(opts?: SeededJarOptions): Promise<SeededJar>
 	}
 
 	const bytes = await zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+	const name = 'test.jar';
+
+	return createSeededJar(bytes, name);
+}
+
+export function createSeededJar(bytes: ArrayBuffer, name: string): SeededJar {
 	const blob = new Blob([bytes], { type: 'application/java-archive' });
 	const hash = createHash('sha256').update(Buffer.from(bytes)).digest('hex');
 
@@ -150,5 +170,6 @@ export async function createJarFile(opts?: SeededJarOptions): Promise<SeededJar>
 		bytes,
 		blob,
 		hash,
+		name,
 	};
 }

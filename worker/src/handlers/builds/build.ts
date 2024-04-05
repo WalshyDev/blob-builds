@@ -147,6 +147,8 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	}
 
 	const projectSettings = await ProjectSettingStore.getSettings(project.projectId);
+	/* istanbul ignore if -- @preserve */
+	// Ignore this branch as it should not ever hit, we should always create even if they somehow do not exist
 	if (projectSettings === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}

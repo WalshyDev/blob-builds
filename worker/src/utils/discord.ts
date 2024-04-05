@@ -1,5 +1,6 @@
 import { Build, Project, User } from '~/store/schema';
 import { Ctx } from '~/types/hono';
+import { isDevTest } from '~/utils/utils';
 
 const messages = [
 	'Is it a bird?\nIs it a plane?\nNo, it\'s Build #<id> of <repo>',
@@ -37,6 +38,10 @@ export async function postBuildToDiscord(
 ) {
 	if (ctx.env.BUILDS_WEBHOOK === undefined) {
 		console.log('No BUILDS_WEBHOOK set, skipping Discord notification');
+		return;
+	}
+	if (isDevTest(ctx)) {
+		console.log('Skipping Discord notification in dev/test');
 		return;
 	}
 
