@@ -1250,9 +1250,7 @@ describe('/api/builds', () => {
 				`)
 					.bind(project.projectId, rc!.releaseChannelId, 1);
 				const result = await ps.first();
-				console.log({ result });
 				const path = getFilePath(project.name, 'Dev', result!.file_hash as string);
-				console.log({ path });
 
 				const file = await env.R2.head(path);
 				expect(file).not.toBeNull();

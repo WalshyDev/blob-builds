@@ -222,7 +222,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	ctx.executionCtx.waitUntil(postBuildToDiscord(ctx, user, project, releaseChannel, build));
 	// await postBuildToDiscord(ctx, user, project, releaseChannel, build);
 
-	return success('Success');
+	return success('Success', toBuildResponse(build, project, releaseChannel.name));
 }
 
 function toBuildResponse(
