@@ -22,8 +22,6 @@ import {
 	patchProjectReleaseChannelSchema,
 	patchReleaseChannel,
 } from '~/handlers/projects/project';
-import { dbQueryHandler, dbQuerySchema } from '~/handlers/test/db';
-import { testOnlyMiddleware } from '~/handlers/test/middleware';
 import { adminOnly } from '~/middleware/admin';
 import { auth } from '~/middleware/auth';
 import { Ctx } from '~/types/hono';
@@ -124,9 +122,5 @@ app.post(
 
 app.onError((err, ctx) => errors.InternalError.withError(err).toResponse(ctx as unknown as Ctx));
 app.notFound((ctx) => errors.RouteNotFound.toResponse(ctx as unknown as Ctx));
-
-// Test only
-app.use('/__test/*', testOnlyMiddleware);
-app.post('/__test/db', jsonValidator(dbQuerySchema, dbQueryHandler));
 
 export default app;
