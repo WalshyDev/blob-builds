@@ -2,6 +2,12 @@ import { SELF } from 'cloudflare:test';
 import { Authn, SeededJar } from 'tests/testutils/seed';
 import { expect } from 'vitest';
 import { ApiError } from '~/api/ApiError';
+import {
+	NewProjectBody,
+	PatchProjectBody,
+	PatchProjectReleaseChannelBody,
+	ProjectSettingsBody,
+} from '~/handlers/projects/project';
 import { Project } from '~/store/schema';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 
@@ -19,7 +25,25 @@ export class TestRequest {
 		return new TestRequest(path, init);
 	}
 
-	async run() {
+	// Helpers
+	withAuth(authn: Authn): TestRequest {
+		this.#init.headers = {
+			...this.#init.headers,
+			Authorization: `Bearer ${authn.apiToken}`,
+		};
+		return this;
+	}
+
+	withJson(body: object): TestRequest {
+		this.#init.headers = {
+			...this.#init.headers,
+			'Content-Type': 'application/json',
+		};
+		this.#init.body = JSON.stringify(body);
+		return this;
+	}
+
+	async run(): Promise<TestResponse> {
 		const res = await SELF.fetch(`https://worker.local${this.#path}`, this.#init);
 		// I quite hate this but it's hard mixing types ok :(
 		let apiResponse: ApiResponse | undefined = undefined;
@@ -153,4 +177,33 @@ export function createDownloadRequest(project: Project, releaseChannelName: stri
 		path = `/dl/${project.name}/${releaseChannelName}/${version}`;
 	}
 	return TestRequest.new(path);
+}
+
+export function createUpdateProjectRequest(auth: Authn, project: Project, body: PatchProjectBody) {
+	return TestRequest.new(`/api/projects/${project.name}`, { method: 'PATCH' })
+		.withAuth(auth)
+		.withJson(body);
+}
+
+export function createNewProjectRequest(auth: Authn, body: NewProjectBody) {
+	return TestRequest.new(`/api/projects/${body.name}/new`, { method: 'POST' })
+		.withAuth(auth)
+		.withJson(body);
+}
+
+export function createUpdateProjectSettingsRequest(auth: Authn, project: Project, body: ProjectSettingsBody) {
+	return TestRequest.new(`/api/projects/${project.name}/settings`, { method: 'PATCH' })
+		.withAuth(auth)
+		.withJson(body);
+}
+
+export function createUpdateProjectRcRequest(
+	auth: Authn,
+	project: Project,
+	releaseChannelName: string,
+	body: PatchProjectReleaseChannelBody,
+) {
+	return TestRequest.new(`/api/projects/${project.name}/${releaseChannelName}`, { method: 'PATCH' })
+		.withAuth(auth)
+		.withJson(body);
 }

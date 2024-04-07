@@ -11,6 +11,7 @@ export function toProjectResponse(
 			name: releaseChannel.name,
 			supportedVersions: releaseChannel.supportedVersions,
 			dependencies: releaseChannel.dependencies,
+			fileNaming: releaseChannel.fileNaming,
 		};
 	}
 
