@@ -34,11 +34,14 @@ export class Analytics {
 	}
 
 	public write(env: Env) {
+		// AE is not supported in tests so ignore it for coverage
+		/* istanbul ignore if -- @preserve */
 		if (!env.AE) {
 			console.log('AE not configured, attempted to write:', this.data);
 			return;
 		}
 
+		/* istanbul ignore next -- @preserve */
 		env.AE.writeDataPoint({
 			indexes: [], // TODO: Auth
 			blobs: [

@@ -13,4 +13,5 @@ interface ReleaseChannelResponse {
 	name: string;
 	supportedVersions: string;
 	dependencies: string[];
+	fileNaming: string;
 }

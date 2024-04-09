@@ -4,9 +4,14 @@
 		"skipLibCheck": true,
     "target": "esnext",
     "module": "esnext",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
     "lib": ["esnext"],
-    "types": ["@cloudflare/workers-types/experimental", "@types/node", "../site/src/types.d.ts"],
+    "types": [
+			"@cloudflare/workers-types/experimental",
+			"@cloudflare/vitest-pool-workers",
+			"@types/node",
+			"../site/src/types.d.ts"
+		],
 		"baseUrl": "./",
 		"outDir": "./dist",
 		"allowSyntheticDefaultImports": true,
@@ -15,5 +20,5 @@
 			"~/shared/*": ["../site/src/*"]
 		}
   },
-	"include": ["./src/**/*", "./tests/**/*"]
+	"include": ["./src/**/*", "./tests/**/*", "vitest.config.ts"]
 }

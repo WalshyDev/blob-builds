@@ -1,7 +1,8 @@
 import { Build, Project, User } from '~/store/schema';
 import { Ctx } from '~/types/hono';
+import { isDevTest } from '~/utils/utils';
 
-const messages = [
+export const randomMessages = [
 	'Is it a bird?\nIs it a plane?\nNo, it\'s Build #<id> of <repo>',
 	'Wow, that actually worked?\nI mean, of course, yes, sure.',
 	'It\'sa me, Build #<id> of <repo>',
@@ -18,7 +19,7 @@ const messages = [
 	'A wild <repo> has appeared!',
 	'Whooooooooooooosh\n\nA <repo> build flew by!',
 	'Pssst...\nYou want some <repo>?\nHere\'s a fresh build!',
-	'Build <id> of <repo> has just graduated!\nIt is now ready for your servers!',
+	'Build #<id> of <repo> has just graduated!\nIt is now ready for your servers!',
 	'<user> just grew another <repo> Tree in his garden.\nLook! There is already a juicy build #<id> hanging beneath it!',
 	'Another fresh oven-baked piece of <repo> is ready!\nBe careful not to burn yourself!',
 	'Did someone say <repo>?\nNo?\nWell, here you go anyway...',
@@ -39,8 +40,12 @@ export async function postBuildToDiscord(
 		console.log('No BUILDS_WEBHOOK set, skipping Discord notification');
 		return;
 	}
+	if (isDevTest(ctx)) {
+		console.log('Skipping Discord notification in dev/test');
+		return;
+	}
 
-	let message = messages[Math.floor(Math.random() * messages.length)]
+	let message = randomMessages[Math.floor(Math.random() * randomMessages.length)]
 		.replaceAll('<id>', build.buildId.toString())
 		.replaceAll('<repo>', project.name)
 		.replaceAll('<user>', user.name);

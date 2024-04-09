@@ -57,11 +57,11 @@ export const patchProjectSchema: z.ZodType<Partial<Omit<Project, 'userId' | 'pro
 		)
 		.optional(),
 	wikiLink: z.string()
-		.url()
+		.url('wikiLink needs to be a valid URL')
 		.optional(),
 });
 
-type PatchProjectBody = z.infer<typeof patchProjectSchema>;
+export type PatchProjectBody = z.infer<typeof patchProjectSchema>;
 
 // PATCH /api/projects/:projectName
 export async function patchProject(ctx: Ctx, body: PatchProjectBody) {
@@ -99,11 +99,28 @@ export const newProjectSchema = z.object({
 			'repoLink needs to be a valid GitHub or GitLab repository link',
 		)
 		.optional(),
+	wikiLink: z.string()
+		.url('wikiLink needs to be a valid URL')
+		.optional(),
 	releaseChannels: z.array(z.object({
-		name: z.string(),
-		supportedVersions: z.string(),
-		dependencies: z.array(z.string()).default([]),
-		fileNaming: z.string().default('$project.jar'),
+		name: z.string()
+			.min(3, 'name needs to be at least 3 characters')
+			.max(64, 'name needs to be at most 64 characters')
+			.regex(/^[a-zA-Z0-9_-]+$/, 'name needs to be alphanumeric with only a dash or underscore'),
+		supportedVersions: z.string()
+			.min(1, 'supportedVersions needs to be at least 1 character')
+			.max(20, 'supportedVersions needs to be at most 20 characters'),
+		dependencies: z.array(
+			z.string()
+				.min(1, 'dependency needs to be at least 1 character')
+				.max(64, 'dependency needs to be at most 64 characters'),
+		)
+			.max(10, 'dependencies needs to be at most 10 items')
+			.default([]),
+		fileNaming: z.string()
+			.min(3, 'fileNaming needs to be at least 3 characters')
+			.max(64, 'fileNaming needs to be at most 64 characters')
+			.default('$project.jar'),
 	})).default([
 		{
 			name: 'Dev',
@@ -112,8 +129,14 @@ export const newProjectSchema = z.object({
 	]),
 });
 
-type NewProjectBody = z.infer<typeof newProjectSchema>;
+export type NewProjectBody = z.infer<typeof newProjectSchema>;
 
+export interface NewProjectResponse {
+	project: Project;
+	release_channels: InsertReleaseChannel[];
+}
+
+// TODO: Deprecate this endpoint, the path makes no sense - move to POST /api/projects
 // POST /api/projects/:projectName/new
 export async function postNewProject(ctx: Ctx, body: NewProjectBody) {
 	const userId = ctx.get('userId');
@@ -125,7 +148,7 @@ export async function postNewProject(ctx: Ctx, body: NewProjectBody) {
 	}
 
 	// Verify we have at least one release channel
-	if (body.releaseChannels.length === 0) {
+	if (body.releaseChannels === undefined || body.releaseChannels.length === 0) {
 		return errors.NoReleaseChannels.toResponse(ctx);
 	}
 
@@ -133,7 +156,7 @@ export async function postNewProject(ctx: Ctx, body: NewProjectBody) {
 	const project = await ProjectStore.insertNewProject({
 		userId,
 		name: body.name,
-		description: body.description ?? 'A new project',
+		description: body.description,
 		repoLink: body.repoLink,
 	});
 	if (project === undefined) {
@@ -164,15 +187,19 @@ export async function postNewProject(ctx: Ctx, body: NewProjectBody) {
 }
 
 export const projectSettingsSchema = z.object({
-	overwritePluginYml: z.boolean().optional(),
+	overwritePluginYml: z.boolean({ invalid_type_error: 'overwritePluginYml needs to be a boolean' }).optional(),
 });
 
-type ProjectSettingsBody = z.infer<typeof projectSettingsSchema>;
+export type ProjectSettingsBody = z.infer<typeof projectSettingsSchema>;
 
 // PATCH /api/projects/:projectName/settings
 export async function patchProjectSettings(ctx: Ctx, body: ProjectSettingsBody) {
 	const userId = ctx.get('userId');
 	const projectName = ctx.req.param('projectName');
+
+	if (Object.keys(body).length === 0) {
+		return errors.NothingToUpdate.toResponse(ctx);
+	}
 
 	// Get project
 	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
@@ -187,18 +214,38 @@ export async function patchProjectSettings(ctx: Ctx, body: ProjectSettingsBody) 
 }
 
 export const patchProjectReleaseChannelSchema = z.object({
-	name: z.string().default('Dev'),
-	supportedVersions: z.string().default('Unknown'),
-	dependencies: z.array(z.string()).default([]),
-	fileNaming: z.string().default('$project.jar'),
+	name: z.string()
+		.min(3, 'name needs to be at least 3 characters')
+		.max(64, 'name needs to be at most 64 characters')
+		.regex(/^[a-zA-Z0-9_-]+$/, 'name needs to be alphanumeric with only a dash or underscore')
+		.optional(),
+	supportedVersions: z.string()
+		.min(1, 'supportedVersions needs to be at least 1 character')
+		.max(20, 'supportedVersions needs to be at most 20 characters')
+		.optional(),
+	dependencies: z.array(
+		z.string()
+			.min(1, 'dependency needs to be at least 1 character')
+			.max(64, 'dependency needs to be at most 64 characters'),
+	)
+		.max(10, 'dependencies needs to be at most 10 items')
+		.optional(),
+	fileNaming: z.string()
+		.min(3, 'fileNaming needs to be at least 3 characters')
+		.max(64, 'fileNaming needs to be at most 64 characters')
+		.optional(),
 });
 
-type PatchProjectReleaseChannelBody = z.infer<typeof patchProjectReleaseChannelSchema>;
+export type PatchProjectReleaseChannelBody = z.infer<typeof patchProjectReleaseChannelSchema>;
 
 // PATCH /api/projects/:projectName/:releaseChannel
 export async function patchReleaseChannel(ctx: Ctx, body: PatchProjectReleaseChannelBody) {
 	const userId = ctx.get('userId');
 	const projectName = ctx.req.param('projectName');
+
+	if (Object.keys(body).length === 0) {
+		return errors.NothingToUpdate.toResponse(ctx);
+	}
 
 	// Get project
 	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);

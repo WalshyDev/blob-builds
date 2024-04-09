@@ -1,8 +1,15 @@
 import { eq } from 'drizzle-orm';
-import { User, users } from '~/store/schema';
+import { InsertUser, User, users } from '~/store/schema';
 import { getDb } from '~/utils/storage';
 
 class _UserStore {
+
+	insertNewUser(user: InsertUser): Promise<User> {
+		return getDb().insert(users)
+			.values(user)
+			.returning()
+			.get();
+	}
 
 	// Get user by API token
 	getUserByApiToken(apiToken: string): Promise<User | undefined> {

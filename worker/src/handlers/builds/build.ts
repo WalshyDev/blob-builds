@@ -17,6 +17,10 @@ import { getPagination } from '~/utils/pagination';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
 
+export interface GetAllBuildsResponse {
+	[releaseChannel: string]: BuildResponse[];
+}
+
 // GET /api/builds/:projectName
 export async function getAllProjectBuilds(ctx: Ctx) {
 	const projectName = ctx.req.param('projectName');
@@ -26,15 +30,9 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 		return errors.ProjectNotFound.toResponse(ctx);
 	}
 	const builds = await BuildStore.getProjectBuilds(projectName);
-	if (builds === undefined) {
-		return errors.BuildNotFound.toResponse(ctx);
-	}
 	const releaseChannels = await ReleaseChannelStore.getReleaseChannelsForProject(project.projectId);
-	if (releaseChannels === undefined) {
-		return errors.ReleaseChannelNotFound.toResponse(ctx);
-	}
 
-	const res: { [releaseChannel: string]: BuildResponse[] } = {};
+	const res: GetAllBuildsResponse = {};
 	for (const releaseChannel of releaseChannels) {
 		res[releaseChannel.name] = [];
 	}
@@ -64,9 +62,6 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 		releaseChannel.releaseChannelId,
 		pagination,
 	);
-	if (builds === undefined) {
-		return errors.BuildNotFound.toResponse(ctx);
-	}
 
 	const res: { [releaseChannel: string]: BuildResponse[] } = {};
 	res[releaseChannel.name] = [];
@@ -80,27 +75,6 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	}
 
 	return success('Success', res, pagination);
-}
-
-// GET /api/builds/:projectName/latest
-export async function getProjectLatestBuild(ctx: Context) {
-	const projectName = ctx.req.param('projectName');
-
-	const project = await ProjectStore.getProjectByName(projectName);
-	if (project === undefined) {
-		return errors.ProjectNotFound.toResponse(ctx);
-	}
-	const builds = await BuildStore.getLatestBuildsPerReleaseChannel(projectName);
-	if (builds === undefined || builds.length === 0) {
-		return errors.BuildNotFound.toResponse(ctx);
-	}
-
-	const res: { [releaseChannel: string]: BuildResponse } = {};
-	for (const build of builds) {
-		res[build.releaseChannel] = toBuildResponse(build, project, undefined, true);
-	}
-
-	return success('Success', res);
 }
 
 // GET /api/builds/:projectName/:releaseChannel/latest
@@ -173,6 +147,8 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	}
 
 	const projectSettings = await ProjectSettingStore.getSettings(project.projectId);
+	/* istanbul ignore if -- @preserve */
+	// Ignore this branch as it should not ever hit, we should always create even if they somehow do not exist
 	if (projectSettings === undefined) {
 		return errors.InternalError.toResponse(ctx);
 	}
@@ -246,7 +222,7 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	ctx.executionCtx.waitUntil(postBuildToDiscord(ctx, user, project, releaseChannel, build));
 	// await postBuildToDiscord(ctx, user, project, releaseChannel, build);
 
-	return success('Success');
+	return success('Success', toBuildResponse(build, project, releaseChannel.name));
 }
 
 function toBuildResponse(

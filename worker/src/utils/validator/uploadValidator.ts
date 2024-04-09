@@ -12,7 +12,7 @@ const uploadSchema = z.object({
 	commitHash: z.string()
 		.min(7, 'commitHash needs to be at least 7 characters')
 		.max(64, 'commitHash needs to be at most 64 characters')
-		.regex(/[a-f0-9]{7,64}/g, 'commitHash doesn\'t look like a valid commit hash')
+		.regex(/^[a-f0-9]+$/g, 'commitHash doesn\'t look like a valid commit hash')
 		.optional(),
 });
 
@@ -56,7 +56,19 @@ export default function uploadValidator(
 		if (parsed.success === true) {
 			return controller(ctx, file, parsed.data);
 		} else {
-			return errors.InvalidJson(parsed.error.errors[0].message).toResponse(ctx);
+			return errors.InvalidJson(
+				// Try to return something useful to the user
+				// Example output (single error):
+				// commitHash: commitHash needs to be at least 7 characters
+				// Example output (multiple errors):
+				// commitHash: commitHash needs to be at least 7 characters -- commitHash doesn't look like a valid commit hash
+				// Example output (multiple fields):
+				// supportedVersions: Expected string, received number
+				// commitHash: commitHash needs to be at least 7 characters -- commitHash doesn't look like a valid commit hash
+				Object.entries(parsed.error.flatten().fieldErrors)
+					.map(([key, value]) => `${key}: ${(Array.isArray(value) ? value.join(' -- ') : value)}`)
+					.join('\n'),
+			).toResponse(ctx);
 		}
 	};
 }
