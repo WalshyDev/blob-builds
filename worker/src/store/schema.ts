@@ -3,8 +3,11 @@ import { AnySQLiteColumn, index, int, primaryKey, sqliteTable, text } from 'driz
 // TODO: Auth stuff
 export const users = sqliteTable('users', {
 	userId: integer('user_id').primaryKey({ autoIncrement: true }),
-	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
-	apiToken: text('api_token').notNull().unique(),
+	name: txt('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
+	// TODO: Move to notNull when we've migrated
+	oauthProvider: txt('oauth_provider'),
+	oauthId: txt('oauth_id'),
+	apiToken: txt('api_token').notNull().unique(),
 }, (table) => ({
 	usersNameIdx: index('users_name_idx').on(table.name),
 	usersApiTokenIdx: index('users_api_token_idx').on(table.apiToken),
@@ -16,10 +19,10 @@ export type InsertUser = typeof users.$inferInsert;
 export const projects = sqliteTable('projects', {
 	projectId: integer('project_id').primaryKey({ autoIncrement: true }),
 	userId: integer('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
-	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
-	description: text('description').notNull(),
-	repoLink: text('repo_link'),
-	wikiLink: text('wiki_link'),
+	name: txt('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
+	description: txt('description').notNull(),
+	repoLink: txt('repo_link'),
+	wikiLink: txt('wiki_link'),
 	// TODO: Would be good to make this non-null in the future
 	defaultReleaseChannel: integer('default_release_channel')
 		.references((): AnySQLiteColumn => releaseChannels.releaseChannelId),
@@ -41,10 +44,10 @@ export type InsertProjectSettings = typeof projectSettings.$inferInsert;
 export const releaseChannels = sqliteTable('release_channels', {
 	releaseChannelId: integer('release_channel_id').primaryKey({ autoIncrement: true }),
 	projectId: integer('project_id').notNull().references(() => projects.projectId, { onDelete: 'cascade' }),
-	name: text('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
-	supportedVersions: text('supported_versions').notNull(),
-	dependencies: text('dependencies', { mode: 'json' }).notNull().$type<string[]>(),
-	fileNaming: text('file_naming', { mode: 'text' }).notNull(),
+	name: txt('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
+	supportedVersions: txt('supported_versions').notNull(),
+	dependencies: json('dependencies').notNull().$type<string[]>(),
+	fileNaming: txt('file_naming').notNull(),
 }, (table) => ({
 	releaseChannelsNameIdx: index('release_channels_name_idx').on(table.name),
 }));
@@ -57,11 +60,11 @@ export const builds = sqliteTable('builds', {
 	releaseChannelId: integer('release_channel_id').notNull()
 		.references(() => releaseChannels.releaseChannelId, { onDelete: 'cascade' }),
 	projectId: integer('project_id').notNull().references(() => projects.projectId, { onDelete: 'cascade' }),
-	fileHash: text('file_hash').notNull(),
-	supportedVersions: text('supported_versions').notNull(),
-	dependencies: text('dependencies', { mode: 'json' }).notNull().$type<string[]>(),
-	releaseNotes: text('release_notes').notNull(),
-	commitHash: text('commit_hash'),
+	fileHash: txt('file_hash').notNull(),
+	supportedVersions: txt('supported_versions').notNull(),
+	dependencies: json('dependencies').notNull().$type<string[]>(),
+	releaseNotes: txt('release_notes').notNull(),
+	commitHash: txt('commit_hash'),
 }, (table) => ({
 	pk: primaryKey({ columns: [table.buildId, table.releaseChannelId] }),
 }));
@@ -70,6 +73,27 @@ export type Build = typeof builds.$inferSelect;
 export type BuildWithReleaseChannel = Build & { releaseChannel: string };
 export type InsertBuild = typeof builds.$inferInsert;
 
+export const sessions = sqliteTable('sessions', {
+	sessionId: txt('session_id').notNull().primaryKey(),
+	userId: integer('user_id').notNull().references(() => users.userId, { onDelete: 'cascade' }),
+	createdAt: integer('created_at').notNull(),
+	expiresAt: integer('expires_at').notNull(),
+}, (table) => ({
+	sessionsUserIdIdx: index('sessions_user_id_idx').on(table.userId),
+}));
+
+export type Session = typeof sessions.$inferSelect;
+export type InsertSession = typeof sessions.$inferInsert;
+
+export const oauthState = sqliteTable('oauth_state', {
+	state: txt('state').notNull().primaryKey(),
+	createdAt: integer('created_at').notNull(),
+	expiresAt: integer('expires_at').notNull(),
+});
+
+export type OAuthState = typeof oauthState.$inferSelect;
+export type InsertOAuthState = typeof oauthState.$inferInsert;
+
 // Types
 function integer(name: string) {
 	return int(name, { mode: 'number' });
@@ -77,4 +101,12 @@ function integer(name: string) {
 
 function boolean(name: string) {
 	return int(name, { mode: 'boolean' });
+}
+
+function txt(name: string) {
+	return text(name, { mode: 'text' });
+}
+
+function json(name: string) {
+	return text(name, { mode: 'json' });
 }

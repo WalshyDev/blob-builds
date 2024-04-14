@@ -20,6 +20,8 @@ export default defineWorkersConfig({
 				miniflare: {
 					bindings: {
 						ENVIRONMENT: 'test',
+						GITHUB_CLIENT_ID: 'github-client-id',
+						GITHUB_CLIENT_SECRET: 'github-client-secret',
 
 						MIGRATIONS: migrations,
 

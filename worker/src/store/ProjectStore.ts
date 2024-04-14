@@ -110,7 +110,7 @@ class _ProjectStore {
 			.get();
 	}
 
-	getProjectByNameAndUser(projectName: string, userId: number): Promise<Project> {
+	getProjectByNameAndUser(projectName: string, userId: number): Promise<Project | undefined> {
 		return getDb().select().from(projects)
 			.where(and(
 				eq(projects.name, projectName),

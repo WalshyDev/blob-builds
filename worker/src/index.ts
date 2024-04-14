@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import * as errors from '~/api/errors';
 import { postRewriteBuild, rewriteBuildSchema } from '~/handlers/admin/migration/migration';
 import { setup, writeAnalytics } from '~/handlers/all';
+import { githubCallback, githubInitiate } from '~/handlers/auth/oauth/github';
 import {
 	getLatestBuildForReleaseChannel,
 	postUploadBuild,
@@ -118,6 +119,17 @@ app.get(
 app.get(
 	'/dl/:projectName/:releaseChannel/:version',
 	getDownloadBuild,
+);
+
+// -- Auth --
+// GitHub
+app.get(
+	'/api/auth/oauth/github/initiate',
+	githubInitiate,
+);
+app.get(
+	'/api/auth/oauth/github/callback',
+	githubCallback,
 );
 
 // -- Admin --

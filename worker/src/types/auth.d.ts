@@ -1,0 +1,1 @@
+type OAuthProvider = 'github';

@@ -9,12 +9,16 @@ export async function getUser(ctx: Ctx) {
 
 export interface UserResponse {
 	name: string;
+	oauthProvider: OAuthProvider | null;
+	oauthId: string | null;
 	apiToken: string;
 }
 
 export function toUserResponse(user: User): UserResponse {
 	return {
 		name: user.name,
+		oauthProvider: user.oauthProvider as OAuthProvider | null,
+		oauthId: user.oauthId,
 		apiToken: user.apiToken,
 	};
 }

@@ -180,7 +180,7 @@ describe('/api/projects', () => {
 				}).run();
 				res.expectStatus(401);
 				res.expectFailure();
-				res.expectError(errors.InvalidAuthHeader);
+				res.expectError(errors.NoAuthentication);
 			});
 
 			test('Cannot update project for another user', async () => {
@@ -447,7 +447,7 @@ describe('/api/projects', () => {
 				}).run();
 				res.expectStatus(401);
 				res.expectFailure();
-				res.expectError(errors.InvalidAuthHeader);
+				res.expectError(errors.NoAuthentication);
 			});
 
 			test('Cannot create a project with the same name', async () => {
@@ -871,6 +871,7 @@ describe('/api/projects', () => {
 
 				// Update project
 				const res = await createUpdateProjectSettingsRequest(auth, project, { overwritePluginYml: false }).run();
+				console.log(res.getApiResponse());
 				res.expectStatus(200);
 				res.expectSuccessful();
 				res.expectData();
@@ -894,7 +895,7 @@ describe('/api/projects', () => {
 				}).run();
 				res.expectStatus(401);
 				res.expectFailure();
-				res.expectError(errors.InvalidAuthHeader);
+				res.expectError(errors.NoAuthentication);
 			});
 
 			test('Cannot update project for another user', async () => {
@@ -1012,7 +1013,7 @@ describe('/api/projects', () => {
 				}).run();
 				res.expectStatus(401);
 				res.expectFailure();
-				res.expectError(errors.InvalidAuthHeader);
+				res.expectError(errors.NoAuthentication);
 			});
 
 			test('Cannot update project for another user', async () => {

@@ -7,11 +7,17 @@ import type { User } from '~/store/schema';
 export type Environment = 'test' | 'dev' | 'staging' | 'production';
 
 export type Env = {
+	// Env vars
 	ENVIRONMENT: Environment;
 	SENTRY_DSN: string;
 	BUILDS_WEBHOOK?: string;
 	DISCORD_BOT_TOKEN?: string;
 
+	// GitHub
+	GITHUB_CLIENT_ID: string;
+	GITHUB_CLIENT_SECRET: string;
+
+	// Bindings
 	VERSION_METADATA?: WorkerVersionMetadata;
 	DB: D1Database;
 	R2: R2Bucket;

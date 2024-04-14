@@ -56,6 +56,30 @@ export const InvalidApiToken = new ApiError({
 	statusCode: StatusCode.UNAUTHORIZED,
 });
 
+export const InvalidSessionId = new ApiError({
+	code: 2002,
+	errorMessage: 'Invalid session ID',
+	statusCode: StatusCode.UNAUTHORIZED,
+});
+
+export const NoAuthentication = new ApiError({
+	code: 2003,
+	errorMessage: 'No authentication provided',
+	statusCode: StatusCode.UNAUTHORIZED,
+});
+
+export const InvalidCallback_NoCode = new ApiError({
+	code: 2100,
+	errorMessage: 'Invalid callback: No code',
+	statusCode: StatusCode.BAD_REQUEST,
+});
+
+export const InvalidCallback_NoState = new ApiError({
+	code: 2101,
+	errorMessage: 'Invalid callback: No state',
+	statusCode: StatusCode.BAD_REQUEST,
+});
+
 // Project
 export const ProjectNotFound = new ApiError({
 	code: 4000,

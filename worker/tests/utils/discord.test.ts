@@ -344,7 +344,6 @@ function intercept<T = object>(
 		? ''
 		: `${Object.entries(opts.query).map(([key, val]) => `${key}=${val}`).join('&')}`;
 
-	// @ts-expect-error - response type weirdness
 	vi.spyOn(globalThis, 'fetch').mockImplementationOnce(async (input, init) => {
 		const request = new Request(input, init);
 		const url = new URL(request.url);

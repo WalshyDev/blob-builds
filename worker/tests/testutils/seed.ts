@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
+import { env } from 'cloudflare:test';
 import { drizzle } from 'drizzle-orm/d1';
 import JSZip from 'jszip';
-import { randomChars } from 'tests/testutils/rand';
+import { randomInt } from 'tests/testutils/rand';
 import { Toucan } from 'toucan-js';
 import { Analytics } from '~/analytics/analytics';
 import BuildStore from '~/store/BuildStore';
@@ -10,8 +11,10 @@ import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { InsertBuild, InsertProject, InsertReleaseChannel, InsertUser, Project, User } from '~/store/schema';
 import * as schema from '~/store/schema';
+import SessionStore from '~/store/SessionStore';
 import UserStore from '~/store/UserStore';
 import { Env } from '~/types/hono';
+import { randomChars } from '~/utils/crypto';
 import { Store, storage } from '~/utils/storage';
 
 const DEBUG_SETUP = false;
@@ -28,6 +31,8 @@ export async function createUser(env: Env, userOpts?: Partial<InsertUser>): Prom
 	const user: InsertUser = {
 		userId: userOpts?.userId,
 		name: userOpts?.name ?? 'test-user-' + randomChars(),
+		oauthProvider: userOpts?.oauthProvider ?? 'github',
+		oauthId: userOpts?.oauthId ?? String(randomInt()),
 		apiToken: userOpts?.apiToken ?? randomChars(64),
 	};
 
@@ -35,11 +40,14 @@ export async function createUser(env: Env, userOpts?: Partial<InsertUser>): Prom
 }
 
 export interface Authn {
+	sessionId: string;
 	apiToken: string;
 }
 
 export async function createAuth(user: User): Promise<Authn> {
+	const sessionId = await init(env, () => SessionStore.createSession(user.userId));
 	return {
+		sessionId,
 		apiToken: user.apiToken,
 	};
 }

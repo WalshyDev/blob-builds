@@ -46,18 +46,18 @@ export class Analytics {
 		env.AE.writeDataPoint({
 			indexes: [],
 			blobs: [
-				this.data.url,            // blob1
-				this.data.path,           // blob2
-				this.data.method,         // blob3
-				this.data.project,        // blob4
-				this.data.releaseChannel, // blob5
-				this.data.userAgent,      // blob6
-				this.data.deployment,     // blob7
+				this.data.url ?? null,            // blob1
+				this.data.path ?? null,           // blob2
+				this.data.method ?? null,         // blob3
+				this.data.project ?? null,        // blob4
+				this.data.releaseChannel ?? null, // blob5
+				this.data.userAgent ?? null,      // blob6
+				this.data.deployment ?? null,     // blob7
 			],
 			doubles: [
-				VERSION,                // double1
-				this.data.statusCode,   // double2
-				this.data.responseTime, // double3
+				VERSION,                      // double1
+				this.data.statusCode ?? -1,   // double2
+				this.data.responseTime ?? -1, // double3
 			],
 		});
 	}
