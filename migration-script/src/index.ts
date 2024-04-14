@@ -78,6 +78,7 @@ async function main() {
 
 		// Download the old jar
 		const file = await downloadJarFromOld(oldPath, build);
+		if (file === null) continue;
 
 		// Rewrite the jar with the new version key
 		const { jarFile, fileHash } = await rewriteJar(file, releaseChannel, build.id);

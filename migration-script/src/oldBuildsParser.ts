@@ -26,12 +26,18 @@ export async function loadBuilds(oldPath: string): Promise<OldBuild[]> {
 	return builds;
 }
 
-export async function downloadJarFromOld(oldPath: string, build: OldBuild): Promise<ArrayBuffer> {
+export async function downloadJarFromOld(oldPath: string, build: OldBuild): Promise<ArrayBuffer | null> {
 	const { repo } = await parseParth(oldPath);
 
 	console.log(`Downloading ${BUILDS_GITHUB}/${oldPath}/${repo}-${build.id}.jar...`);
 	const jarRes = await fetch(`${BUILDS_GITHUB}/${oldPath}/${repo}-${build.id}.jar`);
-	if (!jarRes.ok) throw new Error(`Failed to download jar: ${jarRes.statusText}`);
+	if (!jarRes.ok) {
+		if (jarRes.status === 404) {
+			console.warn(`Skipping build ${build.id} because it does not exist`);
+			return null;
+		}
+		throw new Error(`Failed to download jar: ${jarRes.statusText}`);
+	}
 
 	return jarRes.arrayBuffer();
 }
