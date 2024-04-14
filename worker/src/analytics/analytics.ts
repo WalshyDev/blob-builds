@@ -9,6 +9,7 @@ export interface Data {
 	project: string;        // blob4
 	releaseChannel: string; // blob5
 	userAgent: string;      // blob6
+	deployment: string;     // blob7
 
 	// Doubles
 	version: never;         // double1 - configured below
@@ -43,7 +44,7 @@ export class Analytics {
 
 		/* istanbul ignore next -- @preserve */
 		env.AE.writeDataPoint({
-			indexes: [], // TODO: Auth
+			indexes: [],
 			blobs: [
 				this.data.url,            // blob1
 				this.data.path,           // blob2
@@ -51,6 +52,7 @@ export class Analytics {
 				this.data.project,        // blob4
 				this.data.releaseChannel, // blob5
 				this.data.userAgent,      // blob6
+				this.data.deployment,     // blob7
 			],
 			doubles: [
 				VERSION,                // double1

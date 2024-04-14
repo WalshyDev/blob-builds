@@ -12,6 +12,7 @@ export type Env = {
 	BUILDS_WEBHOOK?: string;
 	DISCORD_BOT_TOKEN?: string;
 
+	VERSION_METADATA?: WorkerVersionMetadata;
 	DB: D1Database;
 	R2: R2Bucket;
 	AE: AnalyticsEngineDataset;

@@ -33,6 +33,7 @@ export async function setup(ctx: Ctx, next: Next): Promise<Response | void> {
 		url: ctx.req.url,
 		method: ctx.req.method,
 		userAgent: ctx.req.headers.get('user-agent') || '<not-set>',
+		deployment: ctx.env.VERSION_METADATA?.id,
 	});
 
 	const db = drizzle(ctx.env.DB, { schema, logger: isDevTest(ctx) });

@@ -12,6 +12,9 @@ mode = "smart"
 [env.production.vars]
 ENVIRONMENT = "production"
 
+[env.production.version_metadata]
+binding = "VERSION_METADATA"
+
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "blob-builds"
@@ -29,6 +32,9 @@ dataset = "blob_builds_production"
 [env.dev]
 [env.dev.vars]
 ENVIRONMENT = "dev"
+
+[env.dev.version_metadata]
+binding = "VERSION_METADATA"
 
 [[env.dev.d1_databases]]
 binding = "DB"

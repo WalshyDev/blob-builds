@@ -90,7 +90,8 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+      # TODO: Remove breakglass when Grad Roll is ready
       - name: Deploy prod
-        run: npm run deploy:prod
+        run: npm run deploy:prod:breakglass
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
