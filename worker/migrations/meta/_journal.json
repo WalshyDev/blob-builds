@@ -43,6 +43,13 @@
       "when": 1713054652541,
       "tag": "0005_naive_spyke",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1713130708753,
+      "tag": "0006_complex_hellcat",
+      "breakpoints": true
     }
   ]
 }
