@@ -2,6 +2,7 @@ import { SELF } from 'cloudflare:test';
 import { Authn, SeededJar } from 'tests/testutils/seed';
 import { expect } from 'vitest';
 import { ApiError } from '~/api/ApiError';
+import { SESSION_COOKIE_NAME } from '~/auth/session';
 import {
 	NewProjectBody,
 	PatchProjectBody,
@@ -10,6 +11,8 @@ import {
 } from '~/handlers/projects/project';
 import { Project } from '~/store/schema';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
+
+export const LOCAL_WORKER_URL = 'https://worker.local';
 
 export class TestRequest {
 
@@ -26,11 +29,19 @@ export class TestRequest {
 	}
 
 	// Helpers
-	withAuth(authn: Authn): TestRequest {
-		this.#init.headers = {
-			...this.#init.headers,
-			Authorization: `Bearer ${authn.apiToken}`,
-		};
+	// TODO: Switch to session by default
+	withAuth(authn: Authn, type: 'session' | 'apiToken' = 'apiToken'): TestRequest {
+		if (type === 'session') {
+			this.#init.headers = {
+				...this.#init.headers,
+				Cookie: `${SESSION_COOKIE_NAME}=${authn.sessionId}`,
+			};
+		} else {
+			this.#init.headers = {
+				...this.#init.headers,
+				Authorization: `Bearer ${authn.apiToken}`,
+			};
+		}
 		return this;
 	}
 
@@ -44,7 +55,7 @@ export class TestRequest {
 	}
 
 	async run(): Promise<TestResponse> {
-		const res = await SELF.fetch(`https://worker.local${this.#path}`, this.#init);
+		const res = await SELF.fetch(`${LOCAL_WORKER_URL}${this.#path}`, this.#init);
 		// I quite hate this but it's hard mixing types ok :(
 		let apiResponse: ApiResponse | undefined = undefined;
 		if (res.headers.get('content-type')?.includes('application/json')) {
