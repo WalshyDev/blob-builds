@@ -21,18 +21,6 @@ export const AdminOnly = new ApiError({
 });
 
 // Input errors
-/**
-INVALID_TYPE: 1001,
-INVALID_CHECKSUM: 1003,
- */
-export function MissingField(field: string) {
-	return new ApiError({
-		code: 1000,
-		errorMessage: `Missing field: ${field}`,
-		statusCode: StatusCode.BAD_REQUEST,
-	});
-}
-
 export function InvalidJson(errorMessage: string) {
 	return new ApiError({
 		code: 1002,

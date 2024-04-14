@@ -17,5 +17,5 @@ interface ApiResponseSuccess<T = unknown> {
 interface Pagination {
 	page: number;
 	perPage: number;
-	total: number;
+	total?: number;
 }

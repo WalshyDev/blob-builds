@@ -22,6 +22,7 @@ import {
 	patchProjectReleaseChannelSchema,
 	patchReleaseChannel,
 } from '~/handlers/projects/project';
+import { getUser } from '~/handlers/users/user';
 import { adminOnly } from '~/middleware/admin';
 import { auth } from '~/middleware/auth';
 import { Ctx } from '~/types/hono';
@@ -32,6 +33,13 @@ const app = new Hono();
 
 app.use('*', setup);
 app.use('*', writeAnalytics);
+
+// User
+app.get(
+	'/api/users/@me',
+	auth,
+	getUser,
+);
 
 // Projects
 app.get(

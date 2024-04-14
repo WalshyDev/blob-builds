@@ -1,11 +1,5 @@
 import type { Ctx } from '~/types/hono';
 
-export interface Pagination {
-	page: number;
-	perPage: number;
-	total?: number;
-}
-
 const DEFAULT: Pagination = {
 	page: 1,
 	perPage: 100,

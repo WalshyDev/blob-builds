@@ -148,6 +148,11 @@ export class TestResponse {
 	}
 }
 
+export function createGetUserRequest(auth: Authn) {
+	return TestRequest.new('/api/users/@me')
+		.withAuth(auth);
+}
+
 export function createUploadRequest(
 	auth: Authn,
 	project: Project,
