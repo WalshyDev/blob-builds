@@ -15,6 +15,7 @@ ENVIRONMENT = "production"
 
 # GitHub
 GITHUB_CLIENT_ID = "d513c731f2ba83a0fec2"
+# Secret: GITHUB_CLIENT_SECRET
 
 [env.production.version_metadata]
 binding = "VERSION_METADATA"
@@ -40,6 +41,7 @@ ENVIRONMENT = "dev"
 
 # GitHub
 GITHUB_CLIENT_ID = "e776a0171c7c88d6ceec"
+# Secret: GITHUB_CLIENT_SECRET
 
 [env.dev.version_metadata]
 binding = "VERSION_METADATA"
