@@ -1,6 +1,5 @@
 import { AnySQLiteColumn, index, int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-// TODO: Auth stuff
 export const users = sqliteTable('users', {
 	userId: integer('user_id').primaryKey({ autoIncrement: true }),
 	name: txt('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
