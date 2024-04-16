@@ -1,8 +1,6 @@
-import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import { getAccessToken, getAuthorizeUrl, getUser } from '~/auth/oauth/github';
 import { newSession } from '~/auth/session';
-import { toUserResponse } from '~/handlers/users/user';
 import UserStore from '~/store/UserStore';
 import { Ctx } from '~/types/hono';
 
@@ -40,8 +38,10 @@ export async function githubCallback(ctx: Ctx) {
 
 	// Create user
 	const { sessionCookie } = await newSession(ctx, user);
-	return success('Logged in', toUserResponse(user), undefined, {
+	return new Response(null, {
+		status: 302,
 		headers: {
+			Location: '/panel/',
 			'Set-Cookie': sessionCookie,
 		},
 	});

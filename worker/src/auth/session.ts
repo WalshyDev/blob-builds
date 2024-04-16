@@ -16,6 +16,8 @@ interface Session {
 export async function newSession(ctx: Ctx, user: User): Promise<Session> {
 	const sessionId = await SessionStore.createSession(user.userId);
 
+	const domain = new URL(ctx.req.url).hostname;
+
 	let cookieOptions: CookieOptions;
 	if (isDevTest(ctx)) {
 		cookieOptions = {
@@ -25,6 +27,7 @@ export async function newSession(ctx: Ctx, user: User): Promise<Session> {
 		};
 	} else {
 		cookieOptions = {
+			domain,
 			secure: true,
 			httpOnly: true,
 			sameSite: 'Strict',

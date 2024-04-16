@@ -1,17 +1,18 @@
-import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Disclosure } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { Fragment } from 'react';
 import { H1 } from '~/components/html/Headings';
 
 const navigation = [
-	{ name: 'Projects', href: '/', current: true },
+	{ name: 'Projects', href: '/', current: false },
 	{ name: 'Developers', href: '/docs', current: false },
 ];
 
-export default function Navbar() {
-	const loggedIn = false;
+interface Props {
+	loggedIn: boolean;
+}
 
+export default function Navbar({ loggedIn }: Props) {
 	return (
 		<Disclosure as="nav" className="bg-zinc-800 mb-6">
 			{({ open }) => (
@@ -70,7 +71,15 @@ export default function Navbar() {
 								className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'
 							>
 								{loggedIn
-									? <ProfileDropdown user={{ name: 'Test', profilePicture: '' }} />
+									? <a
+										href='/panel'
+										className={clsx(
+											'text-primary hover:bg-zinc-700 hover:text-white',
+											'rounded-md px-3 py-2 text-sm font-medium',
+										)}
+									>
+										Control Panel
+									</a>
 									: <a
 										href='/login'
 										className={clsx(
@@ -106,68 +115,5 @@ export default function Navbar() {
 				</>
 			)}
 		</Disclosure>
-	);
-}
-
-interface ProfileDropdownProps {
-	user: {
-		name: string;
-		profilePicture: string;
-	}
-}
-
-function ProfileDropdown({ user }: ProfileDropdownProps) {
-	return (
-		<Menu as="div" className="relative ml-3">
-			<div>
-				<Menu.Button className={clsx(
-					'relative flex rounded-full bg-gray-800 text-sm',
-					'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800',
-				)}>
-					<span className="absolute -inset-1.5" />
-					<span className="sr-only">Open user menu</span>
-					<img
-						className="h-8 w-8 rounded-full"
-						src={user.profilePicture}
-						alt={`Profile picture ${user.name}`}
-					/>
-				</Menu.Button>
-			</div>
-			<Transition
-				as={Fragment}
-				enter="transition ease-out duration-100"
-				enterFrom="transform opacity-0 scale-95"
-				enterTo="transform opacity-100 scale-100"
-				leave="transition ease-in duration-75"
-				leaveFrom="transform opacity-100 scale-100"
-				leaveTo="transform opacity-0 scale-95"
-			>
-				<Menu.Items className={clsx(
-					'absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg',
-					'ring-1 ring-black ring-opacity-5 focus:outline-none',
-				)}>
-					<Menu.Item>
-						{({ active }) => (
-							<a
-								href="/profile/settings"
-								className={clsx(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-							>
-								Settings
-							</a>
-						)}
-					</Menu.Item>
-					<Menu.Item>
-						{({ active }) => (
-							<a
-								href="/logout"
-								className={clsx(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-							>
-								Logout
-							</a>
-						)}
-					</Menu.Item>
-				</Menu.Items>
-			</Transition>
-		</Menu>
 	);
 }
