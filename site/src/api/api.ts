@@ -36,7 +36,7 @@ export function _fetch<T = unknown>(
 ): Promise<ApiResponse<T>> {
 	console.log(`[API] Fetching ${path}`);
 
-	return locals.runtime.env.API.fetch(`https://worker.local${path}`, requestInit)
+	return locals.runtime.env.API.fetch(`https://worker.local/api${path}`, requestInit)
 		.then((res) => res.json() as Promise<ApiResponse<T>>);
 }
 

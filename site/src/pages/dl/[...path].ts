@@ -1,4 +1,3 @@
-import { _fetch } from '~/api/api';
 import type { APIContext } from 'astro';
 
 export async function GET({ request, locals }: APIContext) {
@@ -8,7 +7,7 @@ export async function GET({ request, locals }: APIContext) {
 		// Point to API
 		console.log('Requesting dl - fetching ' + url.toString());
 
-		return _fetch(locals, url.pathname, request);
+		return locals.runtime.env.API.fetch(`https://worker.local${url.pathname}`);
 	} catch(e) {
 		console.error(e);
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
