@@ -108,7 +108,7 @@ describe('/api/auth/oauth/github', () => {
 				{ redirect: 'manual' },
 			).run();
 			callbackRes.expectStatus(302);
-			callbackRes.expectHeader('location', '/panel/');
+			callbackRes.expectHeader('location', '/');
 
 			// Verify we have a session cookie
 			const sessionCookie = callbackRes.getBody().headers.get('set-cookie');
@@ -194,7 +194,7 @@ describe('/api/auth/oauth/github', () => {
 				{ redirect: 'manual' },
 			).run();
 			callbackRes.expectStatus(302);
-			callbackRes.expectHeader('location', '/panel/');
+			callbackRes.expectHeader('location', '/');
 
 			// Verify we have a session cookie
 			const sessionCookie = callbackRes.getBody().headers.get('set-cookie');

@@ -41,7 +41,7 @@ export async function githubCallback(ctx: Ctx) {
 	return new Response(null, {
 		status: 302,
 		headers: {
-			Location: '/panel/',
+			Location: '/',
 			'Set-Cookie': sessionCookie,
 		},
 	});
