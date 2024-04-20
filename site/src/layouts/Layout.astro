@@ -1,5 +1,8 @@
 ---
+import { isLoggedIn } from '~/auth/auth';
 import Navbar from '~/components/Navbar';
+
+const loggedIn = isLoggedIn(Astro);
 ---
 
 <!doctype html>
@@ -12,7 +15,7 @@ import Navbar from '~/components/Navbar';
 		<link rel='icon' type='image/svg+xml' href='/favicon.svg' />
 	</head>
 	<body class='w-full h-full bg-zinc-900 text-gray-400'>
-		<Navbar client:load /> <!-- Load with JS if possible so the mobile menu works -->
+		<Navbar loggedIn={loggedIn} client:load /> <!-- Load with JS if possible so the mobile menu works -->
 
 		<slot />
 	</body>

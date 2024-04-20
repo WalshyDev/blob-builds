@@ -28,5 +28,8 @@
 		"react-string-replace": "1.1.1",
 		"tailwindcss": "3.4.3",
 		"typescript": "5.3.3"
+	},
+	"devDependencies": {
+		"http-proxy-middleware": "3.0.0"
 	}
 }

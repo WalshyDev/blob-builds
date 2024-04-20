@@ -118,6 +118,10 @@ export class TestResponse {
 		expect(this.#res.status).toBe(status);
 	}
 
+	expectHeader(name: string, value: string) {
+		expect(this.#res.headers.get(name)).toBe(value);
+	}
+
 	expectSuccessful() {
 		const body = this.getApiResponse();
 		expect(body).not.toBeUndefined();

@@ -4,6 +4,7 @@ import { User } from '~/store/schema';
 import SessionStore from '~/store/SessionStore';
 import UserStore from '~/store/UserStore';
 import { Ctx } from '~/types/hono';
+import Constants from '~/utils/constants';
 import { isDevTest } from '~/utils/utils';
 
 export const SESSION_COOKIE_NAME = 'blobbuilds_session';
@@ -16,18 +17,25 @@ interface Session {
 export async function newSession(ctx: Ctx, user: User): Promise<Session> {
 	const sessionId = await SessionStore.createSession(user.userId);
 
+	const domain = new URL(ctx.req.url).hostname;
+
 	let cookieOptions: CookieOptions;
 	if (isDevTest(ctx)) {
 		cookieOptions = {
 			secure: false,
 			httpOnly: true,
 			sameSite: 'Lax',
+			path: '/',
+			expires: new Date(Date.now() + Constants.SESSION_DURATION),
 		};
 	} else {
 		cookieOptions = {
+			domain,
 			secure: true,
 			httpOnly: true,
 			sameSite: 'Strict',
+			path: '/',
+			expires: new Date(Date.now() + Constants.SESSION_DURATION),
 		};
 	}
 

@@ -1,9 +1,30 @@
 ---
 import Layout from '~/layouts/Layout.astro';
+
+import Button from '~/components/html/Button';
+import { isLoggedIn } from '~/auth/auth';
+import { H2 } from '~/components/html/Headings';
+
+if (isLoggedIn(Astro)) {
+	Astro.redirect('/panel/');
+}
 ---
 
 <Layout>
 	<main>
-		<h3 class="text-center text-2xl">Work in progress 🚧</h3>
+		<H2 className="text-center text-primary">Login to Blob Builds</H2>
+		<p class="text-center">
+			Login to Blob Builds to manage your builds, projects and more.
+		</p>
+
+		<hr class="w-4/5 my-4 mx-auto border-gray-500" />
+
+		<div class="text-center text-xl">
+			<a href="/api/auth/oauth/github/initiate">
+				<Button style='primary'>
+					Login with GitHub
+				</Button>
+			</a>
+		</div>
 	</main>
 </Layout>

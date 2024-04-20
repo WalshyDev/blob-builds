@@ -7,7 +7,6 @@ import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import * as errors from '~/api/errors';
 import { AccessResponse, GitHubUser } from '~/auth/oauth/github';
 import { SESSION_COOKIE_NAME } from '~/auth/session';
-import { UserResponse } from '~/handlers/users/user';
 import { users } from '~/store/schema';
 import UserStore from '~/store/UserStore';
 import Constants from '~/utils/constants';
@@ -108,9 +107,8 @@ describe('/api/auth/oauth/github', () => {
 			const callbackRes = await TestRequest.new(`/api/auth/oauth/github/callback?${params.toString()}`,
 				{ redirect: 'manual' },
 			).run();
-			callbackRes.expectStatus(200);
-			callbackRes.expectSuccessful();
-			callbackRes.expectData();
+			callbackRes.expectStatus(302);
+			callbackRes.expectHeader('location', '/panel/');
 
 			// Verify we have a session cookie
 			const sessionCookie = callbackRes.getBody().headers.get('set-cookie');
@@ -119,19 +117,13 @@ describe('/api/auth/oauth/github', () => {
 			expect(parsed[SESSION_COOKIE_NAME]).toBeDefined();
 			expect(parsed['SameSite']).toBe('Lax'); // In tests, this will always be Lax
 
-			const data = callbackRes.getData<UserResponse>();
-			expect(data.name).toBe('test-gh-user');
-			expect(data.oauthProvider).toBe('github');
-			expect(data.oauthId).toBe('123');
-			expect(data.apiToken).not.toBeNull();
-
 			// Confirm user exists in the DB
-			const createdUser = await init(env, () => UserStore.getUserByApiToken(data.apiToken));
+			const createdUser = await init(env, () => UserStore.getUserByOAuthId('github', 123));
 			expect(createdUser).not.toBeUndefined();
 			expect(createdUser!.name).toBe('test-gh-user');
 			expect(createdUser!.oauthProvider).toBe('github');
 			expect(createdUser!.oauthId).toBe('123');
-			expect(createdUser!.apiToken).toBe(data.apiToken);
+			expect(createdUser!.apiToken).not.toBeNull();
 		});
 
 		test('Happy path - existing user', async () => {
@@ -201,9 +193,8 @@ describe('/api/auth/oauth/github', () => {
 			const callbackRes = await TestRequest.new(`/api/auth/oauth/github/callback?${params.toString()}`,
 				{ redirect: 'manual' },
 			).run();
-			callbackRes.expectStatus(200);
-			callbackRes.expectSuccessful();
-			callbackRes.expectData();
+			callbackRes.expectStatus(302);
+			callbackRes.expectHeader('location', '/panel/');
 
 			// Verify we have a session cookie
 			const sessionCookie = callbackRes.getBody().headers.get('set-cookie');
@@ -211,12 +202,6 @@ describe('/api/auth/oauth/github', () => {
 			const parsed = parse(sessionCookie!);
 			expect(parsed[SESSION_COOKIE_NAME]).toBeDefined();
 			expect(parsed['SameSite']).toBe('Lax'); // In tests, this will always be Lax
-
-			const data = callbackRes.getData<UserResponse>();
-			expect(data.name).toBe('test-gh-user');
-			expect(data.oauthProvider).toBe('github');
-			expect(data.oauthId).toBe('123');
-			expect(data.apiToken).not.toBeNull();
 
 			// Confirm we still only have a single user
 			const resultTwo = await init(env, () => getDb().select({ count: sql<number>`COUNT(*)` }).from(users).get());
