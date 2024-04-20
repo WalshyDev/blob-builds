@@ -34,12 +34,10 @@ export function _fetch<T = unknown>(
 	path: string,
 	requestInit?: RequestInit,
 ): Promise<ApiResponse<T>> {
-	const apiUrl = locals.runtime.env.API_URL ?? 'https://blob.build';
-	const url = `${apiUrl}/api${path}`;
+	console.log(`[API] Fetching ${path}`);
 
-	console.log(`[API] Fetching ${url}`);
-
-	return fetch(url, requestInit).then((res) => res.json() as Promise<ApiResponse<T>>);
+	return locals.runtime.env.API.fetch(`https://worker.local${path}`, requestInit)
+		.then((res) => res.json() as Promise<ApiResponse<T>>);
 }
 
 type ApiResponse<T = unknown> = ApiResponseSuccess<T> | ApiResponseError;
