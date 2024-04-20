@@ -1,0 +1,16 @@
+name = "blob-builds-v2"
+compatibility_date = "2024-01-24"
+compatibility_flags = []
+pages_build_output_dir = "dist"
+
+[env.production]
+[[env.production.services]]
+binding = "API"
+service = "blob-builds-api-production"
+environment = "production"
+
+[env.preview]
+[[env.preview.services]]
+binding = "API"
+service = "blob-builds-api-dev"
+environment = "production"

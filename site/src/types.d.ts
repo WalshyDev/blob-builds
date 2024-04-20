@@ -1,5 +1,7 @@
 interface Env {
-	API_URL: string;
+	API: {
+		fetch(input: RequestInfo, init?: RequestInit): Promise<Response>;
+	};
 
 	CF_PAGES_URL?: string;
 	CF_PAGES_BRANCH?: string;
