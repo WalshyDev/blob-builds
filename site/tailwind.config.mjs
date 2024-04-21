@@ -14,6 +14,11 @@ export default {
 				default: colors.zinc['600'],
 				hover: colors.zinc['400'],
 			},
+			backgroundColor: {
+				default: colors.zinc['900'],
+				secondary: colors.zinc['800'],
+				lighter: colors.zinc['700'],
+			},
 		},
 	},
 	plugins: [],

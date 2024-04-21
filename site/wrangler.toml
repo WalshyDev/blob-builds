@@ -3,6 +3,13 @@ compatibility_date = "2024-01-24"
 compatibility_flags = []
 pages_build_output_dir = "dist"
 
+# Up here for Astro, getPlatformProxy doesn't support environments yet
+# https://github.com/cloudflare/workers-sdk/pull/5604
+[[services]]
+binding = "API"
+service = "blob-builds-api-dev"
+environment = "production"
+
 [env.production]
 [[env.production.services]]
 binding = "API"

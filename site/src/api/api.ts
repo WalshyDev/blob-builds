@@ -1,3 +1,5 @@
+import type { AstroGlobal } from 'astro';
+
 export function getProjects(locals: App.Locals) {
 	return _fetch<ProjectResponse[]>(locals, '/projects');
 }
@@ -27,6 +29,17 @@ export function getProjectBuilds(
 	perPage = 100,
 ) {
 	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}/${releaseChannel}?page=${page}&per_page=${perPage}`);
+}
+
+interface UserResponse {
+	name: string;
+	oauthProvider: string;
+	oauthId: string;
+	apiToken: string;
+}
+
+export function getUser(global: AstroGlobal) {
+	return _fetch<UserResponse>(global.locals, '/users/@me', global.request);
 }
 
 export function _fetch<T = unknown>(

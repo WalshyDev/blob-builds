@@ -3,9 +3,20 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { H1 } from '~/components/html/Headings';
 
-const navigation = [
-	{ name: 'Projects', href: '/', current: false },
-	{ name: 'Developers', href: '/docs', current: false },
+interface Item {
+	name: string;
+	href: string;
+	current?: boolean;
+}
+
+const navigation: Item[] = [
+	{ name: 'Projects', href: '/' },
+	{ name: 'Developers', href: '/docs' },
+];
+
+const logedInNavItems: Item[] = [
+	{ name: 'Control Panel', href: '/panel' },
+	{ name: 'Settings', href: '/account' },
 ];
 
 interface Props {
@@ -36,50 +47,39 @@ export default function Navbar({ loggedIn }: Props) {
 								</Disclosure.Button>
 							</div>
 							<div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-								{/* TODO: Logo? */}
-								{/*
-									<div className="flex flex-shrink-0 items-center">
-										<img
-											className="h-8 w-auto"
-											src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-											alt="Your Company"
-										/>
-									</div>
-								*/}
 								<H1 className='text-primary'>
 									<a href='/'>Blob Builds</a>
 								</H1>
 								<div className="hidden sm:ml-6 sm:block">
 									<div className="flex space-x-4">
 										{navigation.map((item) => (
-											<a
-												key={item.name}
+											<NavItem
+												key={`navitem-${item.name}`}
+												name={item.name}
 												href={item.href}
-												className={clsx(
-													item.current ? 'bg-zinc-900 text-primary' : 'text-default hover:bg-zinc-700 hover:text-white',
-													'rounded-md px-3 py-2 text-sm font-medium',
-												)}
-												aria-current={item.current ? 'page' : undefined}
-											>
-												{item.name}
-											</a>
+												current={item.current}
+											/>
 										))}
 									</div>
 								</div>
 							</div>
 							<div
-								className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'
+								className={clsx(
+									'hidden sm:block absolute',
+									'inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0',
+								)}
 							>
 								{loggedIn
-									? <a
-										href='/panel'
-										className={clsx(
-											'text-primary hover:bg-zinc-700 hover:text-white',
-											'rounded-md px-3 py-2 text-sm font-medium',
-										)}
-									>
-										Control Panel
-									</a>
+									? <>
+										{logedInNavItems.map((item) => (
+											<NavItem
+												key={`navitem-${item.name}`}
+												name={item.name}
+												href={item.href}
+												current={item.current}
+											/>
+										))}
+									</>
 									: <a
 										href='/login'
 										className={clsx(
@@ -98,7 +98,7 @@ export default function Navbar({ loggedIn }: Props) {
 						<div className="space-y-1 px-2 pb-3 pt-2">
 							{navigation.map((item) => (
 								<Disclosure.Button
-									key={item.name}
+									key={`mobildenav-${item.name}`}
 									as="a"
 									href={item.href}
 									className={clsx(
@@ -110,10 +110,61 @@ export default function Navbar({ loggedIn }: Props) {
 									{item.name}
 								</Disclosure.Button>
 							))}
+
+							<hr />
+
+							{loggedIn
+								? <>
+									{logedInNavItems.map((item) => (
+										<Disclosure.Button
+											key={`mobildenav-${item.name}`}
+											as="a"
+											href={item.href}
+											className={clsx(
+												item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+												'block rounded-md px-3 py-2 text-base font-medium',
+											)}
+											aria-current={item.current ? 'page' : undefined}
+										>
+											{item.name}
+										</Disclosure.Button>
+									))}
+								</>
+								: <Disclosure.Button
+									key={'mobile-nav-login'}
+									as="a"
+									href='/login'
+									className={clsx(
+										'text-gray-300 hover:bg-gray-700 hover:text-white',
+										'block rounded-md px-3 py-2 text-base font-medium',
+									)}
+								>
+									Login
+								</Disclosure.Button>
+							}
 						</div>
 					</Disclosure.Panel>
 				</>
 			)}
 		</Disclosure>
 	);
+}
+
+interface NavItemProps {
+	name: string;
+	href: string;
+	current?: boolean | undefined;
+}
+
+function NavItem({ name, href, current }: NavItemProps) {
+	return <a
+		href={href}
+		className={clsx(
+			current ? 'bg-zinc-900 text-primary' : 'text-default hover:bg-zinc-700 hover:text-white',
+			'rounded-md px-3 py-2 text-sm font-medium',
+		)}
+		aria-current={current ? 'page' : undefined}
+	>
+		{name}
+	</a>;
 }
