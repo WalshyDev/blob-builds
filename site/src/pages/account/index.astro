@@ -1,0 +1,64 @@
+---
+import { getUser } from '~/api/api';
+import Card from '~/components/card/Card';
+import CardGroup from '~/components/card/CardGroup';
+import { H1 } from '~/components/html/Headings';
+import Input from '~/components/html/Input';
+import OAuthProvider from '~/components/oauth/OAuthProvider';
+import Layout from '~/layouts/Layout.astro';
+
+const userRes = await getUser(Astro);
+
+if (!userRes.success) {
+	return Astro.redirect('/login');
+}
+
+const user = userRes.data;
+---
+
+<Layout>
+	<main class='w-4/5 m-auto'>
+		<H1 className='mb-4'>User Settings</H1>
+
+		<CardGroup>
+			{/* TODO: Make username editable */}
+			<Card title='User'>
+				<Input
+					name='username'
+					label='Username'
+					disabled={true}
+					value={user.name}
+				/>
+			</Card>
+
+			{/* TODO: Hidable API token */}
+			<Card title='API'>
+				<Input
+					name='apiToken'
+					label='API Token'
+					disabled={true}
+					value={user.apiToken}
+					type='password'
+					icon='eye'
+					iconPosition='right'
+					iconClickable
+				/>
+			</Card>
+		</CardGroup>
+
+		<CardGroup>
+			<Card title='OAuth'>
+				<p>
+					You are logged in with <OAuthProvider provider={user.oauthProvider} />.
+				</p>
+			</Card>
+		</CardGroup>
+	</main>
+</Layout>
+
+<script>
+	document.getElementById('apiToken-icon')?.addEventListener('click', () => {
+		const input = document.getElementById('apiToken')! as HTMLInputElement;
+		input.type = input.type === 'password' ? 'text' : 'password';
+	});
+</script>
