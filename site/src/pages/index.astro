@@ -2,6 +2,7 @@
 import Layout from '~/layouts/Layout.astro';
 import { getProjects } from '~/api/api';
 import SearchableProjects from '~/components/projects/SearchableProjects';
+import { buildProjectList } from '~/api/utils';
 
 let projects: ProjectResponse[] = [];
 
@@ -13,15 +14,7 @@ if (res.success) {
 	console.error(res.error);
 }
 
-const projectList: ProjectList = {};
-for (const proj of projects) {
-	const existing = projectList[proj.owner!];
-	if (existing  !== undefined) {
-		existing.push(proj);
-	} else {
-		projectList[proj.owner!] = [proj];
-	}
-}
+const projectList = buildProjectList(projects);
 ---
 
 <Layout>

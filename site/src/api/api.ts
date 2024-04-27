@@ -53,7 +53,7 @@ export function _fetch<T = unknown>(
 		.then((res) => res.json() as Promise<ApiResponse<T>>);
 }
 
-type ApiResponse<T = unknown> = ApiResponseSuccess<T> | ApiResponseError;
+export type ApiResponse<T = unknown> = ApiResponseSuccess<T> | ApiResponseError;
 
 interface ApiResponseSuccess<T = unknown> {
 	success: true;

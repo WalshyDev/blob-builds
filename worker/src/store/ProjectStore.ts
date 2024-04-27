@@ -83,6 +83,9 @@ class _ProjectStore {
 
 	// TODO: This still sucks
 	async getProjectsWithSearchTerm(searchTerm: string): Promise<ProjectListNew> {
+		// Wrap the search term in % to make it a wildcard search
+		searchTerm = `%${searchTerm}%`;
+
 		// Get all projects with the owner name
 		const projs: ({ owner: string } & Project)[] = await getDb()
 			.select({

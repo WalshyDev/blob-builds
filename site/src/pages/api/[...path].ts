@@ -1,5 +1,7 @@
-import type { APIContext } from 'astro';
+// import type { APIContext } from 'astro';
 
+// TODO: API routes seem broken right now with getPlatformProxy
+/*
 export async function ALL({ request, locals }: APIContext): Promise<Response> {
 	// return new Response('{}', { headers: { 'content-type': 'application/json' } });
 
@@ -10,3 +12,4 @@ export async function ALL({ request, locals }: APIContext): Promise<Response> {
 	console.log(`[api route] ${request.url} => ${res.status}`, res);
 	return res;
 }
+*/
