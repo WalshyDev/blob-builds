@@ -1,4 +1,4 @@
-import { and, eq, ilike, inArray, like, or, sql } from 'drizzle-orm';
+import { and, eq, inArray, like, or, sql } from 'drizzle-orm';
 import { projects, releaseChannels, users } from '~/store/schema';
 import { getDb } from '~/utils/storage';
 import type { InsertProject, Project, ReleaseChannel } from '~/store/schema';
