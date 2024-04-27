@@ -47,3 +47,7 @@ interface BuildResponse {
 	commitHash?: string;
 	commitLink?: string;
 }
+
+interface UserResponse {
+	name: string;
+}

@@ -1,7 +1,7 @@
 ---
 import Layout from '~/layouts/Layout.astro';
-import { ProjectList } from '~/components/projects/ProjectGroup';
 import { getProjects } from '~/api/api';
+import SearchableProjects from '~/components/projects/SearchableProjects';
 
 let projects: ProjectResponse[] = [];
 
@@ -26,6 +26,12 @@ for (const proj of projects) {
 
 <Layout>
 	<main>
-		<ProjectList projects={projectList} />
+		<SearchableProjects
+			placeholder='Search project...'
+			className='w-4/5 mx-auto my-4'
+			hideWithoutJs
+			projects={projectList}
+			client:load
+		/>
 	</main>
 </Layout>

@@ -10,14 +10,14 @@ const icons: Icons = {
 };
 
 interface IconProps {
-	name: string;
+	name?: string | undefined;
 	icon?: keyof typeof icons;
 	iconPosition?: 'left' | 'right';
 	iconClickable?: boolean | undefined;
 }
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement>, IconProps {
-	name: string;
+	name?: string | undefined;
 	label?: string;
 	labelClassName?: string;
 	hidden?: boolean;
