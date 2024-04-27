@@ -5,10 +5,12 @@ compatibility_date = "2023-11-21"
 compatibility_flags = ["nodejs_compat"]
 logpush = true
 
-[placement]
-mode = "smart"
-
 [env.production]
+routes = [
+	{ pattern = "blob.build/api/*", zone_name = "blob.build" },
+	{ pattern = "blob.build/builds/*", zone_name = "blob.build" },
+]
+
 [env.production.vars]
 ENVIRONMENT = "production"
 # Secret: SENTRY_DSN
@@ -19,6 +21,9 @@ GITHUB_CLIENT_ID = "d513c731f2ba83a0fec2"
 
 [env.production.version_metadata]
 binding = "VERSION_METADATA"
+
+[env.production.placement]
+mode = "smart"
 
 [[env.production.d1_databases]]
 binding = "DB"
@@ -35,6 +40,11 @@ binding = "AE"
 dataset = "blob_builds_production"
 
 [env.dev]
+routes = [
+	{ pattern = "staging.blob.build/api/*", zone_name = "blob.build" },
+	{ pattern = "staging.blob.build/builds/*", zone_name = "blob.build" },
+]
+
 [env.dev.vars]
 ENVIRONMENT = "dev"
 # Secret: SENTRY_DSN
@@ -45,6 +55,9 @@ GITHUB_CLIENT_ID = "e776a0171c7c88d6ceec"
 
 [env.dev.version_metadata]
 binding = "VERSION_METADATA"
+
+[env.dev.placement]
+mode = "smart"
 
 [[env.dev.d1_databases]]
 binding = "DB"
