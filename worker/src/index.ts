@@ -23,6 +23,7 @@ import {
 	patchProjectReleaseChannelSchema,
 	patchReleaseChannel,
 } from '~/handlers/projects/project';
+import { postSearch, searchSchema } from '~/handlers/search/search';
 import { getUser } from '~/handlers/users/user';
 import { adminOnly } from '~/middleware/admin';
 import { auth } from '~/middleware/auth';
@@ -130,6 +131,12 @@ app.get(
 app.get(
 	'/api/auth/oauth/github/callback',
 	githubCallback,
+);
+
+// -- Search --
+app.post(
+	'/api/search',
+	jsonValidator(searchSchema, postSearch),
 );
 
 // -- Admin --
