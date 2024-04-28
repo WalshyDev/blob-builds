@@ -1,7 +1,8 @@
 ---
 import Layout from '~/layouts/Layout.astro';
-import { ProjectList } from '~/components/projects/ProjectGroup';
 import { getProjects } from '~/api/api';
+import SearchableProjects from '~/components/projects/SearchableProjects';
+import { buildProjectList } from '~/api/utils';
 
 let projects: ProjectResponse[] = [];
 
@@ -13,19 +14,17 @@ if (res.success) {
 	console.error(res.error);
 }
 
-const projectList: ProjectList = {};
-for (const proj of projects) {
-	const existing = projectList[proj.owner!];
-	if (existing  !== undefined) {
-		existing.push(proj);
-	} else {
-		projectList[proj.owner!] = [proj];
-	}
-}
+const projectList = buildProjectList(projects);
 ---
 
 <Layout>
 	<main>
-		<ProjectList projects={projectList} />
+		<SearchableProjects
+			placeholder='Search project...'
+			className='w-4/5 mx-auto my-4'
+			hideWithoutJs
+			projects={projectList}
+			client:load
+		/>
 	</main>
 </Layout>
