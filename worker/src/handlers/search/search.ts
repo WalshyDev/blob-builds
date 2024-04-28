@@ -5,7 +5,11 @@ import ProjectStore from '~/store/ProjectStore';
 import { Ctx } from '~/types/hono';
 
 export const searchSchema = z.object({
-	query: z.string().max(100, 'Query is too long'),
+	query: z.string({
+		required_error: 'query is required',
+		invalid_type_error: 'query must be a string',
+	})
+		.max(100, 'query needs to be at most 100 characters'),
 });
 
 export type SearchBody = z.infer<typeof searchSchema>;
