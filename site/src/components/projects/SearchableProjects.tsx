@@ -15,8 +15,12 @@ export default function UniversalSearch({ projects: projectList, ...searchBarPro
 	const [projects, setProjects] = useState<ProjectList>(projectList);
 
 	useEffect(() => {
-		console.log('searching', search);
 		if (!search) {
+			return;
+		}
+
+		if (search === '') {
+			setProjects(projectList);
 			return;
 		}
 
@@ -29,11 +33,9 @@ export default function UniversalSearch({ projects: projectList, ...searchBarPro
 		})
 			.then((res) => res.json() as Promise<ApiResponse<ProjectResponse[]>>)
 			.then((json) => {
-				console.log('json', json);
 				if (json.success === true) {
 					const projectList = buildProjectList(json.data);
 
-					console.log('set projects', projectList);
 					setProjects(projectList);
 				} else{
 					console.error('Failed to search for projects:', json.error);
