@@ -33,7 +33,7 @@ All API responses will be returned in the format of:
 
 ## Authentication
 
-Authentication to the API is done through API tokens. Currently, account creation does not exist. Contact Walshy or Jeff to get an account and API token.
+Authentication to the API is done through API tokens. Once you login, you can find your API on the [account settings page](https://blob.build/account).
 
 With the API token, you can pass it into the `Authorization` header as a Bearer token.
 Example:
@@ -41,3 +41,11 @@ Example:
 curl https://blob.build/api/projects \
 	-H 'Authorization: Bearer <API_TOKEN>'
 ```
+
+## User Agent
+
+Please set a user agent when making requests to the API. This helps us identify the source of requests and allows us to contact you if there are any issues. Requests with common UAs (such as `curl/X`, `Java/X`, etc.) may be rate limited/blocked if they cause degradation of service. Having a distinct UA will help prevent this.
+
+## Rate limits
+
+There are no rate limits on the API, however, if you cause degradation of service, you may be blocked.
