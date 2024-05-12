@@ -1,11 +1,13 @@
-import type { AstroGlobal } from 'astro';
+import type { APIContext, AstroGlobal } from 'astro';
 
-export function getProjects(locals: App.Locals) {
-	return _fetch<ProjectResponse[]>(locals, '/projects');
+type AstroCtx = AstroGlobal | APIContext;
+
+export function getProjects(ctx: AstroCtx) {
+	return _fetch<ProjectResponse[]>(ctx, '/projects');
 }
 
-export function getProject(locals: App.Locals, projectName: string) {
-	return _fetch<ProjectResponse>(locals, `/projects/${projectName}`);
+export function getProject(ctx: AstroCtx, projectName: string) {
+	return _fetch<ProjectResponse>(ctx, `/projects/${projectName}`);
 }
 
 export interface ProjectBuilds {
@@ -13,22 +15,22 @@ export interface ProjectBuilds {
 }
 
 export function getAllProjectBuilds(
-	locals: App.Locals,
+	ctx: AstroCtx,
 	projectName: string,
 	page = 1,
 	perPage = 100,
 ) {
-	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}?page=${page}&per_page=${perPage}`);
+	return _fetch<ProjectBuilds>(ctx, `/builds/${projectName}?page=${page}&per_page=${perPage}`);
 }
 
 export function getProjectBuilds(
-	locals: App.Locals,
+	ctx: AstroCtx,
 	projectName: string,
 	releaseChannel: string,
 	page = 1,
 	perPage = 100,
 ) {
-	return _fetch<ProjectBuilds>(locals, `/builds/${projectName}/${releaseChannel}?page=${page}&per_page=${perPage}`);
+	return _fetch<ProjectBuilds>(ctx, `/builds/${projectName}/${releaseChannel}?page=${page}&per_page=${perPage}`);
 }
 
 interface UserResponse {
@@ -38,18 +40,24 @@ interface UserResponse {
 	apiToken: string;
 }
 
-export function getUser(global: AstroGlobal) {
-	return _fetch<UserResponse>(global.locals, '/users/@me', global.request);
+export function getUser(ctx: AstroCtx) {
+	return _fetch<UserResponse>(ctx, '/users/@me', ctx.request);
 }
 
 export function _fetch<T = unknown>(
-	locals: App.Locals,
+	ctx: AstroCtx,
 	path: string,
 	requestInit?: RequestInit,
 ): Promise<ApiResponse<T>> {
 	console.log(`[API] Fetching ${path}`);
 
-	return locals.runtime.env.API.fetch(`https://worker.local/api${path}`, requestInit)
+	const url = new URL(ctx.request.url);
+	let domain = url.hostname;
+	if (domain === 'localhost') {
+		domain = 'localhost:8787';
+	}
+
+	return ctx.locals.runtime.env.API.fetch(`https://${domain}/api${path}`, requestInit)
 		.then((res) => res.json() as Promise<ApiResponse<T>>);
 }
 

@@ -37,7 +37,7 @@ export async function getAllProjectBuilds(ctx: Ctx) {
 		res[releaseChannel.name] = [];
 	}
 	for (const build of builds) {
-		res[build.releaseChannel].push(toBuildResponse(build, project));
+		res[build.releaseChannel].push(toBuildResponse(ctx, build, project));
 	}
 
 	return success('Success', res);
@@ -66,7 +66,7 @@ export async function getAllProjectBuildsForReleaseChannel(ctx: Ctx) {
 	const res: { [releaseChannel: string]: BuildResponse[] } = {};
 	res[releaseChannel.name] = [];
 	for (const build of builds) {
-		res[releaseChannel.name].push(toBuildResponse(build, project, releaseChannel.name));
+		res[releaseChannel.name].push(toBuildResponse(ctx, build, project, releaseChannel.name));
 	}
 
 	const total = await BuildStore.countBuildsForReleaseChannel(project.projectId, releaseChannel.releaseChannelId);
@@ -91,7 +91,7 @@ export async function getLatestBuildForReleaseChannel(ctx: Context) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	return success('Success', toBuildResponse(build, project, releaseChannel, true));
+	return success('Success', toBuildResponse(ctx, build, project, releaseChannel, true));
 }
 
 // GET /api/builds/:projectName/:releaseChannel/:version
@@ -114,7 +114,7 @@ export async function getProjectBuildVersion(ctx: Ctx) {
 		return errors.BuildNotFound.toResponse(ctx);
 	}
 
-	return success('Success', toBuildResponse(build, project, releaseChannel));
+	return success('Success', toBuildResponse(ctx, build, project, releaseChannel));
 }
 
 // POST /api/builds/:projectName/:releaseChannel/upload
@@ -220,12 +220,12 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 
 	// Post into Discord #builds
 	ctx.executionCtx.waitUntil(postBuildToDiscord(ctx, user, project, releaseChannel, build));
-	// await postBuildToDiscord(ctx, user, project, releaseChannel, build);
 
-	return success('Success', toBuildResponse(build, project, releaseChannel.name));
+	return success('Success', toBuildResponse(ctx, build, project, releaseChannel.name));
 }
 
 function toBuildResponse(
+	ctx: Ctx,
 	build: Build | BuildWithReleaseChannel,
 	project: Project,
 	releaseChannel?: string,
@@ -233,6 +233,7 @@ function toBuildResponse(
 ): BuildResponse {
 	const version = latest ? 'latest' : String(build.buildId);
 	const directDownloadUrl = downloadUrl(
+		ctx,
 		project.name,
 		(build as BuildWithReleaseChannel).releaseChannel ?? releaseChannel,
 		version,
@@ -261,6 +262,12 @@ function toBuildResponse(
 	};
 }
 
-export function downloadUrl(projectName: string, releaseChannel: string, version: string) {
-	return `${Constants.DOMAIN}/dl/${projectName}/${releaseChannel}/${version}`;
+export function downloadUrl(ctx: Ctx, projectName: string, releaseChannel: string, version: string) {
+	const domain = ctx.env.ENVIRONMENT === 'production'
+		? Constants.DOMAIN
+		: ctx.env.LOCAL
+			? 'http://localhost:8787'
+			: `https://${new URL(ctx.req.url).hostname}`;
+
+	return `${domain}/dl/${projectName}/${releaseChannel}/${version}`;
 }
