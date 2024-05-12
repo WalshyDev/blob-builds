@@ -20,6 +20,12 @@ export const AdminOnly = new ApiError({
 	statusCode: StatusCode.FORBIDDEN,
 });
 
+export const InvalidTimeWindow = new ApiError({
+	code: 3,
+	errorMessage: 'Invalid time window',
+	statusCode: StatusCode.BAD_REQUEST,
+});
+
 // Input errors
 export function InvalidJson(errorMessage: string) {
 	return new ApiError({

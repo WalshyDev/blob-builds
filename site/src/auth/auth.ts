@@ -1,7 +1,20 @@
+import { getUser } from '~/api/api';
 import type { APIContext, AstroGlobal } from 'astro';
 
-export function isLoggedIn(astro: AstroGlobal | APIContext) {
+export async function isLoggedIn(ctx: AstroGlobal | APIContext) {
 	// TODO: Move cookie name to a shared const
-	const sessionCookie = astro.cookies.get('blobbuilds_session');
-	return sessionCookie !== undefined && sessionCookie.value !== '';
+	const sessionCookie = ctx.cookies.get('blobbuilds_session');
+
+	if (sessionCookie === undefined || sessionCookie.value === '') {
+		return false;
+	}
+
+	const user = await getUser(ctx);
+	if (user.success === false || user.data === null) {
+		return false;
+	}
+
+	ctx.locals.user = user.data;
+
+	return true;
 }

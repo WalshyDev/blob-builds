@@ -1,6 +1,24 @@
 ---
 import { H1 } from '~/components/html/Headings';
 import Layout from '~/layouts/Layout.astro';
+import { ProjectList } from '~/components/projects/panel/ProjectList';
+import { getProjects } from '~/api/api';
+import type { UserResponse } from '@/types/api/user';
+import BetaFlag from '@/flags/BetaFlags';
+import HasBeta from '~/components/flag/HasBeta';
+
+const user = Astro.locals.user as UserResponse;
+
+const projects = [];
+const projectsRes = await getProjects(Astro);
+if (projectsRes.success === true && projectsRes.data !== null && projectsRes.data.length > 0) {
+	for (const project of projectsRes.data) {
+		if (project.owner === user.name) {
+			projects.push(project);
+		}
+	}
+}
+console.log(projects);
 ---
 
 <Layout>
@@ -10,5 +28,12 @@ import Layout from '~/layouts/Layout.astro';
 		<p>
 			This is still a work in progress but you will soon be able to manage all your projects, release channels and builds here.
 		</p>
+
+		<HasBeta flag={BetaFlag.PROJECT_DETAILS} betaFlags={user.betaFlags}>
+			<p>
+				Here are all the projects you own:
+			</p>
+			<ProjectList projects={projects} />
+		</HasBeta>
 	</main>
 </Layout>

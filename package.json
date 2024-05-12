@@ -6,7 +6,8 @@
 	"workspaces": [
 		"site",
 		"worker",
-		"docs"
+		"docs",
+		"shared"
 	],
 	"scripts": {
 		"dev": "turbo dev",

@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/d1';
 import { Next } from 'hono';
 import { Toucan } from 'toucan-js';
 import { Analytics } from '~/analytics/analytics';
+import { DownloadAnalytics } from '~/analytics/downloads';
 import * as schema from '~/store/schema';
 import { Ctx } from '~/types/hono';
 import { Store, getStore, storage } from '~/utils/storage';
@@ -36,10 +37,19 @@ export async function setup(ctx: Ctx, next: Next): Promise<Response | void> {
 		deployment: ctx.env.VERSION_METADATA?.id,
 	});
 
+	const downloadAnalytics = new DownloadAnalytics();
+
 	const db = drizzle(ctx.env.DB, { schema, logger: isDevTest(ctx) });
 
 	// Setup storage
-	const store: Store = { env: ctx.env, sentry, analytics, db };
+	const store: Store = {
+		env: ctx.env,
+		ctx: (ctx.executionCtx as ExecutionContext),
+		sentry,
+		analytics,
+		downloadAnalytics,
+		db,
+	};
 
 	return storage.run(store, () => next());
 }

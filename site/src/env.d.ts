@@ -5,5 +5,6 @@ declare namespace App {
 		runtime: {
 			env: Env;
 		}
+		user: UserResponse;
 	}
 }

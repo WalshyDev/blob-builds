@@ -1,0 +1,10 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+	"private": true,
+  "devDependencies": {
+    "typescript": "5.4.5"
+  }
+}

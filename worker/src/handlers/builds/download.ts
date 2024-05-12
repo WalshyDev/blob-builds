@@ -4,6 +4,7 @@ import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { Ctx } from '~/types/hono';
 import { getBuildId, getFileName, getFilePath, getLegacyFilePath } from '~/utils/build';
+import { getStore } from '~/utils/storage';
 import type { Build } from '~/store/schema';
 
 export async function getDownloadBuild(ctx: Ctx) {
@@ -54,6 +55,18 @@ export async function getDownloadBuild(ctx: Ctx) {
 		}
 	}
 
+	// Write download analytics
+	const store = getStore();
+	const downloadAnalytics = store.downloadAnalytics;
+	downloadAnalytics.set({
+		project: projectName,
+		releaseChannel: releaseChannelName,
+
+		build: build.buildId,
+	});
+	downloadAnalytics.write(store.env);
+
+	// Set headers
 	const headers = new Headers();
 	object.writeHttpMetadata(headers);
 

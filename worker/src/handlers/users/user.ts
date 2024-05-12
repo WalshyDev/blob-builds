@@ -1,17 +1,11 @@
 import { success } from '~/api/api';
 import { User } from '~/store/schema';
 import { Ctx } from '~/types/hono';
+import type { UserResponse } from '@/types/api/user';
 
 // GET /api/users/@me
 export async function getUser(ctx: Ctx) {
 	return success('Success', toUserResponse(ctx.get('user')));
-}
-
-export interface UserResponse {
-	name: string;
-	oauthProvider: OAuthProvider | null;
-	oauthId: string | null;
-	apiToken: string;
 }
 
 export function toUserResponse(user: User): UserResponse {
@@ -20,5 +14,7 @@ export function toUserResponse(user: User): UserResponse {
 		oauthProvider: user.oauthProvider as OAuthProvider | null,
 		oauthId: user.oauthId,
 		apiToken: user.apiToken,
+		flags: user.flags,
+		betaFlags: user.betaFlags,
 	};
 }
