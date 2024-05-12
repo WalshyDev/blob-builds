@@ -61,8 +61,8 @@ mode = "smart"
 
 [[env.dev.d1_databases]]
 binding = "DB"
-database_name = "blob-builds-preview"
-database_id = "69961fb8-bab5-401d-85eb-62866b47184b"
+database_name = "blob-builds-dev"
+database_id = "1193fa39-17d5-4d4f-95e5-b0e31df8ca58"
 
 [[env.dev.r2_buckets]]
 binding = "R2"
