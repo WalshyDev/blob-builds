@@ -18,7 +18,7 @@ if (url.searchParams.has('page')) {
 
 let project: ProjectResponse | null;
 
-const res = await getProject(Astro.locals, projectName);
+const res = await getProject(Astro, projectName);
 if (res.success) {
 	project = res.data;
 } else {
@@ -39,7 +39,7 @@ if (releaseChannel === undefined) {
 let builds: ProjectBuilds = {};
 let pagination: Pagination | undefined;
 if (project !== null) {
-	const buildsRes = await getProjectBuilds(Astro.locals, project.name, releaseChannel, page);
+	const buildsRes = await getProjectBuilds(Astro, project.name, releaseChannel, page);
 	if (buildsRes.success && buildsRes.data !== null) {
 		builds = buildsRes.data;
 		if (buildsRes.pagination !== undefined) {

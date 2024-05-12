@@ -6,8 +6,7 @@ export async function GET({ request, locals }: APIContext) {
 
 		// Point to API
 		console.log('Requesting dl - fetching ' + url.toString());
-
-		return locals.runtime.env.API.fetch(`https://worker.local${url.pathname}`);
+		return locals.runtime.env.API.fetch(request);
 	} catch(e) {
 		console.error(e);
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment

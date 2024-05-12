@@ -7,7 +7,7 @@ import { buildProjectList } from '~/api/utils';
 let projects: ProjectResponse[] = [];
 
 // The project given in this list has 2 special properties "owner" and "releaseChannels"
-const res = await getProjects(Astro.locals);
+const res = await getProjects(Astro);
 if (res.success) {
 	projects = res.data;
 } else {
