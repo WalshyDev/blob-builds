@@ -1,5 +1,6 @@
 import { Context } from 'hono';
 import { z } from 'zod';
+import { fetchProjectAnalytics } from '~/analytics/project';
 import { success } from '~/api/api';
 import * as errors from '~/api/errors';
 import { toProjectResponse } from '~/api/response';
@@ -8,6 +9,8 @@ import ProjectStore from '~/store/ProjectStore';
 import ReleaseChannelStore from '~/store/ReleaseChannelStore';
 import { InsertReleaseChannel, Project, ReleaseChannel } from '~/store/schema';
 import { Ctx } from '~/types/hono';
+import { isValidTimeWindow } from '@/time/timewindow';
+import { TimeWindow } from '@/types/general';
 
 // GET /api/projects
 export async function getProjects() {
@@ -263,4 +266,33 @@ export async function patchReleaseChannel(ctx: Ctx, body: PatchProjectReleaseCha
 	const updatedReleaseChannel = await ReleaseChannelStore.updateReleaseChannel(releaseChannel.releaseChannelId, body);
 
 	return success('Release channel updated!', updatedReleaseChannel);
+}
+
+// GET /api/projects/:projectName/analytics
+export async function getProjectAnalytics(ctx: Ctx) {
+	const user = ctx.get('user');
+	const projectName = ctx.req.param('projectName');
+
+	const maybeTimeWindow = ctx.req.query('timeWindow');
+	if (isValidTimeWindow(maybeTimeWindow) === false) {
+		return errors.InvalidTimeWindow.toResponse(ctx);
+	}
+	const timeWindow = maybeTimeWindow as TimeWindow;
+
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, user.userId);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
+
+	const analytics = await fetchProjectAnalytics({
+		projectName: project.name,
+		timeWindow,
+	});
+
+	if (analytics === null) {
+		return errors.InternalError.toResponse(ctx);
+	}
+
+	const data = await analytics.json();
+	return success('Success', data);
 }

@@ -1,3 +1,4 @@
+import type { UserResponse } from '@/types/api/user';
 import type { APIContext, AstroGlobal } from 'astro';
 
 type AstroCtx = AstroGlobal | APIContext;
@@ -33,15 +34,22 @@ export function getProjectBuilds(
 	return _fetch<ProjectBuilds>(ctx, `/builds/${projectName}/${releaseChannel}?page=${page}&per_page=${perPage}`);
 }
 
-interface UserResponse {
-	name: string;
-	oauthProvider: string;
-	oauthId: string;
-	apiToken: string;
-}
-
 export function getUser(ctx: AstroCtx) {
 	return _fetch<UserResponse>(ctx, '/users/@me', ctx.request);
+}
+
+export interface DownloadAnalyticsDataPoint {
+	t: string;
+	downloads: string;
+}
+
+interface ProjectAnalyticsResponse {
+	meta: { name: string, type: string }[];
+	data: DownloadAnalyticsDataPoint[];
+}
+
+export function getProjectAnalytics(ctx: AstroCtx, projectName: string) {
+	return _fetch<ProjectAnalyticsResponse>(ctx, `/projects/${projectName}/analytics`, ctx.request);
 }
 
 export function _fetch<T = unknown>(

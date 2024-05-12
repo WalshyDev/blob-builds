@@ -2,7 +2,7 @@
 import { isLoggedIn } from '~/auth/auth';
 import Navbar from '~/components/Navbar';
 
-const loggedIn = isLoggedIn(Astro);
+const loggedIn = await isLoggedIn(Astro);
 ---
 
 <!doctype html>

@@ -14,6 +14,7 @@ routes = [
 [env.production.vars]
 ENVIRONMENT = "production"
 # Secret: SENTRY_DSN
+# Secret: CLOUDFLARE_API_TOKEN
 
 # GitHub
 GITHUB_CLIENT_ID = "d513c731f2ba83a0fec2"
@@ -39,6 +40,10 @@ preview_bucket_name = "blob-builds-eu"
 binding = "AE"
 dataset = "blob_builds_production"
 
+[[env.production.analytics_engine_datasets]]
+binding = "DOWNLOAD_ANALYTICS"
+dataset = "blob_builds_downloads"
+
 [env.dev]
 routes = [
 	{ pattern = "staging.blob.build/api/*", zone_name = "blob.build" },
@@ -47,7 +52,8 @@ routes = [
 
 [env.dev.vars]
 ENVIRONMENT = "dev"
-# Secret: SENTRY_DSN
+# Secret: SENTRY_DS
+# Secret: CLOUDFLARE_API_TOKENN
 
 # GitHub
 GITHUB_CLIENT_ID = "e776a0171c7c88d6ceec"
@@ -72,3 +78,7 @@ preview_bucket_name = "blob-builds-dev"
 [[env.dev.analytics_engine_datasets]]
 binding = "AE"
 dataset = "blob_builds_dev"
+
+[[env.dev.analytics_engine_datasets]]
+binding = "DOWNLOAD_ANALYTICS"
+dataset = "blob_builds_dev_downloads"

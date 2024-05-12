@@ -5,7 +5,7 @@ import Button from '~/components/html/Button';
 import { isLoggedIn } from '~/auth/auth';
 import { H2 } from '~/components/html/Headings';
 
-if (isLoggedIn(Astro)) {
+if (await isLoggedIn(Astro)) {
 	Astro.redirect('/panel/');
 }
 ---

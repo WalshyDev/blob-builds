@@ -3,10 +3,11 @@ import { AnySQLiteColumn, index, int, primaryKey, sqliteTable, text } from 'driz
 export const users = sqliteTable('users', {
 	userId: integer('user_id').primaryKey({ autoIncrement: true }),
 	name: txt('name').notNull(), // COLLATE NOCASE -- added manually because can't do it in drizzle :(
-	// TODO: Move to notNull when we've migrated
-	oauthProvider: txt('oauth_provider'),
+	oauthProvider: txt('oauth_provider').notNull(),
 	oauthId: txt('oauth_id'),
 	apiToken: txt('api_token').notNull().unique(),
+	flags: integer('flags').notNull().default(0),
+	betaFlags: json('beta_flags').notNull().$type<string[]>().default([]),
 }, (table) => ({
 	usersNameIdx: index('users_name_idx').on(table.name),
 	usersApiTokenIdx: index('users_api_token_idx').on(table.apiToken),

@@ -13,6 +13,7 @@ export type Env = {
 	SENTRY_DSN: string;
 	BUILDS_WEBHOOK?: string;
 	DISCORD_BOT_TOKEN?: string;
+	CLOUDFLARE_API_TOKEN: string;
 
 	// GitHub
 	GITHUB_CLIENT_ID: string;
@@ -23,6 +24,7 @@ export type Env = {
 	DB: D1Database;
 	R2: R2Bucket;
 	AE: AnalyticsEngineDataset;
+	DOWNLOAD_ANALYTICS: AnalyticsEngineDataset;
 
 	// TEST ONLY
 	MIGRATIONS: D1Migration[];
