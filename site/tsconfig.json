@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
+		"allowJs": false,
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"],

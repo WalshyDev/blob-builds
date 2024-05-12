@@ -14,6 +14,7 @@ sidebar:
 	"name": string,
 	"description": string,
 	"repoLink": string?,
+	"wikiLink": string?,
 }
 ```
 
@@ -26,6 +27,7 @@ $ curl -X PATCH https://blob.build/api/projects/:projectName \
 	-d '{
 		"name": "My Project",
 		"description": "My cool project",
-		"repoLink": "https://github.com/Example/MyProject"
+		"repoLink": "https://github.com/Example/MyProject",
+		"wikiLink": "https://github.com/MyUser/MyProject/wiki"
 	}'
 ```
