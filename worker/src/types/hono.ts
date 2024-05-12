@@ -8,6 +8,7 @@ export type Environment = 'test' | 'dev' | 'staging' | 'production';
 
 export type Env = {
 	// Env vars
+	LOCAL?: boolean;
 	ENVIRONMENT: Environment;
 	SENTRY_DSN: string;
 	BUILDS_WEBHOOK?: string;
