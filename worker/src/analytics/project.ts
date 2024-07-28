@@ -28,13 +28,13 @@ export async function fetchProjectAnalytics(opts: AnalyticsOptions): Promise<Res
 	// Fetch anaytics
 	const res = await query(`
 		SELECT
-			toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day,
+			toUnixTimestamp(toStartOfInterval(timestamp, INTERVAL '1' DAY)) AS ts,
 			sum(_sample_interval) AS downloads
 		FROM ${store.env.ENVIRONMENT === 'production' ? PROD_TABLE : DEV_TABLE}
 		WHERE timestamp >= now() - ${timeWindowToChInterval(opts.timeWindow)}
 			AND index1 = '${opts.projectName}'
-		GROUP BY day
-		ORDER BY day ASC
+		GROUP BY ts
+		ORDER BY ts ASC
 		FORMAT JSON
 	`);
 

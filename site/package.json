@@ -9,7 +9,8 @@
 		"build": "astro check && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"stage": "npm run build && wrangler pages deploy dist --project-name blob-builds-v2 --branch staging"
+		"stage": "npm run build && wrangler pages deploy dist --project-name blob-builds-v2 --branch staging",
+		"deploy:breakglass": "npm run build && wrangler pages deploy dist --project-name blob-builds-v2 --branch main"
 	},
 	"dependencies": {
 		"@astrojs/check": "0.5.10",

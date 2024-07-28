@@ -2,13 +2,9 @@
 import ProjectAnalyticsChart from '~/components/charts/ProjectAnalyticsChart';
 import { H1 } from '~/components/html/Headings';
 import Layout from '~/layouts/Layout.astro';
-import HasBeta from '~/components/flag/HasBeta';
-import BetaFlag from '@/flags/BetaFlags';
 import type { TimeWindow } from '@/types/general';
-import type { UserResponse } from '@/types/api/user';
 
 const { projectName } = Astro.params;
-const user = Astro.locals.user as UserResponse;
 
 const defaultTimeWindow: TimeWindow = '7d';
 
@@ -25,14 +21,12 @@ if (projectName === undefined) {
 			This is still a work in progress but you will soon be able to manage all your projects, release channels and builds here.
 		</p>
 
-		<HasBeta flag={BetaFlag.PROJECT_ANALYTICS} betaFlags={user.betaFlags}>
-			<ProjectAnalyticsChart
-				width={1000}
-				height={600}
-				projectName={projectName}
-				defaultTimeWindow={defaultTimeWindow}
-				client:only="react"
-			/>
-		</HasBeta>
+		<ProjectAnalyticsChart
+			width={1000}
+			height={600}
+			projectName={projectName}
+			defaultTimeWindow={defaultTimeWindow}
+			client:only="react"
+		/>
 	</main>
 </Layout>

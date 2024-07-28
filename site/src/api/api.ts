@@ -39,7 +39,7 @@ export function getUser(ctx: AstroCtx) {
 }
 
 export interface DownloadAnalyticsDataPoint {
-	t: string;
+	ts: number;
 	downloads: string;
 }
 

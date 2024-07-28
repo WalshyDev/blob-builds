@@ -30,7 +30,6 @@ export default function ProjectAnalyticsChart({ height, width, projectName, defa
 			.then((res) => {
 				if (res.success && res.data) {
 					analytics = res.data.data;
-
 				}
 
 				setData(convertToChartData(timeWindow, analytics));
@@ -54,8 +53,6 @@ export default function ProjectAnalyticsChart({ height, width, projectName, defa
 					domain={['auto', 'auto']}
 					tickCount={data.length}
 					tickFormatter={time}
-					type='number'
-					scale='utc'
 				/>
 				<YAxis dataKey='value' minTickGap={1} />
 				<Tooltip
@@ -89,8 +86,6 @@ export default function ProjectAnalyticsChart({ height, width, projectName, defa
 					name='Downloads'
 					dataKey='value'
 					fill='#82ca9d'
-					background={false}
-					barSize={50}
 				/>
 			</BarChart>
 		</div>
@@ -103,11 +98,8 @@ type ChartData = {
 }
 
 function convertToChartData(timeWindow: TimeWindow, data: DownloadAnalyticsDataPoint[]): ChartData[] {
-	console.log('data', data);
 	const mapped = data.map((point) => ({
-		// Moment for some reason was setting the hours/mins to now despite us passing 00:00
-		// So we force start of day here
-		timestamp: moment(point.t).startOf('day').valueOf(),
+		timestamp: point.ts * 1000,
 		value: parseInt(point.downloads),
 	}));
 
@@ -115,12 +107,22 @@ function convertToChartData(timeWindow: TimeWindow, data: DownloadAnalyticsDataP
 	// Fill in missing days
 	if ((timeWindow === '7d' && data.length !== 7) || timeWindow === '30d' && data.length !== 30) {
 		// Go back in time and add missing days with values of 0
-		const daysMissing = (timeWindow === '7d' ? 7 : 30) - mapped.length;
-		const start = moment().utc().startOf('day').valueOf();
-		for (let i = 1; i < (daysMissing + 1); i++) {
-			mapped.push({ timestamp: start - (i * 86400000), value: 0 });
+		const yesterday = moment().utc().subtract(1, 'day').startOf('day').valueOf();
+		for (let i = 0; i < (timeWindow === '7d' ? 7 : 30); i++) {
+			// start from yesterday and go backwards
+			const targetTs = yesterday - (i * 86400000);
+
+			// Check if we have this data and if so, skip
+			const currentData = mapped.find((point) => point.timestamp === targetTs);
+			if (currentData) continue;
+
+			// If we don't push 0
+			mapped.push({ timestamp: targetTs, value: 0 });
 		}
 	}
+
+	// Sort data by timestamp
+	mapped.sort((a, b) => a.timestamp - b.timestamp);
 
 	return mapped;
 }
