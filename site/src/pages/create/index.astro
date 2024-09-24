@@ -1,0 +1,21 @@
+---
+import { H1 } from '~/components/html/Headings';
+import { getUser } from '~/api/api';
+import CreateProject from '~/components/CreateProject';
+import Layout from '~/layouts/Layout.astro';
+
+const userRes = await getUser(Astro);
+
+/*
+if (!userRes.success) {
+	return Astro.redirect('/login');
+}*/
+
+---
+
+<Layout>
+	<main class='w-4/5 m-auto'>
+		<H1>Creation Panel</H1>
+        <CreateProject client:load/>
+	</main>
+</Layout>
