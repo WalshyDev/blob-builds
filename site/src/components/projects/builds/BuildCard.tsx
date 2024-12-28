@@ -44,7 +44,7 @@ export default function BuildCard({ build }: Props) {
 // log props to see what we can use
 function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 	return <Markdown
-		allowedElements={['ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'p', 'span', 'div', 'pre', 'code']}
+		allowedElements={['ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'p', 'span', 'div', 'pre', 'code', 'b', 'br']}
 		skipHtml={true}
 		components={{
 			// Style lists
