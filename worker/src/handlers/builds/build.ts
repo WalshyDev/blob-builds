@@ -1,8 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { Context } from 'hono';
-import JSZip from 'jszip';
-import { parse, stringify } from 'yaml';
 import { success } from '~/api/api';
+import { ApiError } from '~/api/ApiError';
 import * as errors from '~/api/errors';
 import BuildStore from '~/store/BuildStore';
 import ProjectSettingStore from '~/store/ProjectSettingStore';
@@ -14,6 +13,7 @@ import Constants from '~/utils/constants';
 import { sha256 } from '~/utils/crypto';
 import { postBuildToDiscord } from '~/utils/discord';
 import { getPagination } from '~/utils/pagination';
+import { overwriteVersion } from '~/utils/plugin';
 import { UploadMetadata } from '~/utils/validator/uploadValidator';
 import type { Build, BuildWithReleaseChannel, Project } from '~/store/schema';
 
@@ -164,33 +164,12 @@ export async function postUploadBuild(ctx: Ctx, file: File, metadata: UploadMeta
 	// Overwrite `version` in plugin.yml with the build ID.
 	// If someone wants to bring their own version, they can disable this in the project settings.
 	if (projectSettings.overwritePluginYml === true) {
-		// Modify the version
-		const jsZip = new JSZip();
-		const zip = await jsZip.loadAsync(jarFile);
-
-		let pluginYml = zip.file('plugin.yml');
-		if (pluginYml === null) {
-			// Try .yaml
-			pluginYml = zip.file('plugin.yaml');
-			if (pluginYml === null) {
-				return errors.InvalidUpload('plugin.yml not found').toResponse(ctx);
-			}
-		}
-		const content = await pluginYml.async('string');
-		const yaml = parse(content);
-		if (yaml.version === undefined) {
-			return errors.InvalidUpload('plugin.yml does not contain a version').toResponse(ctx);
+		const newJar = await overwriteVersion(jarFile, `${releaseChannel.name} - ${nextBuildId}`);
+		if (newJar instanceof ApiError) {
+			return newJar.toResponse(ctx);
 		}
 
-		// Update the version
-		yaml.version = `${releaseChannel.name} - ${nextBuildId}`;
-
-		// Write the new plugin.yml
-		const newYaml = stringify(yaml);
-		zip.file('plugin.yml', newYaml);
-
-		// Write the new jar
-		jarFile = await zip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+		jarFile = newJar;
 		fileHash = sha256(Buffer.from(jarFile));
 	}
 
