@@ -15,6 +15,7 @@ const navigation: Item[] = [
 ];
 
 const logedInNavItems: Item[] = [
+	{ name: 'Create', href: '/create'},
 	{ name: 'Control Panel', href: '/panel' },
 	{ name: 'Settings', href: '/account' },
 ];
