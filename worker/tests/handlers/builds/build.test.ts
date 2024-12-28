@@ -1058,168 +1058,246 @@ describe('/api/builds', () => {
 				expect(data.buildId).toBe(1);
 			});
 
-			test('plugin.yml is overwritten with the build ID', async () => {
-				const user = await createUser(env);
-				const auth = await createAuth(user);
-				const project = await createProject(env, user);
-				const jsZip = new JSZip();
+			describe('plugin yaml overwriting', () => {
+				test('plugin.yml is overwritten with the build ID', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
 
-				const jar = await createJarFile();
-				const unmodifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					const jar = await createJarFile();
+					const unmodifiedJarFile = await jsZip.loadAsync(jar.bytes);
 
-				// Confirm the old plugin.yml version
-				const unmodifiedPluginYaml = unmodifiedJarFile.file('plugin.yml');
-				expect(unmodifiedPluginYaml).not.toBeUndefined();
-				const unmodifiedContent = await unmodifiedPluginYaml!.async('string');
-				expect(unmodifiedContent).toContain('version: 1.0');
+					// Confirm the old plugin.yml version
+					const unmodifiedPluginYaml = unmodifiedJarFile.file('plugin.yml');
+					expect(unmodifiedPluginYaml).not.toBeUndefined();
+					const unmodifiedContent = await unmodifiedPluginYaml!.async('string');
+					expect(unmodifiedContent).toContain('version: 1.0');
 
-				const res = await createUploadRequest(auth, project, 'Dev', jar).run();
-				res.expectStatus(200);
-				res.expectSuccessful();
+					const res = await createUploadRequest(auth, project, 'Dev', jar).run();
+					res.expectStatus(200);
+					res.expectSuccessful();
 
-				// Download the jar
-				const downloadRes = await createDownloadRequest(project, 'Dev').run();
-				downloadRes.expectStatus(200);
+					// Download the jar
+					const downloadRes = await createDownloadRequest(project, 'Dev').run();
+					downloadRes.expectStatus(200);
 
-				const arrayBuffer = await downloadRes.getBody().arrayBuffer();
-				const jarFile = await jsZip.loadAsync(arrayBuffer);
+					const arrayBuffer = await downloadRes.getBody().arrayBuffer();
+					const jarFile = await jsZip.loadAsync(arrayBuffer);
 
-				// Verify the version string is now modified
-				const pluginYaml = jarFile.file('plugin.yml');
-				expect(pluginYaml).not.toBeUndefined();
-				const content = await pluginYaml!.async('string');
+					// Verify the version string is now modified
+					const pluginYaml = jarFile.file('plugin.yml');
+					expect(pluginYaml).not.toBeUndefined();
+					const content = await pluginYaml!.async('string');
 
-				expect(content).toContain('version: Dev - 1');
-			});
+					expect(content).toContain('version: Dev - 1');
+				});
 
-			test('If disabled, the plugin.yml version will not be overriden', async () => {
-				const user = await createUser(env);
-				const auth = await createAuth(user);
-				const project = await createProject(env, user);
-				const jsZip = new JSZip();
+				test('If disabled, the plugin.yml version will not be overriden', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
 
-				// Disable version overwriting
-				const newSettings = await init(env,
-					() => ProjectSettingStore.updateSettings(project.projectId, { overwritePluginYml: false }),
-				);
-				expect(newSettings).not.toBeUndefined();
-				expect(newSettings.overwritePluginYml).toBe(false);
+					// Disable version overwriting
+					const newSettings = await init(env,
+						() => ProjectSettingStore.updateSettings(project.projectId, { overwritePluginYml: false }),
+					);
+					expect(newSettings).not.toBeUndefined();
+					expect(newSettings.overwritePluginYml).toBe(false);
 
-				const jar = await createJarFile();
-				const unmodifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					const jar = await createJarFile();
+					const unmodifiedJarFile = await jsZip.loadAsync(jar.bytes);
 
-				// Confirm the old plugin.yml version
-				const unmodifiedPluginYaml = unmodifiedJarFile.file('plugin.yml');
-				expect(unmodifiedPluginYaml).not.toBeUndefined();
-				const unmodifiedContent = await unmodifiedPluginYaml!.async('string');
-				expect(unmodifiedContent).toContain('version: 1.0');
+					// Confirm the old plugin.yml version
+					const unmodifiedPluginYaml = unmodifiedJarFile.file('plugin.yml');
+					expect(unmodifiedPluginYaml).not.toBeUndefined();
+					const unmodifiedContent = await unmodifiedPluginYaml!.async('string');
+					expect(unmodifiedContent).toContain('version: 1.0');
 
-				const res = await createUploadRequest(auth, project, 'Dev', jar).run();
-				res.expectStatus(200);
-				res.expectSuccessful();
+					const res = await createUploadRequest(auth, project, 'Dev', jar).run();
+					res.expectStatus(200);
+					res.expectSuccessful();
 
-				// Download the jar
-				const downloadRes = await createDownloadRequest(project, 'Dev').run();
-				downloadRes.expectStatus(200);
+					// Download the jar
+					const downloadRes = await createDownloadRequest(project, 'Dev').run();
+					downloadRes.expectStatus(200);
 
-				const arrayBuffer = await downloadRes.getBody().arrayBuffer();
-				const jarFile = await jsZip.loadAsync(arrayBuffer);
+					const arrayBuffer = await downloadRes.getBody().arrayBuffer();
+					const jarFile = await jsZip.loadAsync(arrayBuffer);
 
-				// Verify the version string is now modified
-				const pluginYaml = jarFile.file('plugin.yml');
-				expect(pluginYaml).not.toBeUndefined();
-				const content = await pluginYaml!.async('string');
+					// Verify the version string is now modified
+					const pluginYaml = jarFile.file('plugin.yml');
+					expect(pluginYaml).not.toBeUndefined();
+					const content = await pluginYaml!.async('string');
 
-				expect(content).toContain('version: 1.0');
-			});
+					expect(content).toContain('version: 1.0');
+				});
 
-			test('Will look for plugin.yaml if plugin.yml is not found', async () => {
-				const user = await createUser(env);
-				const auth = await createAuth(user);
-				const project = await createProject(env, user);
-				const jsZip = new JSZip();
+				test('Will look for plugin.yaml if plugin.yml is not found', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
 
-				const jar = await createJarFile();
-				// Modify the jar to remove plugin.yml and add plugin.yaml
-				const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
-				const pluginYml = modifiedJarFile.file('plugin.yml');
-				const pluginYmlContent = await pluginYml!.async('string');
-				modifiedJarFile.remove('plugin.yml');
-				modifiedJarFile.file('plugin.yaml', pluginYmlContent);
+					const jar = await createJarFile();
+					// Modify the jar to remove plugin.yml and add plugin.yaml
+					const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					const pluginYml = modifiedJarFile.file('plugin.yml');
+					const pluginYmlContent = await pluginYml!.async('string');
+					modifiedJarFile.remove('plugin.yml');
+					modifiedJarFile.file('plugin.yaml', pluginYmlContent);
 
-				// Make new jar
-				const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
-				const modifiedJar = createSeededJar(bytes, 'test.jar');
+					// Make new jar
+					const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+					const modifiedJar = createSeededJar(bytes, 'test.jar');
 
-				// Verify the upload was still successful
-				const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
-				res.expectStatus(200);
-				res.expectSuccessful();
+					// Verify the upload was still successful
+					const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
+					res.expectStatus(200);
+					res.expectSuccessful();
 
-				// Download the jar
-				const downloadRes = await createDownloadRequest(project, 'Dev').run();
-				downloadRes.expectStatus(200);
+					// Download the jar
+					const downloadRes = await createDownloadRequest(project, 'Dev').run();
+					downloadRes.expectStatus(200);
 
-				const arrayBuffer = await downloadRes.getBody().arrayBuffer();
-				const jarFile = await jsZip.loadAsync(arrayBuffer);
+					const arrayBuffer = await downloadRes.getBody().arrayBuffer();
+					const jarFile = await jsZip.loadAsync(arrayBuffer);
 
-				// Verify the version string is now modified
-				const pluginYaml = jarFile.file('plugin.yaml');
-				expect(pluginYaml).not.toBeUndefined();
-				const content = await pluginYaml!.async('string');
+					// Verify the version string is now modified
+					const pluginYaml = jarFile.file('plugin.yaml');
+					expect(pluginYaml).not.toBeUndefined();
+					const content = await pluginYaml!.async('string');
 
-				expect(content).toContain('version: 1.0');
-			});
+					expect(content).toContain('version: Dev - 1');
+				});
 
-			test('Will fail if neither plugin.yml or plugin.yaml is found', async () => {
-				const user = await createUser(env);
-				const auth = await createAuth(user);
-				const project = await createProject(env, user);
-				const jsZip = new JSZip();
+				test('Supports paper-plugin.yml', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
 
-				const jar = await createJarFile();
-				// Modify the jar to remove plugin.yml
-				const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
-				modifiedJarFile.remove('plugin.yml');
+					const jar = await createJarFile();
+					// Modify the jar to remove plugin.yml and add paper-plugin.yml
+					const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					const pluginYml = modifiedJarFile.file('plugin.yml');
+					const pluginYmlContent = await pluginYml!.async('string');
+					modifiedJarFile.remove('plugin.yml');
+					modifiedJarFile.file('paper-plugin.yml', pluginYmlContent);
 
-				// Make new jar
-				const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
-				const modifiedJar = createSeededJar(bytes, 'test.jar');
+					// Make new jar
+					const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+					const modifiedJar = createSeededJar(bytes, 'test.jar');
 
-				// Attempt to upload the jar
-				const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
-				res.expectStatus(400);
-				res.expectFailure();
-				res.expectError(errors.InvalidUpload('plugin.yml not found'));
-			});
+					// Verify the upload was still successful
+					const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
+					res.expectStatus(200);
+					res.expectSuccessful();
 
-			test('Will fail if plugin.yml does not contain a version', async () => {
-				const user = await createUser(env);
-				const auth = await createAuth(user);
-				const project = await createProject(env, user);
-				const jsZip = new JSZip();
+					// Download the jar
+					const downloadRes = await createDownloadRequest(project, 'Dev').run();
+					downloadRes.expectStatus(200);
 
-				const jar = await createJarFile();
+					const arrayBuffer = await downloadRes.getBody().arrayBuffer();
+					const jarFile = await jsZip.loadAsync(arrayBuffer);
 
-				// Modify the jar to remove version from plugin.yml
-				const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
-				const pluginYml = modifiedJarFile.file('plugin.yml');
-				const pluginYmlContent = await pluginYml!.async('string');
-				const parsed = parse(pluginYmlContent);
-				delete parsed.version;
+					// Verify the version string is now modified
+					const pluginYaml = jarFile.file('paper-plugin.yml');
+					expect(pluginYaml).not.toBeUndefined();
+					const content = await pluginYaml!.async('string');
 
-				const newYaml = stringify(parsed);
-				modifiedJarFile.file('plugin.yml', newYaml);
+					expect(content).toContain('version: Dev - 1');
+				});
 
-				// Make new jar
-				const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
-				const modifiedJar = createSeededJar(bytes, 'test.jar');
+				test('Will look for paper-plugin.yaml if no paper-plugin.yml', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
 
-				// Attempt to upload the jar
-				const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
-				res.expectStatus(400);
-				res.expectFailure();
-				res.expectError(errors.InvalidUpload('plugin.yml does not contain a version'));
+					const jar = await createJarFile();
+					// Modify the jar to remove plugin.yml and add paper-plugin.yaml
+					const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					const pluginYml = modifiedJarFile.file('plugin.yml');
+					const pluginYmlContent = await pluginYml!.async('string');
+					modifiedJarFile.remove('plugin.yml');
+					modifiedJarFile.file('paper-plugin.yaml', pluginYmlContent);
+
+					// Make new jar
+					const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+					const modifiedJar = createSeededJar(bytes, 'test.jar');
+
+					// Verify the upload was still successful
+					const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
+					res.expectStatus(200);
+					res.expectSuccessful();
+
+					// Download the jar
+					const downloadRes = await createDownloadRequest(project, 'Dev').run();
+					downloadRes.expectStatus(200);
+
+					const arrayBuffer = await downloadRes.getBody().arrayBuffer();
+					const jarFile = await jsZip.loadAsync(arrayBuffer);
+
+					// Verify the version string is now modified
+					const pluginYaml = jarFile.file('paper-plugin.yaml');
+					expect(pluginYaml).not.toBeUndefined();
+					const content = await pluginYaml!.async('string');
+
+					expect(content).toContain('version: Dev - 1');
+				});
+
+				test('Will fail if neither plugin.yml or plugin.yaml is found', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
+
+					const jar = await createJarFile();
+					// Modify the jar to remove plugin.yml
+					const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					modifiedJarFile.remove('plugin.yml');
+
+					// Make new jar
+					const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+					const modifiedJar = createSeededJar(bytes, 'test.jar');
+
+					// Attempt to upload the jar
+					const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
+					res.expectStatus(400);
+					res.expectFailure();
+					res.expectError(errors.InvalidUpload('plugin.yml or paper-plugin.yml not found'));
+				});
+
+				test('Will fail if plugin.yml does not contain a version', async () => {
+					const user = await createUser(env);
+					const auth = await createAuth(user);
+					const project = await createProject(env, user);
+					const jsZip = new JSZip();
+
+					const jar = await createJarFile();
+
+					// Modify the jar to remove version from plugin.yml
+					const modifiedJarFile = await jsZip.loadAsync(jar.bytes);
+					const pluginYml = modifiedJarFile.file('plugin.yml');
+					const pluginYmlContent = await pluginYml!.async('string');
+					const parsed = parse(pluginYmlContent);
+					delete parsed.version;
+
+					const newYaml = stringify(parsed);
+					modifiedJarFile.file('plugin.yml', newYaml);
+
+					// Make new jar
+					const bytes = await jsZip.generateAsync({ type: 'arraybuffer', compression: 'DEFLATE' });
+					const modifiedJar = createSeededJar(bytes, 'test.jar');
+
+					// Attempt to upload the jar
+					const res = await createUploadRequest(auth, project, 'Dev', modifiedJar).run();
+					res.expectStatus(400);
+					res.expectFailure();
+					res.expectError(errors.InvalidUpload('plugin yml does not contain a version'));
+				});
 			});
 
 			test('Files are being uploaded to R2', async () => {
