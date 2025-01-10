@@ -268,6 +268,63 @@ export async function patchReleaseChannel(ctx: Ctx, body: PatchProjectReleaseCha
 	return success('Release channel updated!', updatedReleaseChannel);
 }
 
+export const postProjectReleaseChannelSchema = z.object({
+	name: z.string()
+		.min(3, 'name needs to be at least 3 characters')
+		.max(64, 'name needs to be at most 64 characters')
+		.regex(/^[a-zA-Z0-9_-]+$/, 'name needs to be alphanumeric with only a dash or underscore'),
+	supportedVersions: z.string()
+		.min(1, 'supportedVersions needs to be at least 1 character')
+		.max(20, 'supportedVersions needs to be at most 20 characters'),
+	dependencies: z.array(
+		z.string()
+			.min(1, 'dependency needs to be at least 1 character')
+			.max(64, 'dependency needs to be at most 64 characters'),
+	)
+		.max(10, 'dependencies needs to be at most 10 items')
+		.default([]),
+	fileNaming: z.string()
+		.min(3, 'fileNaming needs to be at least 3 characters')
+		.max(64, 'fileNaming needs to be at most 64 characters')
+		.default('$project.jar'),
+});
+
+export type PostProjectReleaseChannelBody = z.input<typeof postProjectReleaseChannelSchema>;
+
+export async function postReleaseChannel(ctx: Ctx, body: PostProjectReleaseChannelBody) {
+	const userId = ctx.get('userId');
+	const projectName = ctx.req.param('projectName');
+
+	// Get project
+	const project = await ProjectStore.getProjectByNameAndUser(projectName, userId);
+	if (project === undefined) {
+		return errors.ProjectNotFound.toResponse(ctx);
+	}
+
+	// Get release channel
+	const releaseChannel = await ReleaseChannelStore.getReleaseChannel(body.name, project.projectId);
+	if (releaseChannel !== undefined) {
+		return errors.ReleaseChannelAlreadyExists.toResponse(ctx);
+	}
+
+	const newReleaseChannel = await ReleaseChannelStore.insertNewReleaseChannel({
+		projectId: project.projectId,
+		name: body.name,
+		supportedVersions: body.supportedVersions,
+		dependencies: body.dependencies,
+		fileNaming: body.fileNaming,
+	});
+
+	const releaseChannels = await ReleaseChannelStore.getReleaseChannelsForProject(project.projectId);
+	if (releaseChannels.length === 1) {
+		await ProjectStore.updateProject(project.projectId, {
+			defaultReleaseChannel: newReleaseChannel[0].releaseChannelId,
+		});
+	}
+
+	return success('Release channel created!', newReleaseChannel[0]);
+}
+
 // GET /api/projects/:projectName/analytics
 export async function getProjectAnalytics(ctx: Ctx) {
 	const user = ctx.get('user');

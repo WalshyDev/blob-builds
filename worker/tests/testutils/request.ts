@@ -7,6 +7,7 @@ import {
 	NewProjectBody,
 	PatchProjectBody,
 	PatchProjectReleaseChannelBody,
+	PostProjectReleaseChannelBody,
 	ProjectSettingsBody,
 } from '~/handlers/projects/project';
 import { Project } from '~/store/schema';
@@ -168,6 +169,10 @@ export function createGetUserRequest(auth: Authn) {
 		.withAuth(auth);
 }
 
+export function createGetProjectsRequest(projectName: string) {
+	return TestRequest.new(`/api/projects/${projectName}`);
+}
+
 export function createUploadRequest(
 	auth: Authn,
 	project: Project,
@@ -224,6 +229,12 @@ export function createUpdateProjectRcRequest(
 	body: PatchProjectReleaseChannelBody,
 ) {
 	return TestRequest.new(`/api/projects/${project.name}/${releaseChannelName}`, { method: 'PATCH' })
+		.withAuth(auth)
+		.withJson(body);
+}
+
+export function createNewProjectRcRequest(auth: Authn, project: Project, body: PostProjectReleaseChannelBody) {
+	return TestRequest.new(`/api/projects/${project.name}/release-channels`, { method: 'POST' })
 		.withAuth(auth)
 		.withJson(body);
 }

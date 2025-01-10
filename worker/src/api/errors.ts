@@ -112,6 +112,12 @@ export const NoReleaseChannels = new ApiError({
 	statusCode: StatusCode.BAD_REQUEST,
 });
 
+export const ReleaseChannelAlreadyExists = new ApiError({
+	code: 5002,
+	errorMessage: 'A release channel with that name already exists',
+	statusCode: StatusCode.BAD_REQUEST,
+});
+
 // Build errors
 export const BuildNotFound = new ApiError({
 	code: 6000,

@@ -23,6 +23,8 @@ import {
 	patchProjectReleaseChannelSchema,
 	patchReleaseChannel,
 	getProjectAnalytics,
+	postReleaseChannel,
+	postProjectReleaseChannelSchema,
 } from '~/handlers/projects/project';
 import { postSearch, searchSchema } from '~/handlers/search/search';
 import { getUser } from '~/handlers/users/user';
@@ -83,6 +85,11 @@ app.patch(
 	'/api/projects/:projectName/:releaseChannel',
 	auth,
 	jsonValidator(patchProjectReleaseChannelSchema, patchReleaseChannel),
+);
+app.post(
+	'/api/projects/:projectName/release-channels',
+	auth,
+	jsonValidator(postProjectReleaseChannelSchema, postReleaseChannel),
 );
 app.get(
 	'/api/projects/:projectName/analytics',

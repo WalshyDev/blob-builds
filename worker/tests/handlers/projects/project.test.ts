@@ -1,6 +1,8 @@
 import { applyD1Migrations, env } from 'cloudflare:test';
 import {
 	TestRequest,
+	createGetProjectsRequest,
+	createNewProjectRcRequest,
 	createNewProjectRequest,
 	createUpdateProjectRcRequest,
 	createUpdateProjectRequest,
@@ -1203,6 +1205,114 @@ describe('/api/projects', () => {
 					res.expectFailure();
 					res.expectError(errors.InvalidJson('fileNaming needs to be at most 64 characters'));
 				});
+			});
+		});
+	});
+
+	describe('POST /:projectName/release-channels', () => {
+		describe('Happy path', () => {
+			test('Can create project RC', async () => {
+				const user = await createUser(env);
+				const auth = await createAuth(user);
+				const project = await createProject(env, user);
+
+				// Validate non-edited project
+				const currentRes = await TestRequest.new(`/api/projects/${project.name}`).run();
+				currentRes.expectStatus(200);
+				currentRes.expectSuccessful();
+				currentRes.expectData();
+
+				// Delete the project RC
+				const deleteDefaultRcRes = await env.DB
+					.prepare('UPDATE projects SET default_release_channel = NULL WHERE project_id = $1')
+					.bind(project.projectId)
+					.run();
+				expect(deleteDefaultRcRes.success).toBe(true);
+				const deleteRcRes = await env.DB.prepare('DELETE FROM release_channels WHERE project_id = $1')
+					.bind(project.projectId)
+					.run();
+				expect(deleteRcRes.success).toBe(true);
+
+				const res = await createNewProjectRcRequest(auth, project, {
+					name: 'Dev',
+					supportedVersions: '1.1+',
+					dependencies: ['Mars'],
+					fileNaming: '$project-$version.jar',
+				}).run();
+				res.expectStatus(200);
+				res.expectSuccessful();
+				res.expectData();
+
+				const data = res.getData<ReleaseChannel>();
+				expect(data.name).toBe('Dev');
+				expect(data.supportedVersions).toBe('1.1+');
+				expect(data.dependencies).toEqual(['Mars']);
+				expect(data.fileNaming).toBe('$project-$version.jar');
+
+				// Get the project and validate
+				const projectRes = await createGetProjectsRequest(project.name).run();
+				projectRes.expectStatus(200);
+				projectRes.expectSuccessful();
+				projectRes.expectData();
+
+				const projectData = projectRes.getData<ProjectResponse>();
+				expect(projectData.defaultReleaseChannel?.name).toBe('Dev');
+				expect(projectData.defaultReleaseChannel?.supportedVersions).toBe('1.1+');
+				expect(projectData.defaultReleaseChannel?.dependencies).toEqual(['Mars']);
+				expect(projectData.defaultReleaseChannel?.fileNaming).toBe('$project-$version.jar');
+			});
+		});
+
+		describe('Validation', () => {
+			test('Auth is required', async () => {
+				const user = await createUser(env);
+				const project = await createProject(env, user);
+
+				const res = await TestRequest.new(`/api/projects/${project.name}/release-channels`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						name: 'Updated-name',
+					}),
+				}).run();
+				res.expectStatus(401);
+				res.expectFailure();
+				res.expectError(errors.NoAuthentication);
+			});
+
+			test('Cannot update project for another user', async () => {
+				const userOne = await createUser(env);
+				const userTwo = await createUser(env);
+				const userTwoAuth = await createAuth(userTwo);
+
+				const project = await createProject(env, userOne);
+
+				// Try to update the project as user two
+				const res = await createNewProjectRcRequest(userTwoAuth, project, {
+					name: 'Dev',
+					supportedVersions: '1.0+',
+					dependencies: [],
+					fileNaming: '$project.jar',
+				}).run();
+				res.expectStatus(404);
+				res.expectFailure();
+				res.expectError(errors.ProjectNotFound);
+			});
+
+			test('Trying to update an invalid project fails', async () => {
+				const user = await createUser(env);
+				const auth = await createAuth(user);
+
+				// @ts-expect-error - Testing invalid project
+				const res = await createNewProjectRcRequest(auth, { name: 'Abc' }, {
+					name: 'Dev',
+					supportedVersions: '1.0+',
+					dependencies: [],
+					fileNaming: '$project.jar',
+				}).run();
+				res.expectStatus(404);
+				res.expectFailure();
+				res.expectError(errors.ProjectNotFound);
 			});
 		});
 	});
