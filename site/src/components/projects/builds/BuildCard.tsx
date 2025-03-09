@@ -71,6 +71,9 @@ function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 			h4({ children }) {
 				return <div className='font-bold py-2 text-s'>{children}</div>;
 			},
+			b({ children }) {
+				return <span className='font-bold'>{children}</span>;
+			},
 			code({ className, children }) {
 				if (typeof children !== 'string') {
 					return null;
