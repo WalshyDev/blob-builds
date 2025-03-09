@@ -44,7 +44,24 @@ export default function BuildCard({ build }: Props) {
 // log props to see what we can use
 function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 	return <Markdown
-		allowedElements={['ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'p', 'span', 'div', 'pre', 'code', 'b', 'br']}
+		allowedElements={[
+			'ul',
+			'ol',
+			'li',
+			'a',
+			'h1',
+			'h2',
+			'h3',
+			'h4',
+			'p',
+			'span',
+			'div',
+			'pre',
+			'code',
+			'b',
+			'strong',
+			'br',
+		]}
 		skipHtml={true}
 		components={{
 			// Style lists
@@ -70,6 +87,12 @@ function ReleaseNotes({ releaseNotes }: { releaseNotes: string }) {
 			},
 			h4({ children }) {
 				return <div className='font-bold py-2 text-s'>{children}</div>;
+			},
+			b({ children }) {
+				return <span className='font-bold'>{children}</span>;
+			},
+			strong({ children }) {
+				return <span className='font-bold'>{children}</span>;
 			},
 			code({ className, children }) {
 				if (typeof children !== 'string') {
